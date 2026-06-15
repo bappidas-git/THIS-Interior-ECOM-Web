@@ -1,9 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * ProductDetails — page shell only. The buy-box widgets, gallery, variants,
- * trust signals, reviews and AOV modules are reusable components that style
- * themselves from the design tokens (src/theme/storefront-tokens.css). This
- * file therefore only lays out the page and styles a few page-level atoms — and
- * uses tokens throughout, so it re-skins with the rest of the storefront.
+ * ProductDetails — page shell + buy-box composition (THIS Interiors)
+ * Gallery-grade editorial PDP: a large calm gallery (left, sticky) beside a
+ * refined buy box (right) — serif product name, muted-caps brand, honest price,
+ * visible variant swatches, a stock-clamped quantity, a strong CTA hierarchy
+ * (solid-brass Add to Cart + quiet wishlist, secondary Buy Now) and restrained
+ * trust + delivery info. The buy-box widgets, gallery, variants and trust
+ * signals are reusable components that style themselves from the design tokens
+ * (src/theme/storefront-tokens.css); this file lays out the page and styles its
+ * page-level atoms — using tokens throughout, so it re-skins with the storefront.
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 .page {
@@ -16,27 +20,27 @@
 .container {
   max-width: var(--sf-container-max);
   margin: 0 auto;
-  padding: var(--sf-space-5) var(--sf-space-6) var(--sf-space-16);
+  padding: var(--sf-space-4) var(--sf-space-6) var(--sf-space-16);
 }
 
-/* ── Breadcrumb ──────────────────────────────────────────────────────────── */
+/* ── Breadcrumb — quiet orientation, muted ink → brass on hover ──────────── */
 .breadcrumb {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--sf-space-2);
-  padding: var(--sf-space-4) 0;
+  padding: var(--sf-space-4) 0 var(--sf-space-6);
   font-size: var(--sf-text-sm);
 }
 
 .breadcrumbLink {
-  color: var(--sf-color-primary);
+  color: var(--sf-color-text-secondary);
   text-decoration: none;
   transition: color var(--sf-transition-fast);
 }
 
 .breadcrumbLink:hover {
-  text-decoration: underline;
+  color: var(--sf-color-primary);
 }
 
 .breadcrumbSep {
@@ -44,7 +48,7 @@
 }
 
 .breadcrumbCurrent {
-  color: var(--sf-color-text-secondary);
+  color: var(--sf-color-text);
   font-weight: var(--sf-font-medium);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -52,12 +56,12 @@
   max-width: 320px;
 }
 
-/* ── Main layout ─────────────────────────────────────────────────────────── */
+/* ── Main layout — image-forward, generous whitespace ───────────────────── */
 .mainLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--sf-space-10);
-  margin-bottom: var(--sf-space-12);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--sf-space-12);
+  margin-bottom: var(--sf-space-16);
 }
 
 .gallerySection {
@@ -73,19 +77,22 @@
   min-width: 0;
 }
 
+/* ── Identity — muted-caps brand, serif name ────────────────────────────── */
 .brand {
   font-size: var(--sf-text-sm);
-  font-weight: var(--sf-font-semibold);
+  font-weight: var(--sf-font-medium);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--sf-color-primary);
+  letter-spacing: var(--sf-tracking-wider);
+  color: var(--sf-color-text-muted);
 }
 
 .productName {
-  margin: 0;
-  font-size: var(--sf-text-2xl);
-  font-weight: var(--sf-font-bold);
+  margin: calc(var(--sf-space-1) * -1) 0 0;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-3xl);
+  font-weight: var(--sf-font-medium);
   line-height: var(--sf-leading-tight);
+  letter-spacing: var(--sf-tracking-tight);
   color: var(--sf-color-text);
 }
 
@@ -97,20 +104,28 @@
 .skuLine span {
   color: var(--sf-color-text-secondary);
   font-weight: var(--sf-font-medium);
+  letter-spacing: 0.01em;
 }
 
 .shortDescription {
   margin: 0;
-  font-size: var(--sf-text-base);
-  line-height: var(--sf-leading-normal);
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
   color: var(--sf-color-text-secondary);
 }
 
-/* ── Quantity + stock ────────────────────────────────────────────────────── */
+/* Hairline that separates the identity zone from the purchase controls. */
+.divider {
+  align-self: stretch;
+  height: 1px;
+  background: var(--sf-color-border);
+}
+
+/* ── Quantity + honest stock ────────────────────────────────────────────── */
 .purchaseRow {
   display: flex;
   align-items: center;
-  gap: var(--sf-space-5);
+  gap: var(--sf-space-6);
   flex-wrap: wrap;
 }
 
@@ -122,7 +137,7 @@
 
 .quantityLabel {
   font-size: var(--sf-text-sm);
-  font-weight: var(--sf-font-semibold);
+  font-weight: var(--sf-font-medium);
   color: var(--sf-color-text);
 }
 
@@ -141,8 +156,14 @@
   color: var(--sf-color-danger);
 }
 
-/* ── Action buttons ──────────────────────────────────────────────────────── */
-.actionButtons {
+/* ── Actions — strong hierarchy: brass primary + quiet wishlist, then Buy Now */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-3);
+}
+
+.primaryRow {
   display: flex;
   gap: var(--sf-space-3);
   align-items: stretch;
@@ -154,40 +175,56 @@
   align-items: center;
   justify-content: center;
   gap: var(--sf-space-2);
-  flex: 1;
-  min-height: 52px;
   border-radius: var(--sf-radius-md);
-  font-size: var(--sf-text-base);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-sm);
   font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
   cursor: pointer;
-  transition: filter var(--sf-transition-fast), transform var(--sf-transition-fast),
-    background var(--sf-transition-fast), color var(--sf-transition-fast);
+  transition: background var(--sf-transition), color var(--sf-transition),
+    border-color var(--sf-transition), box-shadow var(--sf-transition),
+    transform var(--sf-transition-fast);
 }
 
+/* Primary — solid brass, contrast text (matches .sf-btn--primary). */
 .addToCartBtn {
-  border: none;
-  background: var(--sf-gradient-primary);
+  flex: 1;
+  min-height: 54px;
+  border: 1px solid var(--sf-color-primary);
+  background: var(--sf-color-primary);
   color: var(--sf-color-primary-contrast);
 }
 
 .addToCartBtn:hover:not(:disabled) {
-  filter: brightness(1.05);
+  background: var(--sf-color-primary-dark);
+  border-color: var(--sf-color-primary-dark);
+  box-shadow: var(--sf-shadow-sm);
   transform: translateY(-1px);
 }
 
-.addToCartDone {
+/* Brief, honest "Added ✓" confirmation. Contrast token stays legible on the
+   success fill in both light and dark modes. */
+.addToCartDone,
+.addToCartDone:hover:not(:disabled) {
   background: var(--sf-color-success);
+  border-color: var(--sf-color-success);
+  color: var(--sf-color-primary-contrast);
 }
 
+/* Secondary — hairline outline, brass on hover (matches .sf-btn--secondary). */
 .buyNowBtn {
-  border: 1.5px solid var(--sf-color-primary);
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--sf-color-border);
   background: transparent;
-  color: var(--sf-color-primary);
+  color: var(--sf-color-text);
 }
 
 .buyNowBtn:hover:not(:disabled) {
+  color: var(--sf-color-primary);
+  border-color: var(--sf-color-primary);
   background: var(--sf-color-primary-soft);
-  transform: translateY(-1px);
 }
 
 .addToCartBtn:focus-visible,
@@ -199,28 +236,30 @@
 
 .addToCartBtn:disabled,
 .buyNowBtn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* Wishlist — quiet square toggle; brass-accent when active. */
 .wishlistBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  min-height: 52px;
+  width: 54px;
+  min-height: 54px;
   flex-shrink: 0;
-  border: 1.5px solid var(--sf-color-border-strong);
+  border: 1px solid var(--sf-color-border);
   border-radius: var(--sf-radius-md);
   background: var(--sf-color-surface);
   color: var(--sf-color-text-muted);
   cursor: pointer;
-  transition: color var(--sf-transition-fast), border-color var(--sf-transition-fast);
+  transition: color var(--sf-transition-fast),
+    border-color var(--sf-transition-fast), background var(--sf-transition-fast);
 }
 
 .wishlistBtn:hover {
   color: var(--sf-color-accent);
-  border-color: var(--sf-color-accent);
+  border-color: var(--sf-color-border-strong);
 }
 
 .wishlistBtnActive {
@@ -229,29 +268,33 @@
   background: var(--sf-color-primary-soft);
 }
 
-/* ── Tabs ────────────────────────────────────────────────────────────────── */
+/* ── Tabs — quiet underline / active-ink (mirrors .sf-tabs) ─────────────── */
 .tabsSection {
-  margin-top: var(--sf-space-8);
+  margin-top: var(--sf-space-12);
   scroll-margin-top: 90px;
 }
 
 .tabNav {
   display: flex;
-  gap: var(--sf-space-2);
+  gap: var(--sf-space-6);
   border-bottom: 1px solid var(--sf-color-border);
   margin-bottom: var(--sf-space-6);
 }
 
 .tabButton {
-  position: relative;
-  padding: var(--sf-space-3) var(--sf-space-5);
+  appearance: none;
+  min-height: var(--sf-tap-target);
+  padding: var(--sf-space-3) 0;
+  margin-bottom: -1px;
   border: none;
+  border-bottom: 2px solid transparent;
   background: none;
-  font-size: var(--sf-text-base);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-sm);
   font-weight: var(--sf-font-medium);
-  color: var(--sf-color-text-muted);
+  color: var(--sf-color-text-secondary);
   cursor: pointer;
-  transition: color var(--sf-transition-fast);
+  transition: color var(--sf-transition-fast), border-color var(--sf-transition-fast);
 }
 
 .tabButton:hover {
@@ -260,17 +303,7 @@
 
 .tabButtonActive {
   color: var(--sf-color-primary);
-}
-
-.tabButtonActive::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 2px;
-  background: var(--sf-color-primary);
-  border-radius: var(--sf-radius-pill);
+  border-bottom-color: var(--sf-color-primary);
 }
 
 .tabButton:focus-visible {
@@ -282,20 +315,22 @@
 .descriptionTab {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: var(--sf-space-8);
+  gap: var(--sf-space-10);
 }
 
 .fullDescription h3,
 .specTable h3 {
-  margin: 0 0 var(--sf-space-3);
-  font-size: var(--sf-text-lg);
-  font-weight: var(--sf-font-semibold);
+  margin: 0 0 var(--sf-space-4);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-medium);
   color: var(--sf-color-text);
 }
 
 .fullDescription p {
   margin: 0;
-  line-height: var(--sf-leading-normal);
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
   color: var(--sf-color-text-secondary);
 }
 
@@ -305,7 +340,7 @@
 }
 
 .specTable td {
-  padding: var(--sf-space-3);
+  padding: var(--sf-space-3) 0;
   border-bottom: 1px solid var(--sf-color-border);
   font-size: var(--sf-text-sm);
 }
@@ -331,9 +366,9 @@
 .skeletonRight > * {
   background: linear-gradient(
     90deg,
-    var(--sf-color-surface-2) 25%,
-    var(--sf-color-surface-hover) 37%,
-    var(--sf-color-surface-2) 63%
+    var(--sf-color-skeleton-base) 25%,
+    var(--sf-color-skeleton-highlight) 37%,
+    var(--sf-color-skeleton-base) 63%
   );
   background-size: 400% 100%;
   animation: sfShimmer 1.4s ease infinite;
@@ -348,12 +383,13 @@
 
 .skeletonLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--sf-space-10);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--sf-space-12);
 }
 
 .skeletonMainImage {
   aspect-ratio: 1 / 1;
+  border-radius: var(--sf-radius-lg);
 }
 
 .skeletonRight {
@@ -362,15 +398,22 @@
   gap: var(--sf-space-4);
 }
 
-.skeletonTitle { height: 34px; width: 80%; }
+.skeletonTitle { height: 38px; width: 80%; }
 .skeletonRating { height: 18px; width: 40%; }
 .skeletonPrice { height: 30px; width: 50%; }
 .skeletonDesc { height: 14px; width: 100%; }
-.skeletonButtons { height: 52px; width: 100%; margin-top: var(--sf-space-3); }
+.skeletonButtons { height: 54px; width: 100%; margin-top: var(--sf-space-3); }
 
 @keyframes sfShimmer {
   0% { background-position: 100% 50%; }
   100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonPage > *,
+  .skeletonRight > * {
+    animation: none;
+  }
 }
 
 /* ── Not found ───────────────────────────────────────────────────────────── */
@@ -383,13 +426,16 @@
 }
 
 .notFoundIcon {
+  font-family: var(--sf-font-display);
   font-size: 3rem;
-  font-weight: var(--sf-font-bold);
+  font-weight: var(--sf-font-medium);
   color: var(--sf-color-primary);
 }
 
 .notFound h2 {
   margin: var(--sf-space-3) 0;
+  font-family: var(--sf-font-display);
+  font-weight: var(--sf-font-medium);
 }
 
 .notFound p {
@@ -400,18 +446,27 @@
   display: inline-block;
   margin-top: var(--sf-space-5);
   padding: var(--sf-space-3) var(--sf-space-6);
-  background: var(--sf-gradient-primary);
+  background: var(--sf-color-primary);
   color: var(--sf-color-primary-contrast);
   border-radius: var(--sf-radius-md);
   text-decoration: none;
+  font-size: var(--sf-text-sm);
   font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  transition: background var(--sf-transition);
+}
+
+.notFoundLink:hover {
+  background: var(--sf-color-primary-dark);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 980px) {
   .mainLayout {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--sf-space-6);
+    gap: var(--sf-space-8);
+    margin-bottom: var(--sf-space-12);
   }
   .gallerySection {
     position: static;
@@ -430,18 +485,13 @@
     padding: var(--sf-space-3) var(--sf-space-4) 96px;
   }
   .productName {
-    font-size: var(--sf-text-xl);
+    font-size: var(--sf-text-2xl);
   }
-  .actionButtons {
-    flex-wrap: wrap;
-  }
-  .addToCartBtn,
-  .buyNowBtn {
-    flex: 1 1 100%;
-    order: 2;
-  }
-  .wishlistBtn {
-    order: 1;
-    width: 100%;
+}
+
+/* ── Reduced motion — no lift on the CTAs ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .addToCartBtn:hover:not(:disabled) {
+    transform: none;
   }
 }

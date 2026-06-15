@@ -383,6 +383,8 @@ const ProductDetails = () => {
               <p className={styles.shortDescription}>{product.shortDescription}</p>
             )}
 
+            <div className={styles.divider} aria-hidden="true" />
+
             {/* Variant selection — visible swatches/tiles, never a dropdown */}
             {product.variants && product.variants.length > 0 && (
               <VariantSelector
@@ -419,36 +421,39 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* Primary / secondary CTAs (standard copy, clear hierarchy) */}
-            <div className={styles.actionButtons} ref={buyBoxRef}>
-              <button
-                className={`${styles.addToCartBtn} ${added ? styles.addToCartDone : ""}`}
-                onClick={handleAddClick}
-                disabled={isOutOfStock}
-              >
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
-                </svg>
-                {isOutOfStock ? "Out of Stock" : added ? "Added to Cart ✓" : "Add to Cart"}
-              </button>
+            {/* Primary / secondary CTAs (standard copy, clear hierarchy:
+                brass Add to Cart + quiet wishlist, then secondary Buy Now) */}
+            <div className={styles.actions} ref={buyBoxRef}>
+              <div className={styles.primaryRow}>
+                <button
+                  className={`${styles.addToCartBtn} ${added ? styles.addToCartDone : ""}`}
+                  onClick={handleAddClick}
+                  disabled={isOutOfStock}
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+                  </svg>
+                  {isOutOfStock ? "Out of Stock" : added ? "Added to Cart ✓" : "Add to Cart"}
+                </button>
+                <button
+                  className={`${styles.wishlistBtn} ${wishlisted ? styles.wishlistBtnActive : ""}`}
+                  onClick={() => toggleWishlist(product)}
+                  aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                  aria-pressed={wishlisted}
+                >
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                  </svg>
+                </button>
+              </div>
               <button
                 className={styles.buyNowBtn}
                 onClick={handleBuyNow}
                 disabled={isOutOfStock}
               >
                 Buy Now
-              </button>
-              <button
-                className={`${styles.wishlistBtn} ${wishlisted ? styles.wishlistBtnActive : ""}`}
-                onClick={() => toggleWishlist(product)}
-                aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                aria-pressed={wishlisted}
-              >
-                <svg viewBox="0 0 24 24" width="22" height="22" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-                </svg>
               </button>
             </div>
 

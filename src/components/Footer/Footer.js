@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTheme } from "../../context/ThemeContext";
 import { useDealsConfig } from "../../context/DealsConfigContext";
 import apiService from "../../services/api";
 import {
-  APP_NAME,
   SUPPORT_EMAIL,
   SUPPORT_PHONE,
   SUPPORT_ADDRESS,
   SUPPORT_HOURS,
   SOCIAL_LINKS,
 } from "../../utils/constants";
-import { isEmailValid } from "../../utils/helpers";
+import { isEmailValid, onImageError } from "../../utils/helpers";
+import { LOGO_WHITE, BRAND } from "../../theme/brand";
 import styles from "./Footer.module.css";
 
 const Footer = () => {
-  const { isDarkMode } = useTheme();
+  // The footer is an always-dark editorial section in both light and dark site
+  // modes (it reads the --sf-color-dark-* tokens), so it never needs the theme
+  // flag — the white logo is always the correct mark for this surface.
   const { enabled: dealsEnabled } = useDealsConfig();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,21 +105,19 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer
-      className={styles.footer}
-      data-theme={isDarkMode ? "dark" : "light"}
-    >
-      {/* Newsletter Section */}
+    <footer className={styles.footer}>
+      {/* ===== NEWSLETTER ===== */}
       <section className={styles.newsletter}>
         <div className={styles.container}>
           <div className={styles.newsletterInner}>
             <div className={styles.newsletterText}>
+              <p className={styles.newsletterEyebrow}>Newsletter</p>
               <h3 className={styles.newsletterTitle}>
-                Subscribe to our newsletter
+                Stay in the <em>know</em>
               </h3>
               <p className={styles.newsletterDesc}>
-                Get the latest deals, new arrivals, and exclusive offers
-                delivered to your inbox.
+                New arrivals, styling notes and the occasional private preview —
+                composed thoughtfully, never noise.
               </p>
             </div>
             <form onSubmit={handleSubscribe} className={styles.newsletterForm} noValidate>
@@ -127,7 +126,7 @@ const Footer = () => {
                   type="email"
                   placeholder={
                     subscribeStatus === "success"
-                      ? "Subscribed successfully!"
+                      ? "You're on the list"
                       : "Enter your email address"
                   }
                   value={email}
@@ -148,7 +147,7 @@ const Footer = () => {
                   disabled={isSubmitting || subscribeStatus === "success"}
                 >
                   {isSubmitting
-                    ? "Subscribing..."
+                    ? "Subscribing…"
                     : subscribeStatus === "success"
                     ? "Subscribed"
                     : "Subscribe"}
@@ -161,7 +160,7 @@ const Footer = () => {
               )}
               {subscribeStatus === "success" && (
                 <p className={styles.newsletterSuccess} role="status">
-                  Thanks for subscribing! Check your inbox for exclusive deals.
+                  Thank you — you're on the list.
                 </p>
               )}
             </form>
@@ -169,37 +168,48 @@ const Footer = () => {
         </div>
       </section>
 
-      {/* Main Footer */}
+      {/* ===== MAIN FOOTER ===== */}
       <div className={styles.mainFooter}>
         <div className={styles.container}>
           <div className={styles.footerGrid}>
-            {/* Column 1: About */}
-            <div className={styles.footerCol}>
-              <h4 className={styles.brandName}>{APP_NAME}</h4>
-              <p className={styles.aboutText}>
-                Your one-stop destination for quality products at unbeatable
-                prices. We are committed to delivering the best online shopping
-                experience with fast shipping and excellent customer service.
-              </p>
-              <div className={styles.socialIcons}>
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.socialLink}
-                    aria-label={social.label}
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                      <path d={social.path} />
-                    </svg>
-                  </a>
-                ))}
-              </div>
+            {/* Brand */}
+            <div className={`${styles.footerCol} ${styles.brandCol}`}>
+              <Link
+                to="/"
+                className={styles.brandLogoLink}
+                aria-label={`${BRAND.name} — home`}
+              >
+                <img
+                  src={LOGO_WHITE}
+                  alt={BRAND.name}
+                  className={styles.brandLogo}
+                  width="300"
+                  height="148"
+                  onError={onImageError}
+                />
+              </Link>
+              <p className={styles.brandLine}>{BRAND.taglines[0]}.</p>
+              {socialLinks.length > 0 && (
+                <div className={styles.socialIcons}>
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.socialLink}
+                      aria-label={social.label}
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                        <path d={social.path} />
+                      </svg>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Column 2: Quick Links */}
+            {/* Quick Links */}
             <div className={styles.footerCol}>
               <h4 className={styles.colTitle}>Quick Links</h4>
               <ul className={styles.linkList}>
@@ -213,7 +223,7 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Column 3: Customer Service */}
+            {/* Customer Service */}
             <div className={styles.footerCol}>
               <h4 className={styles.colTitle}>Customer Service</h4>
               <ul className={styles.linkList}>
@@ -227,9 +237,9 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Column 4: Contact Us */}
+            {/* Contact */}
             <div className={styles.footerCol}>
-              <h4 className={styles.colTitle}>Contact Us</h4>
+              <h4 className={styles.colTitle}>Contact</h4>
               <ul className={styles.contactList}>
                 <li className={styles.contactItem}>
                   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" className={styles.contactIcon}>
@@ -265,36 +275,37 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Trust & Payment Bar */}
+      {/* ===== TRUST & PAYMENT STRIP ===== */}
       <div className={styles.trustBar}>
         <div className={styles.container}>
           <div className={styles.trustBarInner}>
-            {/* Payment Methods */}
+            {/* Payment marks — official brand colours kept, sat on a tokenized
+                hairline chip so the surrounding chrome stays on-brand. */}
             <div className={styles.paymentMethods}>
-              <span className={styles.paymentLabel}>We Accept:</span>
+              <span className={styles.paymentLabel}>We Accept</span>
               <div className={styles.paymentIcons}>
-                <span className={styles.paymentBadge} title="Visa">
-                  <svg viewBox="0 0 48 32" width="40" height="26">
+                <span className={styles.paymentMark} title="Visa">
+                  <svg viewBox="0 0 48 32" width="38" height="25">
                     <rect width="48" height="32" rx="4" fill="#1A1F71" />
                     <text x="24" y="20" textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="bold" fontFamily="Arial">VISA</text>
                   </svg>
                 </span>
-                <span className={styles.paymentBadge} title="Mastercard">
-                  <svg viewBox="0 0 48 32" width="40" height="26">
+                <span className={styles.paymentMark} title="Mastercard">
+                  <svg viewBox="0 0 48 32" width="38" height="25">
                     <rect width="48" height="32" rx="4" fill="#252525" />
                     <circle cx="19" cy="16" r="8" fill="#EB001B" />
                     <circle cx="29" cy="16" r="8" fill="#F79E1B" />
                     <path d="M24 10.34a8 8 0 010 11.32 8 8 0 000-11.32z" fill="#FF5F00" />
                   </svg>
                 </span>
-                <span className={styles.paymentBadge} title="UPI">
-                  <svg viewBox="0 0 48 32" width="40" height="26">
+                <span className={styles.paymentMark} title="UPI">
+                  <svg viewBox="0 0 48 32" width="38" height="25">
                     <rect width="48" height="32" rx="4" fill="#EDEDED" />
                     <text x="24" y="20" textAnchor="middle" fill="#00897B" fontSize="11" fontWeight="bold" fontFamily="Arial">UPI</text>
                   </svg>
                 </span>
-                <span className={styles.paymentBadge} title="Cash on Delivery">
-                  <svg viewBox="0 0 48 32" width="40" height="26">
+                <span className={styles.paymentMark} title="Cash on Delivery">
+                  <svg viewBox="0 0 48 32" width="38" height="25">
                     <rect width="48" height="32" rx="4" fill="#4CAF50" />
                     <text x="24" y="20" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontWeight="bold" fontFamily="Arial">COD</text>
                   </svg>
@@ -302,28 +313,28 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Trust Badges */}
+            {/* Reassurance badges — quiet icon + label, no urgency styling. */}
             <div className={styles.trustBadges}>
               <div className={styles.trustBadge}>
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                   <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
                 </svg>
                 <span>Secure Payment</span>
               </div>
               <div className={styles.trustBadge}>
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
                 <span>Easy Returns</span>
               </div>
               <div className={styles.trustBadge}>
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                   <path d="M18 18.5a1.5 1.5 0 001.5-1.5 1.5 1.5 0 00-1.5-1.5 1.5 1.5 0 00-1.5 1.5 1.5 1.5 0 001.5 1.5zM19.5 9.5h-3V12h4.46L19.5 9.5zM6 18.5A1.5 1.5 0 007.5 17 1.5 1.5 0 006 15.5 1.5 1.5 0 004.5 17 1.5 1.5 0 006 18.5zM20 8l3 4v5h-2c0 1.66-1.34 3-3 3s-3-1.34-3-3H9c0 1.66-1.34 3-3 3s-3-1.34-3-3H1V6c0-1.11.89-2 2-2h14v4h3zM3 6v9h.76c.55-.61 1.35-1 2.24-1 .89 0 1.69.39 2.24 1H15V6H3z" />
                 </svg>
-                <span>Free Shipping*</span>
+                <span>Complimentary Delivery</span>
               </div>
               <div className={styles.trustBadge}>
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
                 </svg>
                 <span>24/7 Support</span>
@@ -333,12 +344,12 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Bar */}
+      {/* ===== BOTTOM BAR ===== */}
       <div className={styles.bottomBar}>
         <div className={styles.container}>
           <div className={styles.bottomBarInner}>
             <p className={styles.copyright}>
-              &copy; {currentYear} {APP_NAME}. All rights reserved.
+              &copy; {currentYear} {BRAND.name}. All rights reserved.
             </p>
             <div className={styles.legalLinks}>
               <Link to="/terms" className={styles.legalLink}>

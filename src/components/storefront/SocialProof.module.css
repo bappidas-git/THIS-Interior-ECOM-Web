@@ -31,8 +31,8 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: var(--sf-color-success);
-  color: #fff;
+  background: var(--sf-color-badge-bg);
+  color: var(--sf-color-text);
   font-weight: var(--sf-font-semibold);
   border-radius: var(--sf-radius-sm);
   padding: 2px 8px;
@@ -41,6 +41,7 @@
 
 .badgeStar {
   font-size: 0.85em;
+  color: var(--sf-color-star);
 }
 
 .count {

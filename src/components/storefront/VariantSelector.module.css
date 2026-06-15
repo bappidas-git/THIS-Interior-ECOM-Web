@@ -161,12 +161,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--sf-radius-pill);
   border: 1px solid var(--sf-color-border);
   background: var(--sf-color-surface-2);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  box-shadow: var(--sf-shadow-xs);
 }
 
 .swatchText {

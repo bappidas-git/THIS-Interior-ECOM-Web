@@ -1,7 +1,69 @@
-.cta { padding: 64px 16px; text-align: center; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: #fff; }
-.dark.cta { background: linear-gradient(135deg, #581c87 0%, #9f1239 100%); }
-.content { max-width: 600px; margin: 0 auto; }
-.content h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
-.content p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 24px; }
-.ctaBtn { padding: 14px 36px; border-radius: 12px; border: none; background: #fff; color: #f5576c; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; }
-.ctaBtn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+/* ==========================================================================
+   CTASection — editorial closing band (THIS Interiors)
+   Always-dark charcoal surface (a deliberate dark section, like the footer),
+   serif headline, brass CTA. Token-driven; no stock gradients/hex.
+   ========================================================================== */
+
+.cta {
+  background: var(--sf-color-dark-bg);
+  color: var(--sf-color-dark-text);
+  padding: var(--sf-space-16) var(--sf-space-6);
+  text-align: center;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0;
+  color: var(--sf-color-dark-text);
+  font-family: var(--sf-font-display);
+  font-weight: var(--sf-font-medium);
+  font-size: clamp(2rem, 4.5vw, var(--sf-text-4xl));
+  line-height: var(--sf-leading-display);
+  letter-spacing: var(--sf-tracking-tight);
+  text-wrap: balance;
+}
+
+.subtitle {
+  margin: var(--sf-space-5) auto 0;
+  max-width: 46ch;
+  color: var(--sf-color-dark-text-secondary);
+  font-family: var(--sf-font-family);
+  font-size: clamp(1rem, 1.4vw, var(--sf-text-lg));
+  line-height: var(--sf-leading-normal);
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--sf-tap-target);
+  margin-top: var(--sf-space-8);
+  padding: 0 var(--sf-space-8);
+  border: 1px solid var(--sf-color-dark-accent);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-color-dark-accent);
+  color: var(--sf-color-dark-accent-contrast);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  text-decoration: none;
+  transition: background var(--sf-transition), border-color var(--sf-transition),
+    box-shadow var(--sf-transition);
+}
+
+.ctaBtn:hover {
+  background: transparent;
+  color: var(--sf-color-dark-text);
+  border-color: var(--sf-color-dark-text);
+}
+
+.ctaBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}

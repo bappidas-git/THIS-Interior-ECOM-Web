@@ -1,13 +1,29 @@
+/* ==========================================================================
+   ProductCard — the signature editorial tile (THIS Interiors)
+   Image-forward + minimal: a large calm image, hairline framing, generous
+   whitespace, a slow hover (image zoom + cross-fade to a 2nd image, subtle
+   lift) and a quiet quick-add that resolves up from the image. Fully token-
+   driven (--sf-*) so it re-skins and dark-modes automatically; no hardcoded
+   hex. Reduced motion is honoured at the end (no scale/lift).
+
+   A11y: the whole tile is ONE link (the product name) stretched over the card
+   via .nameLink::after; the wishlist/quick-add buttons are DOM siblings layered
+   ABOVE that link (z-index), never nested inside the anchor.
+   ========================================================================== */
+
 .card {
+  position: relative; /* anchor for the stretched name link + absolute chrome */
   display: flex;
   flex-direction: column;
+  height: 100%;
   background: var(--sf-color-surface);
   border: 1px solid var(--sf-color-border);
   border-radius: var(--sf-radius-lg);
-  overflow: hidden;
-  transition: transform var(--sf-transition-fast), box-shadow var(--sf-transition-fast),
-    border-color var(--sf-transition-fast);
-  height: 100%;
+  /* overflow stays VISIBLE so the focus ring + lift aren't clipped; the image
+     zoom and quick-add slide are clipped by .media instead. */
+  transition: transform var(--sf-transition) var(--sf-ease-editorial),
+    box-shadow var(--sf-transition) var(--sf-ease-editorial),
+    border-color var(--sf-transition) var(--sf-ease-editorial);
 }
 
 .card:hover {
@@ -16,53 +32,92 @@
   border-color: var(--sf-color-border-strong);
 }
 
+/* ---- Media ---------------------------------------------------------------- */
 .media {
   position: relative;
-  display: block;
   aspect-ratio: 1 / 1;
+  overflow: hidden; /* clip the image zoom + the quick-add slide */
   background: var(--sf-color-surface-2);
+  border-radius: var(--sf-radius-lg) var(--sf-radius-lg) 0 0;
 }
 
-.media img {
+.primaryImg,
+.secondaryImg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: opacity var(--sf-transition-slow) var(--sf-ease-editorial),
+    transform var(--sf-transition-slow) var(--sf-ease-editorial);
 }
 
-.discountBadge {
+/* The second view sits over the first and fades in on hover (a quiet cross-fade
+   when present; simply absent for single-image products). */
+.secondaryImg {
+  opacity: 0;
+}
+
+.card:hover .primaryImg,
+.card:hover .secondaryImg {
+  transform: scale(1.06);
+}
+
+.card:hover .secondaryImg {
+  opacity: 1;
+}
+
+/* ---- Badges — one restrained chip, top-left (decorative; lets clicks through) */
+.badge {
   position: absolute;
-  top: var(--sf-space-2);
-  left: var(--sf-space-2);
-  background: var(--sf-color-danger);
-  color: #fff;
+  top: var(--sf-space-3);
+  left: var(--sf-space-3);
+  z-index: 1;
+  pointer-events: none;
+  padding: var(--sf-space-1) var(--sf-space-2);
+  background: var(--sf-color-badge-bg);
+  color: var(--sf-color-text-secondary);
+  border-radius: var(--sf-radius-sm);
+  font-family: var(--sf-font-family);
   font-size: var(--sf-text-xs);
-  font-weight: var(--sf-font-bold);
-  padding: 3px 8px;
-  border-radius: var(--sf-radius-pill);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
+.badgeDiscount {
+  background: var(--sf-color-discount-bg);
+  color: var(--sf-color-discount);
+}
+
+/* ---- Wishlist heart — small, always reachable, brass when active ---------- */
 .wishlist {
   position: absolute;
-  top: var(--sf-space-2);
-  right: var(--sf-space-2);
+  top: var(--sf-space-3);
+  right: var(--sf-space-3);
+  z-index: 2; /* above the stretched link */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--sf-color-border);
   border-radius: var(--sf-radius-pill);
   background: var(--sf-color-surface);
-  color: var(--sf-color-text-muted);
-  box-shadow: var(--sf-shadow-sm);
+  color: var(--sf-color-text-secondary);
+  box-shadow: var(--sf-shadow-xs);
   cursor: pointer;
-  transition: color var(--sf-transition-fast), transform var(--sf-transition-fast);
+  transition: color var(--sf-transition-fast),
+    border-color var(--sf-transition-fast), transform var(--sf-transition-fast);
 }
 
 .wishlist:hover {
-  transform: scale(1.08);
   color: var(--sf-color-accent);
+  border-color: var(--sf-color-border-strong);
+  transform: scale(1.08);
 }
 
 .wishlist:focus-visible {
@@ -74,35 +129,120 @@
   color: var(--sf-color-accent);
 }
 
+/* ---- Quick-add — resolves up from the image on hover; always on for touch -- */
+.quickAdd {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2; /* above the stretched link */
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform var(--sf-transition) var(--sf-ease-editorial),
+    opacity var(--sf-transition) var(--sf-ease-editorial);
+}
+
+.card:hover .quickAdd,
+.card:focus-within .quickAdd,
+.quickAddStatic {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.quickAddBtn {
+  display: flex;
+  width: 100%;
+  min-height: var(--sf-tap-target);
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-top: 1px solid var(--sf-color-border);
+  background: var(--sf-color-surface);
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  cursor: pointer;
+  transition: background var(--sf-transition-fast),
+    color var(--sf-transition-fast);
+}
+
+/* Brass, used sparingly — only on direct intent (hover/focus of the button). */
+.quickAddBtn:hover:not(:disabled),
+.quickAddBtn:focus-visible:not(:disabled) {
+  background: var(--sf-color-primary);
+  color: var(--sf-color-primary-contrast);
+}
+
+.quickAddBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.quickAddBtn:disabled {
+  background: var(--sf-color-surface-2);
+  color: var(--sf-color-text-muted);
+  cursor: not-allowed;
+}
+
+/* ---- Body — quiet metadata, generous whitespace -------------------------- */
 .body {
   display: flex;
   flex-direction: column;
   gap: var(--sf-space-2);
-  padding: var(--sf-space-3);
   flex: 1;
+  padding: var(--sf-space-4) var(--sf-space-4) var(--sf-space-5);
 }
 
 .brand {
-  font-size: var(--sf-text-xs);
   color: var(--sf-color-text-muted);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-medium);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--sf-tracking-wide);
 }
 
 .name {
-  font-size: var(--sf-text-sm);
-  font-weight: var(--sf-font-medium);
-  color: var(--sf-color-text);
-  text-decoration: none;
-  line-height: var(--sf-leading-tight);
+  margin: 0;
+  font-weight: var(--sf-font-normal);
+}
+
+.nameLink {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-tight);
+  text-decoration: none;
+  transition: color var(--sf-transition-fast);
 }
 
-.name:hover {
+.nameLink:hover {
   color: var(--sf-color-primary);
+}
+
+/* Stretch the single link across the whole card so the entire tile is one
+   accessible hit target to the PDP (the buttons above it stay independent). */
+.nameLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--sf-radius-lg);
+}
+
+.nameLink:focus-visible {
+  outline: none;
+}
+
+.nameLink:focus-visible::after {
+  box-shadow: var(--sf-shadow-focus);
 }
 
 .rating {
@@ -112,37 +252,30 @@
 }
 
 .ratingCount {
+  color: var(--sf-color-text-muted);
   font-size: var(--sf-text-xs);
-  color: var(--sf-color-text-muted);
 }
 
-.addBtn {
-  margin-top: auto;
-  min-height: var(--sf-tap-target);
-  border: 1px solid var(--sf-color-primary);
-  border-radius: var(--sf-radius-md);
-  background: var(--sf-color-primary-soft);
-  color: var(--sf-color-primary);
-  font-weight: var(--sf-font-semibold);
-  font-size: var(--sf-text-sm);
-  cursor: pointer;
-  transition: background var(--sf-transition-fast), color var(--sf-transition-fast);
+/* ---- Touch — no hover, so the quick-add is always reachable --------------- */
+@media (hover: none) {
+  .quickAdd {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.addBtn:hover:not(:disabled) {
-  background: var(--sf-color-primary);
-  color: var(--sf-color-primary-contrast);
-}
+/* ---- Reduced motion — calm: no zoom, no lift ----------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
 
-.addBtn:focus-visible {
-  outline: none;
-  box-shadow: var(--sf-shadow-focus);
-}
+  .card:hover .primaryImg,
+  .card:hover .secondaryImg {
+    transform: none;
+  }
 
-.addBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  border-color: var(--sf-color-border-strong);
-  background: var(--sf-color-surface-2);
-  color: var(--sf-color-text-muted);
+  .wishlist:hover {
+    transform: none;
+  }
 }

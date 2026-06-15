@@ -21,6 +21,29 @@ export const useThemeContext = () => {
   return { mode: context.isDarkMode ? "dark" : "light", toggleTheme: context.toggleTheme };
 };
 
+// THIS Interiors type system: a high-contrast editorial serif for display
+// headings (its italic is the brand's accent device) + a clean humanist sans
+// for UI/body. Mirrors --sf-font-display / --sf-font-family in
+// storefront-tokens.css. The serif's italic face is loaded in public/index.html.
+const SANS =
+  '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif';
+const SERIF =
+  '"Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif';
+
+// Shared by both the light and dark MUI themes: h1–h4 are the serif display
+// scale, h5–h6 + body are the sans. Refined (lighter, calmer) for the editorial
+// luxury voice rather than the old bold/marketplace scale.
+const typography = {
+  fontFamily: SANS,
+  h1: { fontFamily: SERIF, fontSize: "3.25rem", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.01em" },
+  h2: { fontFamily: SERIF, fontSize: "2.5rem", fontWeight: 400, lineHeight: 1.15, letterSpacing: "-0.01em" },
+  h3: { fontFamily: SERIF, fontSize: "2rem", fontWeight: 500, lineHeight: 1.2 },
+  h4: { fontFamily: SERIF, fontSize: "1.5rem", fontWeight: 500, lineHeight: 1.3 },
+  h5: { fontFamily: SANS, fontSize: "1.125rem", fontWeight: 600, lineHeight: 1.4 },
+  h6: { fontFamily: SANS, fontSize: "0.95rem", fontWeight: 600, lineHeight: 1.5, letterSpacing: "0.02em" },
+  button: { textTransform: "none", fontWeight: 500, letterSpacing: "0.02em" },
+};
+
 // Small icon buttons (admin table actions, input adornments, dialog controls)
 // keep their compact desktop density but get a padded ≥40px hit area on
 // touch-sized screens. Shared by the light and dark themes.
@@ -65,68 +88,35 @@ export const ThemeContextProvider = ({ children }) => {
       background: LIGHT.background,
       text: LIGHT.text,
       action: {
-        hover: `rgba(102, 126, 234, 0.08)`,
+        hover: `rgba(157, 110, 46, 0.08)`,
       },
     },
-    typography: {
-      fontFamily:
-        '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
-      h1: {
-        fontSize: "3rem",
-        fontWeight: 700,
-        lineHeight: 1.2,
-      },
-      h2: {
-        fontSize: "2.5rem",
-        fontWeight: 600,
-        lineHeight: 1.3,
-      },
-      h3: {
-        fontSize: "2rem",
-        fontWeight: 600,
-        lineHeight: 1.3,
-      },
-      h4: {
-        fontSize: "1.5rem",
-        fontWeight: 500,
-        lineHeight: 1.4,
-      },
-      h5: {
-        fontSize: "1.25rem",
-        fontWeight: 500,
-        lineHeight: 1.5,
-      },
-      h6: {
-        fontSize: "1rem",
-        fontWeight: 500,
-        lineHeight: 1.6,
-      },
-      button: {
-        textTransform: "none",
-        fontWeight: 500,
-      },
-    },
+    typography,
     shape: {
-      borderRadius: 12,
+      borderRadius: 8,
     },
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: "12px",
-            padding: "10px 24px",
-            fontSize: "1rem",
-            transition: "all 0.3s ease",
+            borderRadius: "8px",
+            padding: "10px 22px",
+            fontSize: "0.95rem",
+            // Editorial calm: no lift, no glow — just a tonal shift.
+            transition:
+              "background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
             "&:hover": {
-              transform: "translateY(-2px)",
-              boxShadow: "0 8px 20px rgba(102, 126, 234, 0.3)",
+              transform: "none",
+              boxShadow: "none",
             },
           },
           contained: {
             background: LIGHT.gradient.primary,
             color: "#ffffff",
+            boxShadow: "none",
             "&:hover": {
               background: LIGHT.gradient.primaryReverse,
+              boxShadow: "0 6px 16px rgba(38, 32, 23, 0.14)",
             },
           },
         },
@@ -134,12 +124,13 @@ export const ThemeContextProvider = ({ children }) => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: "16px",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-            transition: "all 0.3s ease",
+            borderRadius: "12px",
+            border: "1px solid #e4ddd2",
+            boxShadow: "0 1px 2px rgba(38, 32, 23, 0.05)",
+            transition: "box-shadow 0.35s ease, border-color 0.35s ease",
             "&:hover": {
-              transform: "translateY(-4px)",
-              boxShadow: "0 12px 30px rgba(0, 0, 0, 0.15)",
+              borderColor: "#d6ccbc",
+              boxShadow: "0 8px 24px rgba(38, 32, 23, 0.08)",
             },
           },
         },
@@ -148,13 +139,13 @@ export const ThemeContextProvider = ({ children }) => {
         styleOverrides: {
           root: {
             "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
+              borderRadius: "8px",
               "&:hover fieldset": {
                 borderColor: LIGHT.primary.main,
               },
               "&.Mui-focused fieldset": {
                 borderColor: LIGHT.primary.main,
-                borderWidth: "2px",
+                borderWidth: "1.5px",
               },
             },
           },
@@ -163,7 +154,7 @@ export const ThemeContextProvider = ({ children }) => {
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            backgroundColor: "rgba(252, 250, 246, 0.92)",
             backdropFilter: "blur(20px)",
           },
         },
@@ -171,9 +162,9 @@ export const ThemeContextProvider = ({ children }) => {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            backgroundColor: "rgba(252, 250, 246, 0.9)",
             backdropFilter: "blur(20px)",
-            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.08)",
+            boxShadow: "0 1px 0 rgba(38, 32, 23, 0.06)",
           },
         },
       },
@@ -196,68 +187,35 @@ export const ThemeContextProvider = ({ children }) => {
       background: DARK.background,
       text: DARK.text,
       action: {
-        hover: "rgba(168, 85, 247, 0.15)",
+        hover: "rgba(201, 160, 90, 0.16)",
       },
     },
-    typography: {
-      fontFamily:
-        '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
-      h1: {
-        fontSize: "3rem",
-        fontWeight: 700,
-        lineHeight: 1.2,
-      },
-      h2: {
-        fontSize: "2.5rem",
-        fontWeight: 600,
-        lineHeight: 1.3,
-      },
-      h3: {
-        fontSize: "2rem",
-        fontWeight: 600,
-        lineHeight: 1.3,
-      },
-      h4: {
-        fontSize: "1.5rem",
-        fontWeight: 500,
-        lineHeight: 1.4,
-      },
-      h5: {
-        fontSize: "1.25rem",
-        fontWeight: 500,
-        lineHeight: 1.5,
-      },
-      h6: {
-        fontSize: "1rem",
-        fontWeight: 500,
-        lineHeight: 1.6,
-      },
-      button: {
-        textTransform: "none",
-        fontWeight: 500,
-      },
-    },
+    typography,
     shape: {
-      borderRadius: 12,
+      borderRadius: 8,
     },
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: "12px",
-            padding: "10px 24px",
-            fontSize: "1rem",
-            transition: "all 0.3s ease",
+            borderRadius: "8px",
+            padding: "10px 22px",
+            fontSize: "0.95rem",
+            transition:
+              "background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
             "&:hover": {
-              transform: "translateY(-2px)",
-              boxShadow: "0 8px 20px rgba(168, 85, 247, 0.4)",
+              transform: "none",
+              boxShadow: "none",
             },
           },
           contained: {
             background: DARK.gradient.primary,
-            color: "#ffffff",
+            // Dark-mode brass is light, so its fill takes ink (not white) text.
+            color: "#1a1815",
+            boxShadow: "none",
             "&:hover": {
               background: DARK.gradient.primaryReverse,
+              boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4)",
             },
           },
         },
@@ -265,16 +223,15 @@ export const ThemeContextProvider = ({ children }) => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: "16px",
-            background: "rgba(26, 31, 58, 0.8)",
+            borderRadius: "12px",
+            background: "rgba(33, 30, 26, 0.8)",
             backdropFilter: "blur(10px)",
-            border: `1px solid rgba(168, 85, 247, 0.2)`,
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-            transition: "all 0.3s ease",
+            border: `1px solid rgba(201, 160, 90, 0.18)`,
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+            transition: "box-shadow 0.35s ease, border-color 0.35s ease",
             "&:hover": {
-              transform: "translateY(-4px)",
-              boxShadow: "0 12px 30px rgba(168, 85, 247, 0.3)",
-              borderColor: "rgba(168, 85, 247, 0.4)",
+              borderColor: "rgba(201, 160, 90, 0.34)",
+              boxShadow: "0 12px 32px rgba(0, 0, 0, 0.5)",
             },
           },
         },
@@ -283,13 +240,13 @@ export const ThemeContextProvider = ({ children }) => {
         styleOverrides: {
           root: {
             "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
+              borderRadius: "8px",
               "&:hover fieldset": {
                 borderColor: DARK.primary.main,
               },
               "&.Mui-focused fieldset": {
                 borderColor: DARK.primary.main,
-                borderWidth: "2px",
+                borderWidth: "1.5px",
               },
             },
           },
@@ -298,7 +255,7 @@ export const ThemeContextProvider = ({ children }) => {
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            backgroundColor: "rgba(26, 31, 58, 0.95)",
+            backgroundColor: "rgba(33, 30, 26, 0.95)",
             backdropFilter: "blur(20px)",
           },
         },

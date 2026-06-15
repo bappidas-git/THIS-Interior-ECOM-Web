@@ -25,7 +25,9 @@
 
 // --- Structural token mirror (keep in sync with storefront-tokens.css) -------
 export const TOKENS = {
-  radius: { sm: 6, md: 10, lg: 16, xl: 22, pill: 999 },
+  // Editorial restraint — calm, near-square corners (mirrors --sf-radius-* in
+  // storefront-tokens.css).
+  radius: { sm: 2, md: 4, lg: 8, xl: 12, pill: 999 },
   space: { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32, 10: 40, 12: 48, 16: 64 },
   breakpoints: { xs: 480, sm: 768, md: 1024, lg: 1280, xl: 1440 },
   tapTarget: 44,

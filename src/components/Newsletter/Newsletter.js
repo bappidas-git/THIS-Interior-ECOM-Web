@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../../context/ThemeContext";
 import apiService from "../../services/api";
 import { isEmailValid } from "../../utils/helpers";
 import styles from "./Newsletter.module.css";
 
+// Calm dark editorial sign-up band, sharing the Footer's brand pattern. Kept
+// self-contained (no theme flag — it's an always-dark section) and API-wiring
+// reusable so the Home closing CTA (Prompt 08) can compose it as-is.
 const Newsletter = () => {
-  const { isDarkMode } = useTheme();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(null); // "success" | "error"
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,19 +35,39 @@ const Newsletter = () => {
   };
 
   return (
-    <section className={`${styles.newsletter} ${isDarkMode ? styles.dark : ""}`}>
+    <section className={styles.newsletter}>
       <div className={styles.content}>
-        <h2>Stay in the Loop</h2>
-        <p>Subscribe for exclusive deals, new arrivals, and special offers.</p>
+        <p className={styles.eyebrow}>Newsletter</p>
+        <h2 className={styles.title}>
+          Bring beauty <em>home</em>
+        </h2>
+        <p className={styles.subtitle}>
+          Be first to see new collections, considered edits and private
+          previews — a quiet note, never noise.
+        </p>
         {status === "success" ? (
-          <div className={styles.successMsg}>Thanks for subscribing! Check your inbox for exclusive deals.</div>
+          <div className={styles.successMsg} role="status">
+            Thank you — you're on the list.
+          </div>
         ) : (
           <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <input type="email" aria-label="Email address" placeholder="Enter your email address" value={email} onChange={(e) => { setEmail(e.target.value); if (status) setStatus(null); }} />
-            <button type="submit" disabled={isSubmitting}>{isSubmitting ? "..." : "Subscribe"}</button>
+            <input
+              type="email"
+              aria-label="Email address"
+              aria-invalid={status === "error"}
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); if (status) setStatus(null); }}
+              className={`${styles.input} ${status === "error" ? styles.inputError : ""}`}
+            />
+            <button type="submit" className={styles.button} disabled={isSubmitting}>
+              {isSubmitting ? "Subscribing…" : "Subscribe"}
+            </button>
           </form>
         )}
-        {status === "error" && <p className={styles.errorMsg}>Please enter a valid email address.</p>}
+        {status === "error" && (
+          <p className={styles.errorMsg} role="alert">Please enter a valid email address.</p>
+        )}
       </div>
     </section>
   );

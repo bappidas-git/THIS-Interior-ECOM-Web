@@ -1,15 +1,153 @@
-.newsletter { padding: 48px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); text-align: center; color: #fff; }
-.dark.newsletter { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); }
-.content { max-width: 560px; margin: 0 auto; }
-.content h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
-.content p { opacity: 0.9; margin-bottom: 24px; }
-.form { display: flex; gap: 8px; }
-@media (max-width: 480px) { .form { flex-direction: column; } }
-.form input { flex: 1; padding: 12px 16px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fff; font-size: 1rem; backdrop-filter: blur(4px); }
-.form input::placeholder { color: rgba(255,255,255,0.7); }
-.form input:focus { outline: none; border-color: #fff; }
-.form button { padding: 12px 28px; border-radius: 10px; border: none; background: #fff; color: #667eea; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-.form button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-.form button:disabled { opacity: 0.7; cursor: not-allowed; }
-.successMsg { padding: 12px 20px; border-radius: 10px; background: rgba(255,255,255,0.2); }
-.errorMsg { font-size: 0.85rem; margin-top: 8px; color: #fca5a5; }
+/* Newsletter — calm dark editorial sign-up band (shares the Footer pattern).
+   Always a dark section, so it reads the --sf-color-dark-* tokens directly and
+   pins the focus ring / danger colour to their dark-palette values. */
+.newsletter {
+  padding: var(--sf-space-16) var(--sf-space-6);
+  background: var(--sf-color-dark-bg);
+  color: var(--sf-color-dark-text-secondary);
+  text-align: center;
+
+  --sf-shadow-focus: 0 0 0 3px rgba(201, 160, 90, 0.5);
+  --sf-color-danger: #e98b7e;
+}
+
+.content {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 var(--sf-space-3);
+  color: var(--sf-color-dark-accent);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+}
+
+/* Serif headline; the italic noun is the brand's brass accent device. */
+.title {
+  margin: 0 0 var(--sf-space-3);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-3xl);
+  font-weight: var(--sf-font-normal);
+  line-height: var(--sf-leading-tight);
+  color: var(--sf-color-dark-text);
+}
+
+.title em {
+  font-style: italic;
+  color: var(--sf-color-dark-accent);
+}
+
+.subtitle {
+  margin: 0 auto var(--sf-space-8);
+  max-width: 46ch;
+  font-size: var(--sf-text-base);
+  line-height: var(--sf-leading-normal);
+  color: var(--sf-color-dark-text-secondary);
+}
+
+.form {
+  display: flex;
+  gap: var(--sf-space-2);
+}
+
+@media (max-width: 480px) {
+  .form {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--sf-tap-target);
+  padding: var(--sf-space-3) var(--sf-space-4);
+  background: var(--sf-color-dark-surface);
+  color: var(--sf-color-dark-text);
+  border: 1px solid var(--sf-color-dark-border);
+  border-radius: var(--sf-radius-md);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-base);
+  transition: border-color var(--sf-transition-fast),
+    box-shadow var(--sf-transition-fast);
+}
+
+.input::placeholder {
+  color: var(--sf-color-dark-text-muted);
+  opacity: 1;
+}
+
+.input:hover {
+  border-color: var(--sf-color-dark-text-muted);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--sf-color-dark-accent);
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.inputError,
+.inputError:focus {
+  border-color: var(--sf-color-danger);
+}
+
+/* Understated brass button — solid brass with ink text, calm letter-spaced label. */
+.button {
+  flex-shrink: 0;
+  min-height: var(--sf-tap-target);
+  padding: 0 var(--sf-space-6);
+  border: 1px solid var(--sf-color-dark-accent);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-color-dark-accent);
+  color: var(--sf-color-dark-accent-contrast);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter var(--sf-transition), background var(--sf-transition),
+    border-color var(--sf-transition);
+}
+
+.button:hover:not(:disabled) {
+  filter: brightness(1.07);
+}
+
+.button:active:not(:disabled) {
+  filter: brightness(0.95);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button:focus-visible,
+.input:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.successMsg {
+  padding: var(--sf-space-3) var(--sf-space-5);
+  border: 1px solid var(--sf-color-dark-border);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-color-dark-surface);
+  color: var(--sf-color-dark-text);
+  font-size: var(--sf-text-base);
+}
+
+.errorMsg {
+  margin: var(--sf-space-3) 0 0;
+  font-size: var(--sf-text-sm);
+  color: var(--sf-color-danger);
+}

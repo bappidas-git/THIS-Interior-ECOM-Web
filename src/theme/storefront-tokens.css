@@ -8,11 +8,37 @@
  * new business domain you change values in THIS file (and optionally
  * `colors.js` for the MUI layer); you do not edit component code.
  *
+ * ── CURRENT CLIENT: THIS Interiors ──────────────────────────────────────────
+ *   Dubai luxury interior‑design studio extended into a curated home‑décor
+ *   boutique. Aesthetic: editorial, warm‑minimalist, gallery calm — generous
+ *   whitespace, image‑forward, hairline rules. The palette is a restrained set
+ *   of WARM NEUTRALS with deep charcoal ink and ONE brass/bronze accent, sampled
+ *   from the brand logo (the script "This" wordmark, gold ≈ #CC9444).
+ *
+ *   PALETTE AT A GLANCE
+ *     • Page / cream ............ #F6F2EC   (warm off‑white background)
+ *     • Surface / near‑white .... #FFFFFF / #FCFAF6
+ *     • Sand / greige ........... #EFE9E0   (subtle panels, tracks)
+ *     • Hairline border ......... #E4DDD2   (warm grey)
+ *     • Ink (text) .............. #1E1B17   (deep charcoal / near‑black)
+ *     • Warm grey (secondary) ... #6B6457
+ *     • Brass accent (primary) .. #9D6E2E   (CTAs/links — deepened logo gold,
+ *                                            white text passes AA), bright logo
+ *                                            gold #C9974B kept for decoration.
+ *     • Dark sections ........... charcoal #1A1815 / #211E1A, off‑white text,
+ *                                 brass lifted to #C9A05A (this is where the
+ *                                 WHITE logo is used).
+ *   Logos (single source of truth lives in `src/theme/brand.js`):
+ *     light  → THIS-LOGO_fazfcq.png       (for light surfaces)
+ *     white  → THIS-LOGO-WHITE_vdltz8.png (for dark surfaces)
+ *
  * HOW THEMING WORKS
  *   • Light mode  → the `:root` block below.
  *   • Dark mode   → the `body.dark` block (ThemeContext toggles `body.dark`).
- *   • Structural tokens (spacing/radius/shadows/type) are mode-agnostic and
+ *   • Structural tokens (spacing/radius/shadows/type) are mode‑agnostic and
  *     declared once in `:root`.
+ *   • `--sf-color-dark-*` tokens describe an *always‑dark* surface (a dark hero
+ *     or the footer) so those sections stay charcoal even in light mode.
  *
  * RELATIONSHIP TO colors.js
  *   `src/theme/colors.js` holds the same brand palette for the MUI theme (admin
@@ -25,52 +51,73 @@
  * ========================================================================== */
 
 :root {
-  /* ---- Brand ------------------------------------------------------------- */
-  --sf-color-primary: #667eea;
-  --sf-color-primary-dark: #4c5ed0;
-  --sf-color-primary-light: #8b9af3;
-  --sf-color-primary-contrast: #ffffff;
-  --sf-color-primary-soft: rgba(102, 126, 234, 0.10); /* tinted fills/hovers */
-  --sf-color-secondary: #f093fb;
-  --sf-color-accent: #ec4899;
-  --sf-gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --sf-gradient-primary-hover: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  /* ---- Brand — one brass accent, used sparingly --------------------------- */
+  --sf-color-primary: #9d6e2e;          /* CTAs, links, active states (brass) */
+  --sf-color-primary-dark: #7c5520;     /* hover / active / pressed */
+  --sf-color-primary-light: #c9974b;    /* the bright logo gold — decorative */
+  --sf-color-primary-contrast: #ffffff; /* text/icon on a brass fill */
+  --sf-color-primary-soft: rgba(157, 110, 46, 0.10); /* tinted fills/hovers */
+  --sf-color-secondary: #7a6e5c;        /* warm taupe — secondary controls */
+  --sf-color-accent: #b8893c;           /* the single warm highlight (badges) */
+  --sf-color-accent-soft: rgba(184, 137, 60, 0.12);
+  /* Brand avoids loud gradients: a barely‑there warm‑tonal brass, not purple. */
+  --sf-gradient-primary: linear-gradient(135deg, #9d6e2e 0%, #7c5520 100%);
+  --sf-gradient-primary-hover: linear-gradient(135deg, #7c5520 0%, #9d6e2e 100%);
 
   /* ---- Surfaces & text -------------------------------------------------- */
-  --sf-color-bg: #f5f7fa;
+  --sf-color-bg: #f6f2ec;              /* warm off‑white / cream page bg */
   --sf-color-surface: #ffffff;
-  --sf-color-surface-2: #f3f4f6;       /* subtle panels, thumbnails, tracks */
-  --sf-color-surface-hover: #f9fafb;
-  --sf-color-text: #1a202c;
-  --sf-color-text-secondary: #4a5568;
-  --sf-color-text-muted: #6b7280;
-  --sf-color-border: #e5e7eb;
-  --sf-color-border-strong: #d1d5db;
-  --sf-color-overlay: rgba(15, 23, 42, 0.55);
+  --sf-color-surface-2: #efe9e0;       /* sand/greige panels, thumbnails, tracks */
+  --sf-color-surface-hover: #f1ece4;
+  --sf-color-text: #1e1b17;            /* deep charcoal / near‑black ink */
+  --sf-color-text-secondary: #6b6457;  /* warm grey */
+  --sf-color-text-muted: #8c8475;      /* lighter greige */
+  --sf-color-border: #e4ddd2;          /* warm hairline */
+  --sf-color-border-strong: #d6ccbc;
+  --sf-color-overlay: rgba(26, 24, 21, 0.55); /* warm charcoal scrim */
+  /* Convenience hairline + a hero scrim for image‑forward sections. */
+  --sf-border-hairline: 1px solid var(--sf-color-border);
+  --sf-overlay-hero: linear-gradient(
+    180deg,
+    rgba(26, 24, 21, 0) 0%,
+    rgba(26, 24, 21, 0.15) 45%,
+    rgba(26, 24, 21, 0.62) 100%
+  );
+
+  /* ---- Always‑dark surfaces (dark hero / footer, even in light mode) ----- */
+  --sf-color-dark-bg: #1a1815;
+  --sf-color-dark-surface: #211e1a;
+  --sf-color-dark-surface-2: #2a2620;
+  --sf-color-dark-text: #f2ece2;       /* warm off‑white */
+  --sf-color-dark-text-secondary: #b8ae9e;
+  --sf-color-dark-text-muted: #8c8273;
+  --sf-color-dark-border: rgba(242, 236, 226, 0.14);
+  --sf-color-dark-accent: #c9a05a;     /* brass, lifted for dark backgrounds */
+  --sf-color-dark-accent-contrast: #1a1815;
 
   /* ---- Semantic --------------------------------------------------------- */
-  --sf-color-success: #15803d;
-  --sf-color-success-bg: #dcfce7;
-  --sf-color-warning: #b45309;
-  --sf-color-warning-bg: #fef3c7;
-  --sf-color-danger: #dc2626;
-  --sf-color-danger-bg: #fee2e2;
-  --sf-color-info: #2563eb;
-  --sf-color-info-bg: #dbeafe;
+  --sf-color-success: #2f7d4f;
+  --sf-color-success-bg: #e6efdd;
+  --sf-color-warning: #b06f1c;
+  --sf-color-warning-bg: #f7ecd6;
+  --sf-color-danger: #b4392b;
+  --sf-color-danger-bg: #f6e3df;
+  --sf-color-info: #3f6695;
+  --sf-color-info-bg: #e4eaf2;
 
   /* ---- Commerce-specific ----------------------------------------------- */
-  --sf-color-star: #f59e0b;            /* rating stars */
-  --sf-color-price: #1a202c;           /* current/sale price */
-  --sf-color-compare: #9ca3af;         /* struck-through original price */
-  --sf-color-discount: #15803d;        /* "% off" + savings */
-  --sf-color-discount-bg: #dcfce7;
-  --sf-color-badge-bg: #eef2ff;        /* neutral chip background */
+  --sf-color-star: #c9974b;            /* rating stars — brand brass gold */
+  --sf-color-price: #1e1b17;           /* current/sale price = ink */
+  --sf-color-compare: #a39a8b;         /* struck-through original price */
+  --sf-color-discount: #2f7d4f;        /* "% off" + savings */
+  --sf-color-discount-bg: #e6efdd;
+  --sf-color-badge-bg: #f0eae0;        /* neutral sand chip background */
 
-  /* ---- Radius ----------------------------------------------------------- */
-  --sf-radius-sm: 6px;
-  --sf-radius-md: 10px;
-  --sf-radius-lg: 16px;
-  --sf-radius-xl: 22px;
+  /* ---- Radius — editorial restraint (calm, near-square corners) --------- */
+  --sf-radius-sm: 2px;
+  --sf-radius-md: 4px;
+  --sf-radius-lg: 8px;
+  --sf-radius-xl: 12px;
   --sf-radius-pill: 999px;
 
   /* ---- Spacing scale (4px base) ---------------------------------------- */
@@ -85,14 +132,18 @@
   --sf-space-12: 48px;
   --sf-space-16: 64px;
 
-  /* ---- Shadows ---------------------------------------------------------- */
-  --sf-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --sf-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
-  --sf-shadow-md: 0 6px 20px rgba(15, 23, 42, 0.10);
-  --sf-shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.14);
-  --sf-shadow-focus: 0 0 0 3px rgba(102, 126, 234, 0.45);
+  /* ---- Shadows — lighter, warmer, diffuse (we prefer hairlines) -------- */
+  --sf-shadow-xs: 0 1px 2px rgba(38, 32, 23, 0.04);
+  --sf-shadow-sm: 0 2px 8px rgba(38, 32, 23, 0.06);
+  --sf-shadow-md: 0 8px 24px rgba(38, 32, 23, 0.08);
+  --sf-shadow-lg: 0 18px 48px rgba(38, 32, 23, 0.10);
+  --sf-shadow-focus: 0 0 0 3px rgba(157, 110, 46, 0.35); /* brass focus ring */
 
   /* ---- Typography ------------------------------------------------------- */
+  /* Editorial pairing: a high‑contrast serif for display (its ITALIC is the
+     brand's accent device for headline nouns) + a clean humanist sans for UI. */
+  --sf-font-display: "Cormorant Garamond", "Playfair Display", Georgia,
+    "Times New Roman", serif;
   --sf-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", sans-serif;
   --sf-text-xs: 0.75rem;
@@ -103,17 +154,27 @@
   --sf-text-xl: 1.5rem;
   --sf-text-2xl: 1.875rem;
   --sf-text-3xl: 2.25rem;
+  --sf-text-4xl: 3rem;                 /* display headings */
+  --sf-text-5xl: 4rem;                 /* hero display */
+  --sf-font-light: 300;
   --sf-font-normal: 400;
   --sf-font-medium: 500;
   --sf-font-semibold: 600;
   --sf-font-bold: 700;
+  --sf-leading-display: 1.08;          /* tight, for big serif headings */
   --sf-leading-tight: 1.25;
   --sf-leading-normal: 1.5;
+  --sf-leading-relaxed: 1.7;
+  --sf-tracking-tight: -0.01em;
+  --sf-tracking-normal: 0;
+  --sf-tracking-wide: 0.08em;
+  --sf-tracking-wider: 0.18em;         /* spaced caps, e.g. "INTERIORS" */
 
-  /* ---- Motion ----------------------------------------------------------- */
-  --sf-transition-fast: 0.15s ease;
-  --sf-transition: 0.25s ease;
-  --sf-transition-slow: 0.4s ease;
+  /* ---- Motion — slow & elegant ----------------------------------------- */
+  --sf-transition-fast: 0.2s ease;
+  --sf-transition: 0.35s ease;
+  --sf-transition-slow: 0.5s ease;
+  --sf-ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* ---- Layout & a11y ---------------------------------------------------- */
   --sf-container-max: 1280px;
@@ -128,50 +189,53 @@
 
 /* ===========================================================================
  * DARK MODE  —  overrides only the colour tokens; structural tokens persist.
+ * Warm charcoal surfaces (never navy/purple); the brass accent is lifted for
+ * contrast and pairs with dark (ink) text on its fills.
  * ======================================================================== */
 body.dark {
-  --sf-color-primary: #a855f7;
-  --sf-color-primary-dark: #9333ea;
-  --sf-color-primary-light: #c084fc;
-  --sf-color-primary-contrast: #ffffff;
-  --sf-color-primary-soft: rgba(168, 85, 247, 0.16);
-  --sf-color-secondary: #ec4899;
-  --sf-color-accent: #f472b6;
-  --sf-gradient-primary: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-  --sf-gradient-primary-hover: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+  --sf-color-primary: #c9a05a;          /* brass, lightened for dark surfaces */
+  --sf-color-primary-dark: #b0863f;
+  --sf-color-primary-light: #ddb877;
+  --sf-color-primary-contrast: #1a1815; /* ink text on a light‑brass fill */
+  --sf-color-primary-soft: rgba(201, 160, 90, 0.16);
+  --sf-color-secondary: #b8ae9e;
+  --sf-color-accent: #d2a65c;
+  --sf-color-accent-soft: rgba(210, 166, 92, 0.18);
+  --sf-gradient-primary: linear-gradient(135deg, #c9a05a 0%, #b0863f 100%);
+  --sf-gradient-primary-hover: linear-gradient(135deg, #b0863f 0%, #c9a05a 100%);
 
-  --sf-color-bg: #0a0e27;
-  --sf-color-surface: #1a1f3a;
-  --sf-color-surface-2: #2d3350;
-  --sf-color-surface-hover: #242a47;
-  --sf-color-text: #f5f7fa;
-  --sf-color-text-secondary: #cbd5e1;
-  --sf-color-text-muted: #94a3b8;
-  --sf-color-border: rgba(148, 163, 184, 0.22);
-  --sf-color-border-strong: rgba(148, 163, 184, 0.4);
-  --sf-color-overlay: rgba(0, 0, 0, 0.65);
+  --sf-color-bg: #1a1815;
+  --sf-color-surface: #211e1a;
+  --sf-color-surface-2: #2a2620;
+  --sf-color-surface-hover: #2a2620;
+  --sf-color-text: #f2ece2;
+  --sf-color-text-secondary: #b8ae9e;
+  --sf-color-text-muted: #8c8273;
+  --sf-color-border: rgba(242, 236, 226, 0.12);
+  --sf-color-border-strong: rgba(242, 236, 226, 0.24);
+  --sf-color-overlay: rgba(0, 0, 0, 0.62);
 
-  --sf-color-success: #4ade80;
-  --sf-color-success-bg: rgba(34, 197, 94, 0.16);
-  --sf-color-warning: #fbbf24;
-  --sf-color-warning-bg: rgba(245, 158, 11, 0.16);
-  --sf-color-danger: #f87171;
-  --sf-color-danger-bg: rgba(248, 113, 113, 0.16);
-  --sf-color-info: #60a5fa;
-  --sf-color-info-bg: rgba(96, 165, 250, 0.16);
+  --sf-color-success: #6bbf8a;
+  --sf-color-success-bg: rgba(47, 125, 79, 0.20);
+  --sf-color-warning: #e0a857;
+  --sf-color-warning-bg: rgba(176, 111, 28, 0.22);
+  --sf-color-danger: #e98b7e;
+  --sf-color-danger-bg: rgba(180, 57, 43, 0.24);
+  --sf-color-info: #8fb0d6;
+  --sf-color-info-bg: rgba(63, 102, 149, 0.24);
 
-  --sf-color-star: #fbbf24;
-  --sf-color-price: #f5f7fa;
-  --sf-color-compare: #94a3b8;
-  --sf-color-discount: #4ade80;
-  --sf-color-discount-bg: rgba(34, 197, 94, 0.16);
-  --sf-color-badge-bg: rgba(168, 85, 247, 0.16);
+  --sf-color-star: #ddb877;
+  --sf-color-price: #f2ece2;
+  --sf-color-compare: #8c8273;
+  --sf-color-discount: #6bbf8a;
+  --sf-color-discount-bg: rgba(47, 125, 79, 0.20);
+  --sf-color-badge-bg: rgba(201, 160, 90, 0.16);
 
   --sf-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
   --sf-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
-  --sf-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
-  --sf-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
-  --sf-shadow-focus: 0 0 0 3px rgba(168, 85, 247, 0.5);
+  --sf-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --sf-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.55);
+  --sf-shadow-focus: 0 0 0 3px rgba(201, 160, 90, 0.5);
 }
 
 /* Respect users who prefer reduced motion — shared, applies storefront-wide. */

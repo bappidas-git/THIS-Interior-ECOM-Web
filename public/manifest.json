@@ -1,6 +1,6 @@
 {
-  "short_name": "My Store",
-  "name": "My Store - Online Shopping",
+  "short_name": "THIS Interiors",
+  "name": "THIS Interiors — Curated Home Décor",
   "icons": [
     {
       "src": "favicon.svg",
@@ -23,6 +23,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#667eea",
-  "background_color": "#f5f7fa"
+  "theme_color": "#1a1815",
+  "background_color": "#f6f2ec"
 }

@@ -5,40 +5,42 @@
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="alternate icon" type="image/png" href="%PUBLIC_URL%/logo192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#667eea" />
+    <meta name="theme-color" content="#f6f2ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1815" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
-      content="Your ultimate destination for online shopping. Fast, secure, and reliable delivery for all your favourite products at the best prices."
+      content="THIS Interiors — Dubai's luxury interior-design studio, extended into a curated home-décor boutique. Vases, candles, wall art, mirrors, cushions, lamps and more, chosen with a gallery eye."
     />
     <meta
       name="keywords"
-      content="online shopping, e-commerce, products, deals, electronics, fashion, home, beauty, sports, accessories"
+      content="THIS Interiors, luxury home décor, interior design Dubai, vases, scented candles, wall art, mirrors, cushions, table lamps, planters, ceramics, decorative objects"
     />
-    <meta name="author" content="My Store" />
+    <meta name="author" content="THIS Interiors" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://mystore.com/" />
+    <meta property="og:url" content="https://thisinteriors.com/" />
+    <meta property="og:site_name" content="THIS Interiors" />
     <meta
       property="og:title"
-      content="My Store - Shop the Best Products Online"
+      content="THIS Interiors — Curated Home Décor"
     />
     <meta
       property="og:description"
-      content="Fast, secure, and reliable delivery for all your favourite products. Shop now and enjoy exclusive deals."
+      content="Crafting homes with a soul. A curated boutique of vases, candles, wall art, mirrors and more — from Dubai's luxury interior-design studio."
     />
     <meta property="og:image" content="%PUBLIC_URL%/logo512.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://mystore.com/" />
+    <meta property="twitter:url" content="https://thisinteriors.com/" />
     <meta
       property="twitter:title"
-      content="My Store - Shop the Best Products Online"
+      content="THIS Interiors — Curated Home Décor"
     />
     <meta
       property="twitter:description"
-      content="Fast, secure, and reliable delivery for all your favourite products. Shop now and enjoy exclusive deals."
+      content="Crafting homes with a soul. A curated boutique of vases, candles, wall art, mirrors and more — from Dubai's luxury interior-design studio."
     />
     <meta property="twitter:image" content="%PUBLIC_URL%/logo512.png" />
 
@@ -49,11 +51,12 @@
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-    <!-- Google Fonts - Inter -->
+    <!-- Brand fonts: Cormorant Garamond (editorial display serif, incl. italic —
+         the brand's accent device) + Inter (humanist UI/body sans). -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
@@ -72,7 +75,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>My Store - Shop the Best Products Online</title>
+    <title>THIS Interiors — Curated Home Décor</title>
 
     <!-- Custom styles for loading screen -->
     <style>
@@ -84,7 +87,7 @@
           "Helvetica Neue", sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(180deg, #f6f2ec 0%, #fbf8f3 100%);
         min-height: 100vh;
       }
 
@@ -95,7 +98,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(160deg, #0a0e1a 0%, #0d1224 50%, #0f0f23 100%);
+        background: linear-gradient(160deg, #1a1815 0%, #211e1a 55%, #16130f 100%);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -112,9 +115,9 @@
         width: 100%;
         height: 100%;
         background:
-          radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
-          radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
+          radial-gradient(ellipse at 20% 20%, rgba(201, 160, 90, 0.10) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 80%, rgba(184, 137, 60, 0.07) 0%, transparent 50%),
+          radial-gradient(ellipse at 50% 50%, rgba(124, 85, 32, 0.05) 0%, transparent 70%);
         pointer-events: none;
       }
 
@@ -141,50 +144,33 @@
         margin-bottom: 48px;
       }
 
-      .loader-logo-wrapper {
-        position: relative;
-        width: 80px;
-        height: 80px;
-        margin-bottom: 24px;
-      }
-
-      .loader-logo-icon {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%);
-        border-radius: 20px;
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        box-shadow:
-          0 0 40px rgba(139, 92, 246, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      .loader-wordmark {
+        font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 64px;
+        line-height: 1;
+        color: #c9a05a;
+        margin-bottom: 14px;
         animation: logoFloat 3s ease-in-out infinite;
       }
 
-      .loader-logo-icon svg {
-        width: 44px;
-        height: 44px;
-      }
-
       .loader-brand-name {
-        font-size: 28px;
-        font-weight: 700;
-        letter-spacing: 3px;
-        background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #ec4899 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 8px;
+        text-indent: 8px; /* balance the trailing letter-spacing */
+        color: #f2ece2;
+        margin-bottom: 12px;
       }
 
       .loader-tagline {
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: 2px;
-        color: rgba(255, 255, 255, 0.5);
-        text-transform: uppercase;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-style: italic;
+        font-size: 15px;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        color: rgba(242, 236, 226, 0.55);
       }
 
       /* Spinner Section */
@@ -201,7 +187,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        border: 2px solid rgba(139, 92, 246, 0.1);
+        border: 2px solid rgba(201, 160, 90, 0.15);
         border-radius: 50%;
       }
 
@@ -212,8 +198,8 @@
         width: 100%;
         height: 100%;
         border: 2px solid transparent;
-        border-top-color: #a78bfa;
-        border-right-color: #a78bfa;
+        border-top-color: #c9a05a;
+        border-right-color: #c9a05a;
         border-radius: 50%;
         animation: spinnerRotate 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
       }
@@ -225,8 +211,8 @@
         right: 6px;
         bottom: 6px;
         border: 2px solid transparent;
-        border-bottom-color: rgba(236, 72, 153, 0.6);
-        border-left-color: rgba(236, 72, 153, 0.6);
+        border-bottom-color: rgba(184, 137, 60, 0.55);
+        border-left-color: rgba(184, 137, 60, 0.55);
         border-radius: 50%;
         animation: spinnerRotateReverse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
       }
@@ -238,9 +224,9 @@
         transform: translateX(-50%);
         width: 6px;
         height: 6px;
-        background: #a78bfa;
+        background: #c9a05a;
         border-radius: 50%;
-        box-shadow: 0 0 12px rgba(167, 139, 250, 0.8);
+        box-shadow: 0 0 12px rgba(201, 160, 90, 0.7);
       }
 
       /* Loading Text */
@@ -279,7 +265,7 @@
       .loader-progress {
         width: 120px;
         height: 2px;
-        background: rgba(139, 92, 246, 0.1);
+        background: rgba(201, 160, 90, 0.15);
         border-radius: 2px;
         overflow: hidden;
       }
@@ -287,7 +273,7 @@
       .loader-progress-bar {
         height: 100%;
         width: 30%;
-        background: linear-gradient(90deg, #a78bfa 0%, #ec4899 100%);
+        background: linear-gradient(90deg, #c9a05a 0%, #b0863f 100%);
         border-radius: 2px;
         animation: progressSlide 1.5s ease-in-out infinite;
       }
@@ -413,31 +399,9 @@
       <div class="loader-container">
         <!-- Brand Section -->
         <div class="loader-brand">
-          <div class="loader-logo-wrapper">
-            <div class="loader-logo-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#gradient1)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 17L12 22L22 17" stroke="url(#gradient2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="url(#gradient3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                  <linearGradient id="gradient1" x1="2" y1="7" x2="22" y2="7" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#a78bfa"/>
-                    <stop offset="1" stop-color="#ec4899"/>
-                  </linearGradient>
-                  <linearGradient id="gradient2" x1="2" y1="19.5" x2="22" y2="19.5" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#a78bfa"/>
-                    <stop offset="1" stop-color="#ec4899"/>
-                  </linearGradient>
-                  <linearGradient id="gradient3" x1="2" y1="14.5" x2="22" y2="14.5" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#a78bfa"/>
-                    <stop offset="1" stop-color="#ec4899"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-          </div>
-          <div class="loader-brand-name">MY STORE</div>
-          <div class="loader-tagline">Your Online Shopping Destination</div>
+          <div class="loader-wordmark">This</div>
+          <div class="loader-brand-name">INTERIORS</div>
+          <div class="loader-tagline">Crafting homes with a soul</div>
         </div>
 
         <!-- Spinner -->
@@ -486,8 +450,8 @@
 
         document.body.classList.add(isDark ? "dark" : "light");
         document.body.style.background = isDark
-          ? "linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)"
-          : "linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)";
+          ? "linear-gradient(180deg, #1a1815 0%, #211e1a 100%)"
+          : "linear-gradient(180deg, #f6f2ec 0%, #fbf8f3 100%)";
       })();
 
       // Hide the loading screen once React has mounted. React signals readiness

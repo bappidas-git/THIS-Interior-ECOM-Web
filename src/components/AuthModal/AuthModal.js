@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
-import { useTheme } from "../../context/ThemeContext";
 import { isEmailValid } from "../../utils/helpers";
 import styles from "./AuthModal.module.css";
 
@@ -108,40 +107,15 @@ function getPasswordStrength(password) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Overlay animation variants                                         */
-/* ------------------------------------------------------------------ */
-
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const desktopDialogVariants = {
-  hidden: { opacity: 0, scale: 0.92, y: 20 },
-  visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", damping: 25, stiffness: 350 } },
-  exit: { opacity: 0, scale: 0.92, y: 20, transition: { duration: 0.2 } },
-};
-
-const mobileDialogVariants = {
-  hidden: { y: "100%" },
-  visible: { y: 0, transition: { type: "spring", damping: 30, stiffness: 350 } },
-  exit: { y: "100%", transition: { duration: 0.25 } },
-};
-
-const tabContentVariants = {
-  enter: (direction) => ({ x: direction > 0 ? 60 : -60, opacity: 0 }),
-  center: { x: 0, opacity: 1, transition: { duration: 0.3, ease: "easeOut" } },
-  exit: (direction) => ({ x: direction > 0 ? -60 : 60, opacity: 0, transition: { duration: 0.2 } }),
-};
-
-/* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
 const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
   const { login, register, isLoading: authLoading } = useAuth();
-  const { isDarkMode } = useTheme();
+  const reduceMotion = useReducedMotion();
+
+  // The dialog surface — anchors initial focus + the Tab focus trap.
+  const dialogRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [direction, setDirection] = useState(0);
@@ -206,10 +180,47 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
     };
   }, [open]);
 
-  // Close on Escape
+  // Move focus into the dialog when it opens (the first text field), so keyboard
+  // and screen-reader users land inside the modal rather than behind it.
   useEffect(() => {
+    if (!open) return undefined;
+    const timer = setTimeout(() => {
+      const firstField = dialogRef.current?.querySelector(
+        'input:not([type="checkbox"])'
+      );
+      firstField?.focus();
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  // Keyboard: Escape closes; Tab is trapped inside the dialog so focus never
+  // leaks to the page behind the overlay.
+  useEffect(() => {
+    if (!open) return undefined;
     const handleKeyDown = (e) => {
-      if (e.key === "Escape" && open) onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const root = dialogRef.current;
+      if (!root) return;
+      const focusable = root.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const activeEl = document.activeElement;
+      if (e.shiftKey) {
+        if (activeEl === first || !root.contains(activeEl)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (activeEl === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -374,7 +385,48 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
   /* ---- Derived ---- */
 
   const loading = isSubmitting || authLoading;
-  const darkMode = isDarkMode;
+
+  /* ---- Motion (soft spring; reduced-motion safe) ---- */
+
+  // Desktop settles in with a soft scale/lift; mobile rises as a bottom sheet.
+  // Reduced motion collapses both to a quiet fade.
+  const dialogMotion = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0 },
+      }
+    : isMobile
+    ? {
+        initial: { y: "100%" },
+        animate: { y: 0 },
+        exit: { y: "100%" },
+        transition: { type: "spring", damping: 32, stiffness: 360 },
+      }
+    : {
+        initial: { opacity: 0, scale: 0.96, y: 16 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        exit: { opacity: 0, scale: 0.97, y: 12 },
+        transition: { type: "spring", damping: 26, stiffness: 320 },
+      };
+
+  // Calm horizontal slide between the Login / Sign Up panels.
+  const tabContentVariants = reduceMotion
+    ? {
+        enter: { opacity: 0 },
+        center: { opacity: 1, transition: { duration: 0 } },
+        exit: { opacity: 0, transition: { duration: 0 } },
+      }
+    : {
+        enter: (dir) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
+        center: { x: 0, opacity: 1, transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } },
+        exit: (dir) => ({ x: dir > 0 ? -48 : 48, opacity: 0, transition: { duration: 0.2 } }),
+      };
+
+  const tabIndicatorTransition = reduceMotion
+    ? { duration: 0 }
+    : { type: "spring", stiffness: 420, damping: 32 };
 
   /* ---- Render ---- */
 
@@ -382,32 +434,35 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className={`${styles.overlay} ${darkMode ? styles.dark : styles.light}`}
-          variants={overlayVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          transition={{ duration: 0.25 }}
+          className={styles.overlay}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.25 }}
           onClick={handleOverlayClick}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Authentication"
         >
           <motion.div
+            ref={dialogRef}
             className={`${styles.dialog} ${isMobile ? styles.dialogMobile : ""}`}
-            variants={isMobile ? mobileDialogVariants : desktopDialogVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-title"
+            initial={dialogMotion.initial}
+            animate={dialogMotion.animate}
+            exit={dialogMotion.exit}
+            transition={dialogMotion.transition}
           >
+            {/* ---- Mobile sheet grab handle ---- */}
+            {isMobile && <div className={styles.sheetHandle} aria-hidden="true" />}
+
             {/* ---- Success toast ---- */}
             <AnimatePresence>
               {successMessage && (
                 <motion.div
                   className={styles.successToast}
-                  initial={{ opacity: 0, y: -20 }}
+                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -20 }}
                 >
                   <span className={styles.successIcon}><CheckIcon /></span>
                   {successMessage}
@@ -427,20 +482,26 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
 
             {/* ---- Header ---- */}
             <div className={styles.header}>
-              <h2 className={styles.title}>
-                {activeTab === "login" ? "Welcome back" : "Create account"}
+              <span className={styles.brandLine}>THIS Interiors</span>
+              <h2 className={styles.title} id="auth-modal-title">
+                {activeTab === "login" ? (
+                  <>Welcome <em className={styles.titleAccent}>back</em></>
+                ) : (
+                  <>Create your <em className={styles.titleAccent}>account</em></>
+                )}
               </h2>
               <p className={styles.subtitle}>
                 {activeTab === "login"
-                  ? "Sign in to access your account"
-                  : "Join us and start shopping today"}
+                  ? "Sign in to continue to your account."
+                  : "Join us to save pieces and follow your orders."}
               </p>
             </div>
 
             {/* ---- Tabs ---- */}
-            <div className={styles.tabs}>
+            <div className={styles.tabs} role="group" aria-label="Choose login or sign up">
               <button
                 type="button"
+                aria-pressed={activeTab === "login"}
                 className={`${styles.tab} ${activeTab === "login" ? styles.tabActive : ""}`}
                 onClick={() => switchTab("login")}
               >
@@ -448,6 +509,7 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
               </button>
               <button
                 type="button"
+                aria-pressed={activeTab === "signup"}
                 className={`${styles.tab} ${activeTab === "signup" ? styles.tabActive : ""}`}
                 onClick={() => switchTab("signup")}
               >
@@ -456,7 +518,7 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
               <motion.div
                 className={styles.tabIndicator}
                 animate={{ x: activeTab === "login" ? "0%" : "100%" }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                transition={tabIndicatorTransition}
               />
             </div>
 
@@ -465,9 +527,10 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
               {errors.general && (
                 <motion.div
                   className={styles.errorBanner}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
+                  role="alert"
+                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: 1, height: "auto" }}
+                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
                 >
                   {errors.general}
                 </motion.div>
@@ -479,9 +542,10 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
               {infoMessage && (
                 <motion.div
                   className={styles.infoBanner}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
+                  role="status"
+                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: 1, height: "auto" }}
+                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
                 >
                   {infoMessage}{" "}
                   <Link to="/support" className={styles.infoBannerLink} onClick={onClose}>
@@ -565,7 +629,7 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
                         <span className={styles.checkMark} />
                         Remember me
                       </label>
-                      <button type="button" className={styles.linkBtn} onClick={handleForgotPassword}>
+                      <button type="button" className={styles.forgotBtn} onClick={handleForgotPassword}>
                         Forgot password?
                       </button>
                     </div>

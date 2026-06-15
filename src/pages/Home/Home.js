@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Icon } from "@iconify/react";
-import { useTheme } from "../../context/ThemeContext";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../context/WishlistContext";
 import apiService from "../../services/api";
 import { categoryParam } from "../../utils/categories";
 import HeroSection from "../../components/HeroSection/HeroSection";
-import { APP_NAME, WHY_CHOOSE_US } from "../../utils/constants";
+import FeaturedProducts from "../../components/FeaturedProducts/FeaturedProducts";
+import CTASection from "../../components/CTASection/CTASection";
 import {
   formatCurrency,
   getProductMinPrice,
@@ -20,275 +19,237 @@ import {
 } from "../../utils/helpers";
 import styles from "./Home.module.css";
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 // Must match the key written by ProductDetails.js so viewing a product
 // populates this list end-to-end.
 const RECENTLY_VIEWED_KEY = "recentlyViewed";
 
+const EASE = [0.22, 1, 0.36, 1];
+
+// Brand-appropriate lifestyle imagery for the editorial bands. These are free
+// stock placeholders (Unsplash) — NOT THIS Interiors' copyrighted project
+// photography — wired with onImageError so a missing asset degrades gracefully,
+// and so a future admin/Prompt-26 asset can replace them. Never product data.
+const unsplash = (id, w = 1200) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+const LIFESTYLE = {
+  story: [
+    unsplash("1493809842364-78817add7ffb"), // calm living room
+    unsplash("1567538096630-e0c55bd6374c"), // styled shelf / objects
+  ],
+  look: unsplash("1505693416388-ac5ce068fe85", 1100), // styled bedroom
+  rooms: [
+    unsplash("1586023492125-27b2c045efd7", 900),
+    unsplash("1556909114-f6e7ad7d3136", 900),
+    unsplash("1538688525198-9b88f6f53126", 900),
+    unsplash("1567016432779-094069958ea5", 900),
+    unsplash("1513506003901-1e6a229e2d15", 900),
+    unsplash("1532372320572-cda25653a26d", 900),
+  ],
+};
+
+// Honest, brand-voice storytelling (no fabricated demand/claims). The italic
+// accent noun is the brand's serif accent device (mirrors the hero headline).
+const STORY_BLOCKS = [
+  {
+    eyebrow: "The THIS edit",
+    lead: "Designed for the way you",
+    accent: "live",
+    trail: ".",
+    body:
+      "Furniture and décor chosen for warmth and longevity — calm, considered pieces that settle into a home and stay a while.",
+    cta: { label: "Shop the Collection", to: "/products" },
+    image: LIFESTYLE.story[0],
+    alt: "A warmly styled living room with soft natural light",
+    side: "left",
+  },
+  {
+    eyebrow: "Considered craft",
+    lead: "Pieces with a",
+    accent: "soul",
+    trail: ".",
+    body:
+      "From the first sketch to the final finish, every piece is selected to bring a little beauty to every corner — and to live well, day after day.",
+    cta: { label: "Explore the Range", to: "/products" },
+    image: LIFESTYLE.story[1],
+    alt: "A styled shelf with curated decorative objects",
+    side: "right",
+  },
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 const getRecentlyViewed = () => {
   try {
     const stored = localStorage.getItem(RECENTLY_VIEWED_KEY);
-    return stored ? JSON.parse(stored) : [];
+    const list = stored ? JSON.parse(stored) : [];
+    return Array.isArray(list) ? list : [];
   } catch {
     return [];
   }
 };
 
-const StarRating = ({ rating = 0, reviewCount = 0 }) => {
-  const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalf = rating - fullStars >= 0.5;
+// The current seed category images are stock placeholders (placehold.co, which
+// also carry the old #667eea). Detect those so a real Prompt-26 category image
+// flows straight through, while today's stock placeholders are stood in with
+// brand-appropriate lifestyle imagery (and no stock gradient reaches the page).
+const STOCK_IMG_RE = /placehold\.co|placeholder\.com|via\.placeholder|dummyimage/i;
+const isStockPlaceholder = (url) => !url || STOCK_IMG_RE.test(url);
+const tileImage = (cat, i) =>
+  cat && cat.image && !isStockPlaceholder(cat.image)
+    ? cat.image
+    : LIFESTYLE.rooms[i % LIFESTYLE.rooms.length];
 
-  for (let i = 0; i < 5; i++) {
-    if (i < fullStars) {
-      stars.push(
-        <span key={i} className={styles.starFull}>
-          &#9733;
-        </span>
-      );
-    } else if (i === fullStars && hasHalf) {
-      stars.push(
-        <span key={i} className={styles.starHalf}>
-          &#9733;
-        </span>
-      );
-    } else {
-      stars.push(
-        <span key={i} className={styles.starEmpty}>
-          &#9733;
-        </span>
-      );
-    }
-  }
+// Slow fade/lift reveal props — collapses to a static render under
+// prefers-reduced-motion (matches the hero's motion contract).
+const reveal = (reduce, delay = 0) =>
+  reduce
+    ? {}
+    : {
+        initial: { opacity: 0, y: 24 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-60px" },
+        transition: { duration: 0.7, ease: EASE, delay },
+      };
 
-  return (
-    <span className={styles.ratingWrap}>
-      <span className={styles.stars}>{stars}</span>
-      {reviewCount > 0 && (
-        <span className={styles.reviewCount}>({reviewCount})</span>
+// ── Presentational pieces ──────────────────────────────────────────────────────
+
+const Divider = () => <div className={styles.divider} aria-hidden="true" />;
+
+const SectionHead = ({ eyebrow, lead, accent, trail = ".", subtitle }) => (
+  <div className={styles.sectionHead}>
+    {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
+    <h2 className={styles.sectionTitle}>
+      {lead}
+      {accent && (
+        <>
+          {" "}
+          <em className={styles.accent}>{accent}</em>
+        </>
       )}
-    </span>
-  );
-};
-
-// ── Product Card ─────────────────────────────────────────────────────────────
-
-const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlisted }) => {
-  const navigate = useNavigate();
-  const { sellingPrice, originalPrice, discount } = getProductMinPrice(product);
-  const image = product.images?.[0] || product.image || PLACEHOLDER_IMG;
-  const name = product.name || "Untitled Product";
-
-  const handleCardClick = () => {
-    navigate(productPath(product));
-  };
-
-  const handleAddToCart = (e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-  };
-
-  const handleWishlist = (e) => {
-    e.stopPropagation();
-    onToggleWishlist(product);
-  };
-
-  return (
-    <motion.div
-      className={styles.productCard}
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.25 }}
-      onClick={handleCardClick}
-    >
-      {/* Image container */}
-      <div className={styles.productImageWrap}>
-        <img
-          src={image}
-          alt={name}
-          className={styles.productImage}
-          loading="lazy"
-          onError={onImageError}
-        />
-        <div className={styles.productImageOverlay}>
-          <button
-            className={styles.quickViewBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(productPath(product));
-            }}
-          >
-            Quick View
-          </button>
-        </div>
-        {/* Wishlist heart */}
-        <button
-          className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ""}`}
-          onClick={handleWishlist}
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          {isWishlisted ? "\u2764" : "\u2661"}
-        </button>
-        {/* Discount badge */}
-        {discount > 0 && (
-          <span className={styles.discountBadge}>-{discount}%</span>
-        )}
-      </div>
-
-      {/* Info */}
-      <div className={styles.productInfo}>
-        {product.brand && (
-          <p className={styles.productBrand}>{product.brand}</p>
-        )}
-        <h3 className={styles.productName}>{truncateText(name, 48)}</h3>
-
-        <StarRating
-          rating={product.rating || 0}
-          reviewCount={product.totalReviews || 0}
-        />
-
-        <div className={styles.priceRow}>
-          <span className={styles.salePrice}>{formatCurrency(sellingPrice)}</span>
-          {discount > 0 && (
-            <>
-              <span className={styles.originalPrice}>
-                {formatCurrency(originalPrice)}
-              </span>
-              <span className={styles.discountPercent}>{discount}% off</span>
-            </>
-          )}
-        </div>
-
-        <button className={styles.addToCartBtn} onClick={handleAddToCart}>
-          Add to Cart
-        </button>
-      </div>
-    </motion.div>
-  );
-};
-
-// ── Horizontal Scroll Buttons ────────────────────────────────────────────────
-
-const ScrollRow = ({ children, scrollRef }) => {
-  const scroll = (direction) => {
-    if (!scrollRef.current) return;
-    const amount = scrollRef.current.offsetWidth * 0.75;
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
-
-  return (
-    <div className={styles.scrollContainer}>
-      <button
-        className={`${styles.scrollBtn} ${styles.scrollBtnLeft}`}
-        onClick={() => scroll("left")}
-        aria-label="Scroll left"
-      >
-        &#8249;
-      </button>
-      <div className={styles.scrollTrack} ref={scrollRef}>
-        {children}
-      </div>
-      <button
-        className={`${styles.scrollBtn} ${styles.scrollBtnRight}`}
-        onClick={() => scroll("right")}
-        aria-label="Scroll right"
-      >
-        &#8250;
-      </button>
-    </div>
-  );
-};
-
-// ── Countdown Timer ──────────────────────────────────────────────────────────
-
-const CountdownTimer = () => {
-  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const getEndOfDay = () => {
-      const end = new Date();
-      end.setHours(23, 59, 59, 999);
-      return end;
-    };
-
-    const update = () => {
-      const now = new Date();
-      const diff = Math.max(0, getEndOfDay() - now);
-      setTimeLeft({
-        hours: Math.floor(diff / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-        seconds: Math.floor((diff % 60000) / 1000),
-      });
-    };
-
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const pad = (n) => String(n).padStart(2, "0");
-
-  return (
-    <div className={styles.countdown}>
-      <span className={styles.countdownBlock}>
-        <strong>{pad(timeLeft.hours)}</strong>
-        <small>Hrs</small>
-      </span>
-      <span className={styles.countdownSep}>:</span>
-      <span className={styles.countdownBlock}>
-        <strong>{pad(timeLeft.minutes)}</strong>
-        <small>Min</small>
-      </span>
-      <span className={styles.countdownSep}>:</span>
-      <span className={styles.countdownBlock}>
-        <strong>{pad(timeLeft.seconds)}</strong>
-        <small>Sec</small>
-      </span>
-    </div>
-  );
-};
-
-// ── Section Header ───────────────────────────────────────────────────────────
-
-const SectionHeader = ({ title, subtitle, linkText, linkTo }) => (
-  <div className={styles.sectionHeader}>
-    <div>
-      <h2 className={styles.sectionTitle}>{title}</h2>
-      {subtitle && <p className={styles.sectionSubtitle}>{subtitle}</p>}
-    </div>
-    {linkText && linkTo && (
-      <Link to={linkTo} className={styles.viewAllLink}>
-        {linkText} &rarr;
-      </Link>
-    )}
+      {trail}
+    </h2>
+    {subtitle && <p className={styles.sectionSubtitle}>{subtitle}</p>}
   </div>
 );
 
+// Alternating image/text storytelling block.
+const StoryBlock = ({ block, reduce }) => (
+  <section
+    className={`${styles.story} ${block.side === "right" ? styles.storyReverse : ""}`}
+  >
+    <div className={styles.storyInner}>
+      <motion.div className={styles.storyMedia} {...reveal(reduce)}>
+        <img
+          className={styles.storyImg}
+          src={block.image}
+          alt={block.alt}
+          loading="lazy"
+          decoding="async"
+          onError={onImageError}
+        />
+      </motion.div>
+
+      <motion.div className={styles.storyContent} {...reveal(reduce, 0.08)}>
+        <span className={styles.eyebrow}>{block.eyebrow}</span>
+        <h2 className={styles.storyTitle}>
+          {block.lead} <em className={styles.accent}>{block.accent}</em>
+          {block.trail}
+        </h2>
+        <p className={styles.storyBody}>{block.body}</p>
+        <Link
+          to={block.cta.to}
+          className={`sf-btn sf-btn--secondary sf-btn--uppercase ${styles.storyCta}`}
+        >
+          {block.cta.label}
+        </Link>
+      </motion.div>
+    </div>
+  </section>
+);
+
+// One "Style the Look" line item — a real product linking to its PDP, with
+// quick-add + wishlist wired exactly like the cards.
+const LookItem = ({ product, onAddToCart, onToggleWishlist, isWishlisted }) => {
+  const { sellingPrice } = getProductMinPrice(product);
+  const image = product.images?.[0] || product.image || PLACEHOLDER_IMG;
+
+  return (
+    <li className={styles.lookItem}>
+      <Link
+        to={productPath(product)}
+        className={styles.lookThumb}
+        aria-label={product.name}
+      >
+        <img
+          className={styles.lookThumbImg}
+          src={image}
+          alt={product.name}
+          loading="lazy"
+          onError={onImageError}
+        />
+      </Link>
+
+      <div className={styles.lookInfo}>
+        {product.brand && <span className={styles.lookBrand}>{product.brand}</span>}
+        <Link to={productPath(product)} className={styles.lookName}>
+          {truncateText(product.name, 42)}
+        </Link>
+        <span className={styles.lookPrice}>{formatCurrency(sellingPrice)}</span>
+      </div>
+
+      <div className={styles.lookActions}>
+        <button
+          type="button"
+          className={styles.lookAdd}
+          onClick={() => onAddToCart(product)}
+        >
+          Add
+        </button>
+        <button
+          type="button"
+          className={`${styles.lookWish} ${isWishlisted ? styles.lookWished : ""}`}
+          onClick={() => onToggleWishlist(product)}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-pressed={isWishlisted}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill={isWishlisted ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />
+          </svg>
+        </button>
+      </div>
+    </li>
+  );
+};
+
 // ══════════════════════════════════════════════════════════════════════════════
-// HOME PAGE
+// HOME PAGE — editorial storytelling & curated discovery
 // ══════════════════════════════════════════════════════════════════════════════
 
 const Home = () => {
-  const { isDarkMode } = useTheme();
+  const reduce = useReducedMotion();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const [categories, setCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
-  const [flashDeals, setFlashDeals] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const flashScrollRef = useRef(null);
-  const recentScrollRef = useRef(null);
-
-  // ── Data fetching ────────────────────────────────────────────────────────
-
+  // ── Data fetching (unchanged sources: featured / trending / categories) ────
   useEffect(() => {
+    let active = true;
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -297,308 +258,239 @@ const Home = () => {
           apiService.products.getFeatured(8).catch(() => []),
           apiService.products.getTrending(8).catch(() => []),
         ]);
-
+        if (!active) return;
         setCategories(Array.isArray(cats) ? cats : []);
-        setFeaturedProducts(Array.isArray(featured) ? featured.slice(0, 8) : []);
-        setTrendingProducts(Array.isArray(trending) ? trending.slice(0, 8) : []);
-
-        // Flash deals: combine and pick products with discounts
-        const allProducts = [...(featured || []), ...(trending || [])];
-        const deals = allProducts
-          .filter((p) => {
-            const { discount } = getProductMinPrice(p);
-            return discount > 0;
-          })
-          .slice(0, 12);
-        setFlashDeals(deals);
+        setFeaturedProducts(Array.isArray(featured) ? featured : []);
+        setTrendingProducts(Array.isArray(trending) ? trending : []);
       } catch (err) {
         console.error("Error fetching home data:", err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
     fetchData();
     setRecentlyViewed(getRecentlyViewed());
+    return () => {
+      active = false;
+    };
   }, []);
 
-  // ── Handlers ─────────────────────────────────────────────────────────────
-
+  // ── Handlers ───────────────────────────────────────────────────────────────
+  // Variant-aware line whose id/price match the PDP (buildCartItem) so quick-adds
+  // merge by the `${productId}-${variantId}` key instead of duplicating.
   const handleAddToCart = useCallback(
-    (product) => {
-      // Variant-aware line whose id/price match the product page (see
-      // buildCartItem) so quick-adds merge instead of duplicating.
-      addToCart(buildCartItem(product), 1);
-    },
+    (product) => addToCart(buildCartItem(product), 1),
     [addToCart]
   );
-
-  // Wishlist works for guests (persisted to localStorage), matching the
-  // product detail page — no auth gate / dead-end redirect.
+  // Wishlist works for guests (persisted to localStorage) — no auth gate.
   const handleToggleWishlist = useCallback(
-    (product) => {
-      toggleWishlist(product);
-    },
+    (product) => toggleWishlist(product),
     [toggleWishlist]
   );
 
-  // ── Skeleton loader ──────────────────────────────────────────────────────
+  // ── Derived data ─────────────────────────────────────────────────────────────
 
-  const ProductSkeleton = () => (
-    <div className={styles.productCard}>
-      <div className={`${styles.productImageWrap} ${styles.skeleton}`} />
-      <div className={styles.productInfo}>
-        <div className={`${styles.skeletonLine} ${styles.skeletonW80}`} />
-        <div className={`${styles.skeletonLine} ${styles.skeletonW50}`} />
-        <div className={`${styles.skeletonLine} ${styles.skeletonW60}`} />
-      </div>
-    </div>
+  // Shop-by-Room tiles: prefer the real top-level categories (rooms/collections).
+  const roomCategories = useMemo(
+    () => categories.filter((c) => c.parentId == null).slice(0, 6),
+    [categories]
   );
 
-  const renderProductGrid = (products, fallbackCount = 4) => {
-    if (loading) {
-      return (
-        <div className={styles.productGrid}>
-          {Array.from({ length: fallbackCount }).map((_, i) => (
-            <ProductSkeleton key={i} />
-          ))}
-        </div>
-      );
-    }
+  // "Style the Look": a curated edit resolved from real catalogue data (the
+  // seeded featured + trending pool, deduped) — never invented products.
+  const lookProducts = useMemo(() => {
+    const seen = new Set();
+    const out = [];
+    [...featuredProducts, ...trendingProducts].forEach((p) => {
+      if (p && !seen.has(p.id)) {
+        seen.add(p.id);
+        out.push(p);
+      }
+    });
+    return out.slice(0, 4);
+  }, [featuredProducts, trendingProducts]);
 
-    if (!products || products.length === 0) return null;
-
-    return (
-      <div className={styles.productGrid}>
-        {products.map((product, i) => (
-          <motion.div
-            key={product.id || i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.05, duration: 0.35 }}
-          >
-            <ProductCard
-              product={product}
-              onAddToCart={handleAddToCart}
-              onToggleWishlist={handleToggleWishlist}
-              isWishlisted={isInWishlist(product.id)}
-            />
-          </motion.div>
-        ))}
-      </div>
-    );
-  };
-
-  // ── Render ───────────────────────────────────────────────────────────────
+  // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
     <motion.div
-      className={`${styles.homePage} ${isDarkMode ? styles.dark : ""}`}
-      initial={{ opacity: 0 }}
+      className={styles.homePage}
+      initial={reduce ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* 1. Hero — cinematic, full-bleed; renders its own section + the slim
-          assurance strip beneath. */}
+      {/* 1. Hero — cinematic, full-bleed; renders its own assurance strip. */}
       <HeroSection />
 
-      {/* 2. Flash Deals */}
-      {flashDeals.length > 0 && (
+      {/* 2. Storytelling block — image left / text right. */}
+      <StoryBlock block={STORY_BLOCKS[0]} reduce={reduce} />
+
+      <Divider />
+
+      {/* 3. Shop by Category — large image tiles from the real category tree. */}
+      {(loading || roomCategories.length > 0) && (
         <section className={styles.section}>
           <div className={styles.container}>
-            <div className={styles.flashHeader}>
-              <SectionHeader
-                title="Flash Deals"
-                subtitle="Grab them before they're gone!"
-                linkText="View All"
-                linkTo="/products?sort=sale"
-              />
-              <CountdownTimer />
-            </div>
-            <ScrollRow scrollRef={flashScrollRef}>
-              {flashDeals.map((product, i) => (
-                <div className={styles.scrollCard} key={product.id || i}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    onToggleWishlist={handleToggleWishlist}
-                    isWishlisted={isInWishlist(product.id)}
-                  />
-                </div>
-              ))}
-            </ScrollRow>
-          </div>
-        </section>
-      )}
-
-      {/* 3. Shop by Category */}
-      <section className={`${styles.section} ${styles.categorySection}`}>
-        <div className={styles.container}>
-          <SectionHeader
-            title="Shop by Category"
-            subtitle="Browse our wide selection of categories"
-            linkText="All Categories"
-            linkTo="/products"
-          />
-          <div className={styles.categoryGrid}>
-            {loading
-              ? Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className={`${styles.categoryCard} ${styles.skeleton}`} />
-                ))
-              : categories.map((cat, i) => (
-                  <motion.div
-                    key={cat.id || i}
-                    initial={{ opacity: 0, scale: 0.92 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.06 }}
-                    whileHover={{ y: -4 }}
-                  >
-                    <Link
-                      to={`/products?category=${categoryParam(cat)}`}
-                      className={styles.categoryCard}
-                    >
-                      {cat.image && (
-                        <img
-                          src={cat.image}
-                          alt={cat.name}
-                          className={styles.categoryImage}
-                          loading="lazy"
-                          onError={onImageError}
-                        />
-                      )}
-                      <div className={styles.categoryOverlay}>
-                        <h3 className={styles.categoryName}>{cat.name}</h3>
-                        {cat.productCount !== undefined && (
-                          <span className={styles.categoryCount}>
-                            {cat.productCount} Products
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Featured Products */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <SectionHeader
-            title="Featured Products"
-            subtitle="Handpicked just for you"
-            linkText="View All"
-            linkTo="/products?sort=featured"
-          />
-          {renderProductGrid(featuredProducts, 4)}
-        </div>
-      </section>
-
-      {/* 5. Promotional Banner */}
-      <section className={styles.promoBanner}>
-        <div className={styles.container}>
-          <div className={styles.promoBannerInner}>
-            <motion.div
-              className={styles.promoContent}
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className={styles.promoTag}>Limited Time Offer</span>
-              <h2 className={styles.promoTitle}>
-                Up to 50% Off on Top Brands
-              </h2>
-              <p className={styles.promoText}>
-                Shop the season's best deals on electronics, fashion, home decor
-                and more. Don't miss out on incredible savings!
-              </p>
-              <Link to="/products?sort=sale" className={styles.promoCta}>
-                Shop Now
-              </Link>
-            </motion.div>
-            <motion.div
-              className={styles.promoGraphic}
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-            >
-              <div className={styles.promoCircle}>
-                <span className={styles.promoPercent}>50%</span>
-                <span className={styles.promoOff}>OFF</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Trending Products */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <SectionHeader
-            title="Trending Now"
-            subtitle="See what everyone is buying"
-            linkText="View All"
-            linkTo="/products?sort=trending"
-          />
-          {renderProductGrid(trendingProducts, 4)}
-        </div>
-      </section>
-
-      {/* 7. Why Choose Us */}
-      <section className={`${styles.section} ${styles.trustSection}`}>
-        <div className={styles.container}>
-          <SectionHeader
-            title={`Why Choose ${APP_NAME}`}
-            subtitle="We put our customers first"
-          />
-          <div className={styles.trustGrid}>
-            {WHY_CHOOSE_US.map((item, i) => (
-              <motion.div
-                key={item.id || i}
-                className={styles.trustCard}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <div className={styles.trustIcon}>
-                  <Icon icon={item.icon} />
-                </div>
-                <h4 className={styles.trustTitle}>{item.title}</h4>
-                <p className={styles.trustDesc}>{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 8. Recently Viewed */}
-      {recentlyViewed.length > 0 && (
-        <section className={styles.section}>
-          <div className={styles.container}>
-            <SectionHeader
-              title="Recently Viewed"
-              subtitle="Continue where you left off"
+            <SectionHead
+              eyebrow="Explore"
+              lead="Shop by"
+              accent="Category"
+              subtitle="Find your space — browse the collections that shape a home."
             />
-            <ScrollRow scrollRef={recentScrollRef}>
-              {recentlyViewed.map((product, i) => (
-                <div className={styles.scrollCard} key={product.id || i}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    onToggleWishlist={handleToggleWishlist}
-                    isWishlisted={isInWishlist(product.id)}
-                  />
-                </div>
-              ))}
-            </ScrollRow>
+            <div className={styles.roomGrid}>
+              {loading
+                ? Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className={styles.roomTile} aria-hidden="true">
+                      <div className={`sf-skeleton ${styles.roomMedia}`} />
+                    </div>
+                  ))
+                : roomCategories.map((cat, i) => (
+                    <motion.div key={cat.id || i} {...reveal(reduce, (i % 3) * 0.06)}>
+                      <Link
+                        to={`/products?category=${categoryParam(cat)}`}
+                        className={styles.roomTile}
+                      >
+                        <div className={styles.roomMedia}>
+                          <img
+                            className={styles.roomImg}
+                            src={tileImage(cat, i)}
+                            alt={cat.name}
+                            loading="lazy"
+                            decoding="async"
+                            onError={onImageError}
+                          />
+                          <span className={styles.roomScrim} aria-hidden="true" />
+                        </div>
+                        <span className={styles.roomBody}>
+                          <span className={styles.roomName}>{cat.name}</span>
+                          <span className={styles.roomMeta}>
+                            Explore
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          </span>
+                        </span>
+                      </Link>
+                    </motion.div>
+                  ))}
+            </div>
           </div>
         </section>
       )}
+
+      <Divider />
+
+      {/* 4. Featured Collection — an airy row of the shared ProductCard. */}
+      <FeaturedProducts
+        loading={loading}
+        eyebrow="Curated"
+        title="Featured Collection"
+        subtitle="A considered selection, handpicked from the studio."
+        products={featuredProducts.slice(0, 4)}
+        viewAllLink="/products"
+      />
+
+      {/* 5. Storytelling block — image right / text left. */}
+      <StoryBlock block={STORY_BLOCKS[1]} reduce={reduce} />
+
+      {/* 6. Style the Look — a styled room beside the pieces to compose it. */}
+      {(loading || lookProducts.length >= 2) && (
+        <section className={styles.look}>
+          <div className={styles.lookInner}>
+            <motion.div className={styles.lookMedia} {...reveal(reduce)}>
+              <img
+                className={styles.lookImg}
+                src={LIFESTYLE.look}
+                alt="A styled bedroom composed from curated décor"
+                loading="lazy"
+                decoding="async"
+                onError={onImageError}
+              />
+            </motion.div>
+
+            <motion.div className={styles.lookContent} {...reveal(reduce, 0.08)}>
+              <span className={styles.eyebrow}>Curated edit</span>
+              <h2 className={styles.lookTitle}>
+                Style the <em className={styles.accent}>Look</em>
+              </h2>
+              <p className={styles.lookLede}>
+                A curated edit of pieces that work beautifully together — start
+                with one, build the whole space.
+              </p>
+
+              {loading ? (
+                <ul className={styles.lookList}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <li className={styles.lookItem} key={i} aria-hidden="true">
+                      <span className={`sf-skeleton ${styles.lookThumb}`} />
+                      <span className={styles.lookInfo}>
+                        <span className="sf-skeleton sf-skeleton--text" style={{ width: "70%" }} />
+                        <span className="sf-skeleton sf-skeleton--text" style={{ width: "35%" }} />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <ul className={styles.lookList}>
+                  {lookProducts.map((product) => (
+                    <LookItem
+                      key={product.id}
+                      product={product}
+                      onAddToCart={handleAddToCart}
+                      onToggleWishlist={handleToggleWishlist}
+                      isWishlisted={isInWishlist(product.id)}
+                    />
+                  ))}
+                </ul>
+              )}
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      <Divider />
+
+      {/* 7. Trending — a second airy curated row. */}
+      <FeaturedProducts
+        loading={loading}
+        eyebrow="In our edit"
+        title="Trending Now"
+        subtitle="Pieces catching our eye this season."
+        products={trendingProducts.slice(0, 4)}
+        viewAllLink="/products"
+      />
+
+      {/* 8. Recently Viewed — folded into a calm row when present. */}
+      {recentlyViewed.length > 0 && (
+        <>
+          <Divider />
+          <FeaturedProducts
+            eyebrow="Pick up where you left off"
+            title="Recently Viewed"
+            products={recentlyViewed.slice(0, 4)}
+            viewAllLink="/products"
+          />
+        </>
+      )}
+
+      {/* 9. Closing editorial band. */}
+      <CTASection
+        title="Bring it home"
+        subtitle="Discover furniture and décor made to live with — crafted spaces, enriching lives."
+        buttonText="Shop the Collection"
+        link="/products"
+      />
     </motion.div>
   );
 };

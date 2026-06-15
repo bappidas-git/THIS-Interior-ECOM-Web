@@ -1,96 +1,102 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { Link } from "react-router-dom";
+import ProductCard from "../storefront/ProductCard";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../context/WishlistContext";
-import {
-  formatCurrency,
-  getProductMinPrice,
-  truncateText,
-  buildCartItem,
-  productPath,
-  PLACEHOLDER_IMG,
-  onImageError,
-} from "../../utils/helpers";
 import styles from "./FeaturedProducts.module.css";
 
-const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlisted, onClick }) => {
-  const { sellingPrice, originalPrice, discount } = getProductMinPrice(product);
+// =============================================================================
+// FeaturedProducts — the shared featured / curated row
+// =============================================================================
+// Restyled to the editorial card rhythm: an airy, generously spaced row of the
+// shared storefront <ProductCard> (so the card aesthetic stays identical across
+// the home, listing and PDP surfaces) — never a dense, edge-to-edge grid.
+//
+// Props (unchanged contract + additive editorial extras):
+//   products     array   the items to show (quick-add + wishlist wired below)
+//   title        string  section heading (serif display)
+//   viewAllLink  string  the quiet "View all" target (omit to hide)
+//   eyebrow      string  optional uppercase kicker above the title
+//   subtitle     string  optional supporting line
+//   loading      bool    render the header + a calm skeleton row
+//   skeletonCount number how many skeleton cards to show while loading
+//
+// Cart/wishlist wiring is intact: <ProductCard> builds the variant-aware line
+// (buildCartItem) and hands it to addToCart, which merges by the
+// `${productId}-${variantId}` key; the heart toggles via the wishlist context.
+// =============================================================================
 
-  return (
-    <motion.div
-      className={styles.card}
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClick}
-    >
-      <div className={styles.imageWrapper}>
-        <img
-          src={product.images?.[0] || PLACEHOLDER_IMG}
-          alt={product.name}
-          loading="lazy"
-          onError={onImageError}
-        />
-        {discount > 0 && <span className={styles.discountBadge}>{discount}% OFF</span>}
-        <button
-          className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ""}`}
-          onClick={(e) => { e.stopPropagation(); onToggleWishlist(product); }}
-          aria-label="Toggle wishlist"
-        >
-          {isWishlisted ? "\u2665" : "\u2661"}
-        </button>
-      </div>
-      <div className={styles.info}>
-        <p className={styles.brand}>{product.brand}</p>
-        <h3 className={styles.name}>{truncateText(product.name, 45)}</h3>
-        <div className={styles.rating}>
-          <span className={styles.stars}>{"★".repeat(Math.floor(product.rating || 0))}{"☆".repeat(5 - Math.floor(product.rating || 0))}</span>
-          <span className={styles.reviewCount}>({product.totalReviews || 0})</span>
-        </div>
-        <div className={styles.price}>
-          <span className={styles.salePrice}>{formatCurrency(sellingPrice)}</span>
-          {discount > 0 && <span className={styles.originalPrice}>{formatCurrency(originalPrice)}</span>}
-        </div>
-        <button
-          className={styles.addToCartBtn}
-          onClick={(e) => {
-            e.stopPropagation();
-            onAddToCart(buildCartItem(product));
-          }}
-        >
-          Add to Cart
-        </button>
-      </div>
-    </motion.div>
-  );
-};
+const CardSkeleton = () => (
+  <div className={styles.skeletonCard} aria-hidden="true">
+    <div className={`sf-skeleton ${styles.skeletonMedia}`} />
+    <div className={styles.skeletonBody}>
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skeletonBrand}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skeletonName}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skeletonPrice}`} />
+    </div>
+  </div>
+);
 
-const FeaturedProducts = ({ products = [], title = "Featured Products", viewAllLink = "/products" }) => {
-  const { isDarkMode } = useTheme();
-  const navigate = useNavigate();
+const FeaturedProducts = ({
+  products = [],
+  title = "Featured Products",
+  viewAllLink = "/products",
+  eyebrow,
+  subtitle,
+  loading = false,
+  skeletonCount = 4,
+}) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  if (products.length === 0) return null;
+  // Honest empty state: once loaded, render nothing when there's no real data.
+  if (!loading && (!products || products.length === 0)) return null;
 
   return (
-    <section className={`${styles.section} ${isDarkMode ? styles.dark : ""}`}>
-      <div className={styles.sectionHeader}>
-        <h2>{title}</h2>
-        <button className={styles.viewAllBtn} onClick={() => navigate(viewAllLink)}>View All &rarr;</button>
-      </div>
-      <div className={styles.grid}>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={addToCart}
-            onToggleWishlist={toggleWishlist}
-            isWishlisted={isInWishlist(product.id)}
-            onClick={() => navigate(productPath(product))}
-          />
-        ))}
+    <section className={styles.section}>
+      <div className={styles.inner}>
+        <div className={styles.header}>
+          <div className={styles.heading}>
+            {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+          </div>
+
+          {viewAllLink && !loading && (
+            <Link to={viewAllLink} className={styles.viewAll}>
+              View all
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          )}
+        </div>
+
+        <div className={styles.grid}>
+          {loading
+            ? Array.from({ length: skeletonCount }).map((_, i) => (
+                <CardSkeleton key={i} />
+              ))
+            : products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={addToCart}
+                  onToggleWishlist={toggleWishlist}
+                  isWishlisted={isInWishlist(product.id)}
+                />
+              ))}
+        </div>
       </div>
     </section>
   );

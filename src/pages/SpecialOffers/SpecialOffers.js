@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../context/WishlistContext";
 import { useDealsConfig } from "../../context/DealsConfigContext";
 import apiService from "../../services/api";
+import { ProductCard, PriceBlock } from "../../components/storefront";
 import {
-  formatCurrency,
   getProductMinPrice,
   getProductMaxDiscount,
   buildCartItem,
   productPath,
   copyToClipboard,
-  truncateText,
   onImageError,
+  PLACEHOLDER_IMG,
 } from "../../utils/helpers";
 import { resolveCountdownTarget, diffToParts } from "../../utils/dealsConfig";
 import styles from "./SpecialOffers.module.css";
@@ -51,6 +50,9 @@ const pickByIds = (items, ids) => {
 
 const pad = (n) => String(n).padStart(2, "0");
 
+// Slow editorial easing, matched to the design tokens' --sf-ease-editorial.
+const EASE = [0.22, 1, 0.36, 1];
+
 // ── Countdown Hook (admin-configured) ────────────────────────────────────────
 // Targets the admin's window (fixed end date, or end-of-day when none) and
 // re-evaluates each second so a fixed end can expire live and honour onExpiry.
@@ -80,23 +82,29 @@ const useDealsCountdown = (timer) => {
   return state;
 };
 
-// ── Star Rating ──────────────────────────────────────────────────────────────
-
-const StarRating = ({ rating, reviewCount }) => {
-  const fullStars = Math.floor(rating);
-  const hasHalf = rating - fullStars >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
-
+// ── Countdown — tasteful hairline digit blocks (calm, never a loud timer) ─────
+// Honest: it renders whatever the configured window resolves to. Hours can run
+// past 24 for a multi-day fixed end — that's intentional, not clamped.
+const Countdown = ({ parts }) => {
+  const units = [
+    { value: parts.hours, label: "Hrs" },
+    { value: parts.minutes, label: "Min" },
+    { value: parts.seconds, label: "Sec" },
+  ];
   return (
-    <div className={styles.starRating}>
-      {Array.from({ length: fullStars }, (_, i) => (
-        <span key={`f${i}`} className={styles.starFull}>&#9733;</span>
-      ))}
-      {hasHalf && <span className={styles.starHalf}>&#9733;</span>}
-      {Array.from({ length: Math.max(0, emptyStars) }, (_, i) => (
-        <span key={`e${i}`} className={styles.starEmpty}>&#9733;</span>
-      ))}
-      <span className={styles.reviewCount}>({reviewCount?.toLocaleString() || 0})</span>
+    <div className={styles.countdown} role="timer" aria-label="Time left on these offers">
+      <span className={styles.countdownLabel}>Offer ends in</span>
+      <div className={styles.countdownBlocks}>
+        {units.map((u, i) => (
+          <React.Fragment key={u.label}>
+            {i > 0 && <span className={styles.countdownSep} aria-hidden="true">:</span>}
+            <span className={styles.countdownUnit}>
+              <span className={styles.countdownNum}>{pad(u.value)}</span>
+              <span className={styles.countdownUnitLabel}>{u.label}</span>
+            </span>
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 };
@@ -105,7 +113,7 @@ const StarRating = ({ rating, reviewCount }) => {
 // Horizontally scrollable strip that never hides a tab: edge-fade affordances +
 // scroll buttons appear when there's more off-screen, and the active tab is
 // scrolled into view. Buttons are hidden on touch/mobile (CSS) where the strip
-// scrolls by swipe.
+// scrolls by swipe. Tokenized — no hardcoded hex.
 const CategoryTabs = ({ categories, activeTab, onChange }) => {
   const scrollRef = useRef(null);
   const [atStart, setAtStart] = useState(true);
@@ -194,123 +202,54 @@ const CategoryTabs = ({ categories, activeTab, onChange }) => {
   );
 };
 
-// ── Product Card ─────────────────────────────────────────────────────────────
+// ── Skeleton Loaders — calm shimmer (sf-skeleton primitive) in each silhouette ─
 
-const ProductCard = ({ product, categoryName, onAddToCart, onToggleWishlist, isWishlisted, index }) => {
-  const navigate = useNavigate();
-  const minPrice = getProductMinPrice(product);
-  const maxDiscount = getProductMaxDiscount(product);
-
-  const handleAddToCart = (e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-  };
-
-  const handleWishlist = (e) => {
-    e.stopPropagation();
-    onToggleWishlist(product);
-  };
-
-  return (
-    <motion.div
-      className={styles.productCard}
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.04, 0.4) }}
-      layout
-      onClick={() => navigate(productPath(product))}
-    >
-      <div className={styles.productImageWrap}>
-        <img
-          src={product.images?.[0] || product.image || "https://placehold.co/600x400?text=No+Image"}
-          alt={product.name}
-          className={styles.productImage}
-          loading="lazy"
-          onError={onImageError}
-        />
-        {maxDiscount > 0 && (
-          <span className={styles.discountBadge}>-{maxDiscount}%</span>
-        )}
-        <button
-          className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ""}`}
-          onClick={handleWishlist}
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          {isWishlisted ? "❤" : "♡"}
-        </button>
-        <div className={styles.productOverlay}>
-          <button
-            className={styles.quickViewBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(productPath(product));
-            }}
-          >
-            Quick View
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.productInfo}>
-        {categoryName && <span className={styles.productCategory}>{categoryName}</span>}
-        <h3 className={styles.productName}>{truncateText(product.name, 48)}</h3>
-        <StarRating rating={product.rating || 0} reviewCount={product.totalReviews || 0} />
-
-        <div className={styles.priceRow}>
-          <span className={styles.salePrice}>
-            {formatCurrency(minPrice.sellingPrice, minPrice.currency)}
-          </span>
-          {maxDiscount > 0 && (
-            <>
-              <span className={styles.originalPrice}>
-                {formatCurrency(minPrice.originalPrice, minPrice.currency)}
-              </span>
-              <span className={styles.discountPercent}>{maxDiscount}% off</span>
-            </>
-          )}
-        </div>
-
-        <button className={styles.addToCartBtn} onClick={handleAddToCart}>
-          Add to Cart
-        </button>
-      </div>
-    </motion.div>
-  );
-};
-
-// ── Skeleton Loaders ─────────────────────────────────────────────────────────
-
-const ProductSkeleton = () => (
-  <div className={styles.productCard}>
-    <div className={`${styles.productImageWrap} ${styles.skeletonImage}`} />
-    <div className={styles.productInfo}>
-      <div className={`${styles.skeletonLine} ${styles.skeletonShort}`} />
-      <div className={`${styles.skeletonLine} ${styles.skeletonMedium}`} />
-      <div className={`${styles.skeletonLine} ${styles.skeletonShort}`} />
-      <div className={`${styles.skeletonLine} ${styles.skeletonFull}`} />
+const CouponSkeleton = () => (
+  <div className={styles.couponCard} aria-hidden="true">
+    <div className={`sf-skeleton ${styles.couponSkeletonValue}`} />
+    <div className={styles.couponBody}>
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skMedium}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skShort}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skShort}`} />
+      <span className={`sf-skeleton ${styles.couponSkeletonCode}`} />
     </div>
   </div>
 );
 
-const CouponSkeleton = () => (
-  <div className={styles.couponCard}>
-    <div className={styles.couponSkeletonLeft} />
-    <div className={styles.couponRight}>
-      <div className={`${styles.skeletonLine} ${styles.skeletonMedium}`} />
-      <div className={`${styles.skeletonLine} ${styles.skeletonShort}`} />
-      <div className={`${styles.skeletonLine} ${styles.skeletonFull}`} />
+const ProductSkeleton = () => (
+  <div className={styles.skeletonCard} aria-hidden="true">
+    <div className={`sf-skeleton ${styles.skeletonMedia}`} />
+    <div className={styles.skeletonBody}>
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skBrand}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skName}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skPrice}`} />
     </div>
   </div>
+);
+
+// ── Quiet inline icons (stroke = currentColor, no icon-library dependency) ────
+
+const PauseMark = () => (
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" />
+    <line x1="10" y1="9" x2="10" y2="15" />
+    <line x1="14" y1="9" x2="14" y2="15" />
+  </svg>
+);
+
+const TagMark = () => (
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L3 13V3h10l7.59 7.59a2 2 0 0 1 0 2.82z" />
+    <line x1="7" y1="7" x2="7.01" y2="7" />
+  </svg>
 );
 
 // ── Main Component ───────────────────────────────────────────────────────────
 
 const SpecialOffers = () => {
-  const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const prefersReducedMotion = useReducedMotion();
   // The whole page is admin-managed via this config (master toggle, hero,
   // timer, featured coupon/product selections).
   const { config, loading: configLoading } = useDealsConfig();
@@ -372,13 +311,6 @@ const SpecialOffers = () => {
     return valid;
   }, [coupons, config.featuredCouponIds]);
 
-  // Map of categoryId → name; products carry a numeric categoryId only.
-  const categoryMap = useMemo(() => {
-    const map = {};
-    categories.forEach((c) => { map[c.id] = c.name; });
-    return map;
-  }, [categories]);
-
   // Discounted products, highest discount first — the automatic deal pool.
   const discountedProducts = useMemo(() => {
     return products
@@ -426,18 +358,13 @@ const SpecialOffers = () => {
     }
   }, []);
 
-  const handleAddToCart = useCallback(
-    // buildCartItem produces the same id scheme (and default variant/price) the
-    // product page uses, so offer adds merge with PDP adds instead of duplicating.
+  // buildCartItem produces the same id scheme (and default variant/price) the
+  // product page uses, so offer adds merge with PDP adds instead of duplicating.
+  // The shared ProductCard builds the cart item itself, so the grid passes
+  // addToCart directly; Deal-of-the-Day uses this product-shaped helper.
+  const handleAddDeal = useCallback(
     (product) => addToCart(buildCartItem(product), 1),
     [addToCart]
-  );
-
-  const handleToggleWishlist = useCallback(
-    (product) => {
-      toggleWishlist(product);
-    },
-    [toggleWishlist]
   );
 
   // ── Master toggle: page hidden ───────────────────────────────────────────────
@@ -445,106 +372,83 @@ const SpecialOffers = () => {
   // page never flashes its content first.
   if (configLoading) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.pageLoader}>
-          <div className={styles.spinner} aria-label="Loading" />
+          <div className="sf-spinner" aria-label="Loading" />
         </div>
       </div>
     );
   }
 
+  // ── Master toggle off → a serene "short pause" state (nav entry hides too,
+  // driven by the same config in the Header/SidebarMenu/Footer). ──────────────
   if (!enabled) {
     return (
-      <motion.div
-        className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className={styles.page}>
         <div className={styles.container}>
-          <section className={styles.unavailableState}>
-            <div className={styles.unavailableIcon}>&#128276;</div>
-            <h1 className={styles.unavailableTitle}>No Deals Right Now</h1>
-            <p className={styles.unavailableText}>
-              Our special offers page is taking a short break. Great deals are on their way back —
-              in the meantime, explore our full collection.
+          <motion.section
+            className={styles.stateBox}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: EASE }}
+          >
+            <span className={styles.stateMark}>
+              <PauseMark />
+            </span>
+            <h1 className={styles.stateTitle}>Offers are taking a short pause</h1>
+            <p className={styles.stateText}>
+              Our edit of seasonal offers is resting for the moment. Fresh deals will return
+              soon — until then, the full collection is waiting to be explored.
             </p>
-            <button className={styles.emptyBtn} onClick={() => navigate("/products")}>
-              Browse All Products
-            </button>
-          </section>
+            <Link to="/products" className={styles.stateBtn}>
+              Browse the collection
+            </Link>
+          </motion.section>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   const showCountdown = config.timer?.enabled !== false && countdown.show;
   const timerEnded = config.timer?.enabled !== false && countdown.ended;
+  const noContent = !loading && gridProducts.length === 0 && dealOfTheDay.length === 0;
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <motion.div
-      className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* ── Banner ──────────────────────────────────────────────────────── */}
-      <section className={styles.heroBanner}>
-        <div className={styles.heroContent}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className={styles.heroInner}
-          >
-            {config.hero?.tag && <span className={styles.heroTag}>{config.hero.tag}</span>}
-            <motion.h1
-              className={styles.heroTitle}
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              {config.hero?.title || "Special Offers & Deals"}
-            </motion.h1>
-            {config.hero?.subtitle && (
-              <p className={styles.heroSubtitle}>{config.hero.subtitle}</p>
-            )}
-            {showCountdown ? (
-              <div className={styles.heroCountdown}>
-                <span className={styles.countdownLabel}>Deals end in:</span>
-                <div className={styles.countdownBoxes}>
-                  <div className={styles.countdownUnit}>
-                    <span className={styles.countdownNumber}>{pad(countdown.parts.hours)}</span>
-                    <span className={styles.countdownText}>Hours</span>
-                  </div>
-                  <span className={styles.countdownSep}>:</span>
-                  <div className={styles.countdownUnit}>
-                    <span className={styles.countdownNumber}>{pad(countdown.parts.minutes)}</span>
-                    <span className={styles.countdownText}>Min</span>
-                  </div>
-                  <span className={styles.countdownSep}>:</span>
-                  <div className={styles.countdownUnit}>
-                    <span className={styles.countdownNumber}>{pad(countdown.parts.seconds)}</span>
-                    <span className={styles.countdownText}>Sec</span>
-                  </div>
-                </div>
-              </div>
-            ) : timerEnded ? (
-              <div className={styles.heroEnded}>These deals have ended — fresh offers coming soon!</div>
-            ) : null}
-          </motion.div>
-        </div>
-      </section>
+    <div className={styles.page}>
+      {/* ── Hero — a quiet editorial band ─────────────────────────────────── */}
+      <header className={styles.hero}>
+        <motion.div
+          className={styles.heroInner}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.6, ease: EASE }}
+        >
+          {config.hero?.tag && <span className={styles.heroTag}>{config.hero.tag}</span>}
+          <h1 className={styles.heroTitle}>
+            {config.hero?.title || "Special Offers & Deals"}
+          </h1>
+          {config.hero?.subtitle && (
+            <p className={styles.heroSubtitle}>{config.hero.subtitle}</p>
+          )}
+          {showCountdown ? (
+            <Countdown parts={countdown.parts} />
+          ) : timerEnded ? (
+            <p className={styles.heroEnded}>
+              These offers have ended — a fresh edit is on its way.
+            </p>
+          ) : null}
+        </motion.div>
+      </header>
 
       <div className={styles.container}>
-        {/* ── Coupons Section ───────────────────────────────────────────── */}
+        {/* ── Coupons ─────────────────────────────────────────────────────── */}
         <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Active Coupons</h2>
-            <p className={styles.sectionSubtitle}>Copy a code and apply it at checkout</p>
+          <div className={styles.sectionHead}>
+            <span className={styles.eyebrow}>To redeem</span>
+            <h2 className={styles.sectionTitle}>Coupons &amp; codes</h2>
+            <p className={styles.sectionSubtitle}>Copy a code and apply it at checkout.</p>
           </div>
 
           {loading ? (
@@ -555,135 +459,145 @@ const SpecialOffers = () => {
             </div>
           ) : featuredCoupons.length > 0 ? (
             <div className={styles.couponGrid}>
-              {featuredCoupons.map((coupon) => (
-                <motion.div
-                  key={coupon.id ?? coupon.code}
-                  className={styles.couponCard}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className={styles.couponLeft}>
-                    <span className={styles.couponDiscount}>{couponHeadline(coupon)}</span>
-                    <span className={styles.couponLabel}>OFF</span>
-                  </div>
-                  <div className={styles.couponRight}>
-                    <p className={styles.couponDesc}>{coupon.description || `${couponHeadline(coupon)} off`}</p>
-                    <p className={styles.couponMeta}>
-                      {coupon.minOrderAmount > 0 ? `Min order ${rupees(coupon.minOrderAmount)}` : "No minimum order"}
-                      {coupon.type === "percentage" && coupon.maxDiscount
-                        ? ` · Up to ${rupees(coupon.maxDiscount)} off`
-                        : ""}
-                    </p>
-                    <p className={styles.couponMeta}>
-                      {coupon.expiresAt ? `Expires ${formatExpiry(coupon.expiresAt)}` : "No expiry"}
-                    </p>
-                    <div className={styles.couponCodeRow}>
-                      <code className={styles.couponCode}>{coupon.code}</code>
-                      <button
-                        className={`${styles.copyBtn} ${copiedCode === coupon.code ? styles.copied : ""}`}
-                        onClick={() => handleCopyCode(coupon.code)}
-                        aria-label={`Copy coupon code ${coupon.code}`}
-                      >
-                        {copiedCode === coupon.code ? "Copied!" : "Copy Code"}
-                      </button>
+              {featuredCoupons.map((coupon) => {
+                const isCopied = copiedCode === coupon.code;
+                return (
+                  <div key={coupon.id ?? coupon.code} className={styles.couponCard}>
+                    <div className={styles.couponValue}>
+                      <span className={styles.couponHeadline}>{couponHeadline(coupon)}</span>
+                      <span className={styles.couponOff}>Off</span>
+                    </div>
+                    <div className={styles.couponBody}>
+                      <p className={styles.couponDesc}>
+                        {coupon.description || `${couponHeadline(coupon)} off your order`}
+                      </p>
+                      <p className={styles.couponMeta}>
+                        {coupon.minOrderAmount > 0
+                          ? `On orders over ${rupees(coupon.minOrderAmount)}`
+                          : "No minimum order"}
+                        {coupon.type === "percentage" && coupon.maxDiscount
+                          ? ` · up to ${rupees(coupon.maxDiscount)} off`
+                          : ""}
+                      </p>
+                      <p className={styles.couponMeta}>
+                        {coupon.expiresAt ? `Valid until ${formatExpiry(coupon.expiresAt)}` : "No expiry"}
+                      </p>
+                      <div className={styles.couponCodeRow}>
+                        <code className={styles.couponCode}>{coupon.code}</code>
+                        <button
+                          type="button"
+                          className={`${styles.copyBtn} ${isCopied ? styles.copied : ""}`}
+                          onClick={() => handleCopyCode(coupon.code)}
+                          aria-label={isCopied ? "Code copied" : `Copy coupon code ${coupon.code}`}
+                        >
+                          {isCopied ? (
+                            <>
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                              Copied
+                            </>
+                          ) : (
+                            "Copy"
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </motion.div>
-              ))}
+                );
+              })}
             </div>
           ) : (
-            <p className={styles.couponEmpty}>
-              No active coupons right now — check back soon for fresh codes!
+            <p className={styles.inlineEmpty}>
+              No codes are live right now — please check back soon.
             </p>
           )}
         </section>
 
-        {/* ── Deal of the Day ───────────────────────────────────────────── */}
+        {/* ── Deal of the Day — a curated trio ──────────────────────────────── */}
         {!loading && dealOfTheDay.length > 0 && (
           <section className={styles.section}>
-            <div className={styles.sectionHeader}>
+            <div className={styles.sectionHead}>
               <div className={styles.sectionTitleRow}>
-                <h2 className={styles.sectionTitle}>Deal of the Day</h2>
+                <span className={styles.eyebrow}>Today only</span>
                 {showCountdown && (
-                  <div className={styles.dotdTimer}>
-                    <span className={styles.timerIcon}>&#9200;</span>
-                    <span>
-                      {pad(countdown.parts.hours)}:{pad(countdown.parts.minutes)}:{pad(countdown.parts.seconds)}
-                    </span>
-                  </div>
+                  <span className={styles.dealTimer}>
+                    Ends in {pad(countdown.parts.hours)}:{pad(countdown.parts.minutes)}:{pad(countdown.parts.seconds)}
+                  </span>
                 )}
               </div>
-              <p className={styles.sectionSubtitle}>Today's top picks at the lowest prices</p>
+              <h2 className={styles.sectionTitle}>Deal of the day</h2>
+              <p className={styles.sectionSubtitle}>A handful of pieces at their lowest.</p>
             </div>
-            <div className={styles.dotdGrid}>
+
+            <div className={styles.dealGrid}>
               {dealOfTheDay.map((product, idx) => {
                 const minPrice = getProductMinPrice(product);
                 const maxDiscount = getProductMaxDiscount(product);
-                const saving = minPrice.originalPrice - minPrice.sellingPrice;
+                const primaryImg =
+                  product.images?.[0] || product.image || PLACEHOLDER_IMG;
                 return (
-                  <motion.div
+                  <motion.article
                     key={product.id}
-                    className={styles.dotdCard}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    onClick={() => navigate(productPath(product))}
+                    className={styles.dealCard}
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: prefersReducedMotion ? 0 : 0.5,
+                      delay: prefersReducedMotion ? 0 : idx * 0.08,
+                      ease: EASE,
+                    }}
                   >
-                    <div className={styles.dotdImageWrap}>
+                    <div className={styles.dealMedia}>
                       <img
-                        src={product.images?.[0] || product.image || "https://placehold.co/600x400?text=No+Image"}
+                        src={primaryImg}
                         alt={product.name}
-                        className={styles.dotdImage}
+                        className={styles.dealImage}
+                        loading="lazy"
                         onError={onImageError}
                       />
-                      {maxDiscount > 0 && <span className={styles.dotdBadge}>-{maxDiscount}%</span>}
-                    </div>
-                    <div className={styles.dotdInfo}>
-                      <h3 className={styles.dotdName}>{product.name}</h3>
-                      <div className={styles.dotdPriceRow}>
-                        <span className={styles.dotdSalePrice}>
-                          {formatCurrency(minPrice.sellingPrice, minPrice.currency)}
-                        </span>
-                        {maxDiscount > 0 && (
-                          <span className={styles.dotdOriginalPrice}>
-                            {formatCurrency(minPrice.originalPrice, minPrice.currency)}
-                          </span>
-                        )}
-                      </div>
-                      {saving > 0 && (
-                        <p className={styles.dotdSavings}>
-                          You save{" "}
-                          <span className={styles.dotdSavingsAmount}>
-                            {formatCurrency(saving, minPrice.currency)}
-                          </span>
-                        </p>
+                      {maxDiscount > 0 && (
+                        <span className={styles.dealBadge}>{maxDiscount}% off</span>
                       )}
+                    </div>
+                    <div className={styles.dealInfo}>
+                      <h3 className={styles.dealName}>
+                        <Link to={productPath(product)} className={styles.dealNameLink}>
+                          {product.name}
+                        </Link>
+                      </h3>
+                      <PriceBlock
+                        price={minPrice.sellingPrice}
+                        comparePrice={minPrice.originalPrice}
+                        currency={minPrice.currency}
+                        size="md"
+                        showSavings
+                      />
                       <button
-                        className={styles.dotdBtn}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAddToCart(product);
-                        }}
+                        type="button"
+                        className={styles.dealBtn}
+                        onClick={() => handleAddDeal(product)}
                       >
                         Add to Cart
                       </button>
                     </div>
-                  </motion.div>
+                  </motion.article>
                 );
               })}
             </div>
           </section>
         )}
 
-        {/* ── Deals by Category ─────────────────────────────────────────── */}
+        {/* ── Deals by Category ─────────────────────────────────────────────── */}
         {!loading && gridProducts.length > 0 && (
           <section className={styles.section}>
-            <div className={styles.sectionHeader}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>The edit</span>
               <h2 className={styles.sectionTitle}>
-                {dealCategories.length > 0 ? "Deals by Category" : "All Deals"}
+                {dealCategories.length > 0 ? "Deals by category" : "All deals"}
               </h2>
               <p className={styles.sectionSubtitle}>
-                {filteredProducts.length} deal{filteredProducts.length !== 1 ? "s" : ""} available
+                {filteredProducts.length} piece{filteredProducts.length !== 1 ? "s" : ""} on offer
               </p>
             </div>
 
@@ -695,28 +609,33 @@ const SpecialOffers = () => {
               />
             )}
 
-            {/* ── Products Grid ─────────────────────────────────────────── */}
-            <div className={styles.productsGrid}>
-              <AnimatePresence mode="popLayout">
-                {filteredProducts.map((product, index) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    categoryName={categoryMap[product.categoryId]}
-                    index={index}
-                    onAddToCart={handleAddToCart}
-                    onToggleWishlist={handleToggleWishlist}
-                    isWishlisted={isInWishlist(product.id)}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
+            <motion.div
+              key={activeTab}
+              className={styles.productsGrid}
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: EASE }}
+            >
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={addToCart}
+                  onToggleWishlist={toggleWishlist}
+                  isWishlisted={isInWishlist(product.id)}
+                />
+              ))}
+            </motion.div>
           </section>
         )}
 
-        {/* ── Loading Skeletons ─────────────────────────────────────────── */}
+        {/* ── Loading skeletons ─────────────────────────────────────────────── */}
         {loading && (
           <section className={styles.section}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>The edit</span>
+              <h2 className={styles.sectionTitle}>Deals by category</h2>
+            </div>
             <div className={styles.productsGrid}>
               {Array.from({ length: 8 }, (_, i) => (
                 <ProductSkeleton key={i} />
@@ -725,21 +644,24 @@ const SpecialOffers = () => {
           </section>
         )}
 
-        {/* ── Empty State ───────────────────────────────────────────────── */}
-        {!loading && gridProducts.length === 0 && dealOfTheDay.length === 0 && (
-          <section className={styles.emptyState}>
-            <div className={styles.emptyIcon}>&#127991;</div>
-            <h2 className={styles.emptyTitle}>No Deals Available</h2>
-            <p className={styles.emptyText}>
-              There are no active deals right now. Check back soon for exciting offers!
+        {/* ── Empty state — honest, serene ──────────────────────────────────── */}
+        {noContent && (
+          <section className={styles.stateBox}>
+            <span className={styles.stateMark}>
+              <TagMark />
+            </span>
+            <h2 className={styles.stateTitle}>No deals on the table just yet</h2>
+            <p className={styles.stateText}>
+              There aren't any active offers at the moment. New pieces are added often —
+              do come back soon.
             </p>
-            <button className={styles.emptyBtn} onClick={() => navigate("/products")}>
-              Browse All Products
-            </button>
+            <Link to="/products" className={styles.stateBtn}>
+              Browse the collection
+            </Link>
           </section>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

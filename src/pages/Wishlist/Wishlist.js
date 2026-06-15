@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useWishlist } from "../../context/WishlistContext";
 import { useCart } from "../../hooks/useCart";
 import { useAuth } from "../../hooks/useAuth";
+import { StarRating, PriceBlock } from "../../components/storefront";
 import {
-  formatCurrency,
   getProductMinPrice,
   getDefaultCartVariant,
   buildCartItem,
   productPath,
+  onImageError,
+  PLACEHOLDER_IMG,
 } from "../../utils/helpers";
 import styles from "./Wishlist.module.css";
 
@@ -22,30 +23,50 @@ const SORT_OPTIONS = [
   { value: "ratingHigh", label: "Highest Rated" },
 ];
 
-const StarRating = ({ rating, count }) => {
-  const fullStars = Math.floor(rating || 0);
-  const hasHalf = (rating || 0) - fullStars >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
+// ---------------------------------------------------------------------------
+// Small inline icons — colour via currentColor so they inherit the tokenized
+// text/brass colours (no hardcoded hex, no icon-library dependency).
+// ---------------------------------------------------------------------------
+const SyncIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M21 12a9 9 0 0 1-9 9c-2.5 0-4.77-1-6.4-2.6" />
+    <path d="M3 12a9 9 0 0 1 9-9c2.5 0 4.77 1 6.4 2.6" />
+    <polyline points="18 2 18.4 5.6 14.8 6" />
+    <polyline points="6 22 5.6 18.4 9.2 18" />
+  </svg>
+);
 
-  return (
-    <div className={styles.starRating}>
-      {[...Array(fullStars)].map((_, i) => (
-        <span key={`full-${i}`} className={styles.starFull}>&#9733;</span>
-      ))}
-      {hasHalf && <span className={styles.starHalf}>&#9733;</span>}
-      {[...Array(emptyStars)].map((_, i) => (
-        <span key={`empty-${i}`} className={styles.starEmpty}>&#9733;</span>
-      ))}
-      {count !== undefined && (
-        <span className={styles.reviewCount}>({count?.toLocaleString() || 0})</span>
-      )}
+const CloseIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const HeartIcon = () => (
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
+
+// Brand skeleton — calm shimmer (sf-skeleton primitive) in the card silhouette.
+const CardSkeleton = () => (
+  <div className={styles.skeletonCard} aria-hidden="true">
+    <div className={`sf-skeleton ${styles.skeletonMedia}`} />
+    <div className={styles.skeletonBody}>
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skBrand}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skName}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skPrice}`} />
+      <span className={`sf-skeleton ${styles.skBtn}`} />
     </div>
-  );
-};
+  </div>
+);
 
 const Wishlist = () => {
-  const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
+  // Honour reduced motion for the JS-driven entrance/exit (the token-based CSS
+  // transitions already zero out via storefront-tokens.css, but Framer needs to
+  // be told explicitly).
+  const prefersReducedMotion = useReducedMotion();
   const { wishlistItems, isLoading, removeFromWishlist, clearWishlist } = useWishlist();
   const { addToCart } = useCart();
   const { user, isLoading: authLoading, openAuthModal } = useAuth();
@@ -78,11 +99,12 @@ const Wishlist = () => {
   const handleRemove = async (e, productId) => {
     e.stopPropagation();
     setRemovingId(productId);
-    // Small delay to let exit animation play
+    // Let the gentle exit play before the row leaves the list; instant when the
+    // user prefers reduced motion.
     setTimeout(() => {
       removeFromWishlist(productId);
       setRemovingId(null);
-    }, 300);
+    }, prefersReducedMotion ? 0 : 300);
   };
 
   const handleAddToCart = (e, item) => {
@@ -102,64 +124,50 @@ const Wishlist = () => {
       // replacing it with a "Removed" toast mid-move.
       removeFromWishlist(item.productId, { silent: true });
       setRemovingId(null);
-    }, 300);
-  };
-
-  const handleProductClick = (item) => {
-    // Wishlist rows carry the slug (with a productId fallback) so the link is
-    // canonical; productPath resolves whichever is present.
-    navigate(productPath(item));
+    }, prefersReducedMotion ? 0 : 300);
   };
 
   const sortedItems = getSortedItems();
 
-  // Guests keep a fully working wishlist (saved on this device) — the same
-  // open access as the heart toggles on cards/PDP. This banner is the single
-  // login entry point and opens the global AuthModal (there is no /login
-  // route); on login the local items merge into the account's wishlist.
-  // Hidden while the session restore is pending so it doesn't flash on reload.
+  // Guests keep a fully working wishlist (saved on this device) — the same open
+  // access as the heart toggles on cards/PDP. This banner is the single login
+  // entry point and opens the global AuthModal (there is no /login route); on
+  // login the local items merge into the account's wishlist. Hidden while the
+  // session restore is pending so it doesn't flash on reload.
   const guestBanner = !user && !authLoading && (
     <motion.div
       className={styles.guestBanner}
-      initial={{ opacity: 0, y: -8 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.4 }}
     >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-      <p className={styles.guestBannerText}>
-        Your wishlist is saved on this device. Log in to sync it across devices.
+      <SyncIcon />
+      <p className={styles.guestText}>
+        Your saved pieces are kept on this device.
       </p>
       <button
-        className={styles.guestBannerBtn}
+        type="button"
+        className={styles.guestLink}
         onClick={() => openAuthModal("login")}
       >
-        Log In
+        Sign in to sync
       </button>
     </motion.div>
   );
 
-  // Loading state
+  // ---- Loading: serif header + brand skeletons --------------------------
   if (isLoading) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.container}>
-          <div className={styles.header}>
-            <h1 className={styles.title}>My Wishlist</h1>
-          </div>
+          <header className={styles.header}>
+            <div className={styles.headerLeft}>
+              <h1 className={styles.title}>Saved pieces</h1>
+            </div>
+          </header>
           <div className={styles.grid}>
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className={styles.skeletonCard}>
-                <div className={styles.skeletonImage} />
-                <div className={styles.skeletonBody}>
-                  <div className={styles.skeletonLine} style={{ width: "75%" }} />
-                  <div className={styles.skeletonLine} style={{ width: "50%" }} />
-                  <div className={styles.skeletonLine} style={{ width: "35%" }} />
-                  <div className={styles.skeletonLine} style={{ width: "100%", height: "36px" }} />
-                </div>
-              </div>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <CardSkeleton key={i} />
             ))}
           </div>
         </div>
@@ -167,74 +175,63 @@ const Wishlist = () => {
     );
   }
 
-  // Empty wishlist
+  // ---- Empty: a serene line of brand copy + a way into the collection ----
   if (!wishlistItems || wishlistItems.length === 0) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.container}>
           {guestBanner}
-          <div className={styles.header}>
+          <header className={styles.header}>
             <div className={styles.headerLeft}>
-              <h1 className={styles.title}>My Wishlist</h1>
-              <span className={styles.itemCount}>(0 items)</span>
+              <h1 className={styles.title}>Saved pieces</h1>
+              <span className={styles.count}>0 items</span>
             </div>
-          </div>
+          </header>
           <motion.div
-            className={styles.emptyState}
-            initial={{ opacity: 0, y: 30 }}
+            className={styles.empty}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
           >
-            <div className={styles.emptyHeart}>
-              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </div>
-            <h2 className={styles.emptyTitle}>Your wishlist is empty</h2>
+            <span className={styles.emptyMark}>
+              <HeartIcon />
+            </span>
+            <h2 className={styles.emptyTitle}>Nothing saved just yet</h2>
             <p className={styles.emptyText}>
-              Save the items you love to come back to them later.
+              Tap the heart on any piece to keep it here — a quiet place to
+              gather the things you love.
             </p>
-            <button
-              className={styles.shopButton}
-              onClick={() => navigate("/products")}
-            >
-              Start Shopping
-            </button>
+            <Link to="/products" className={styles.emptyBtn}>
+              Explore the collection
+            </Link>
           </motion.div>
         </div>
       </div>
     );
   }
 
-  // Wishlist with items
+  // ---- Saved pieces gallery ---------------------------------------------
   return (
-    <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+    <div className={styles.page}>
       <div className={styles.container}>
         {guestBanner}
-        {/* Header */}
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+
+        {/* Header — serif title, live count, restrained sort, quiet clear */}
+        <header className={styles.header}>
           <div className={styles.headerLeft}>
-            <h1 className={styles.title}>My Wishlist</h1>
-            <span className={styles.itemCount}>
-              ({wishlistItems.length} {wishlistItems.length === 1 ? "item" : "items"})
+            <h1 className={styles.title}>Saved pieces</h1>
+            <span className={styles.count}>
+              {wishlistItems.length} {wishlistItems.length === 1 ? "item" : "items"}
             </span>
           </div>
           <div className={styles.headerActions}>
-            {/* Sort Dropdown */}
-            <div className={styles.sortWrapper}>
-              <label htmlFor="wishlist-sort" className={styles.sortLabel}>
-                Sort by:
-              </label>
+            <label className={styles.sortField}>
+              <span className={styles.sortLabel}>Sort</span>
               <select
-                id="wishlist-sort"
                 className={styles.sortSelect}
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
+                aria-label="Sort saved pieces"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -242,22 +239,19 @@ const Wishlist = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </label>
             <button
-              className={styles.clearAllBtn}
+              type="button"
+              className={styles.clearBtn}
               onClick={clearWishlist}
-              title="Clear all items"
+              title="Remove all saved pieces"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-              Clear All
+              Clear all
             </button>
           </div>
-        </motion.div>
+        </header>
 
-        {/* Product Grid */}
+        {/* Gallery */}
         <div className={styles.grid}>
           <AnimatePresence mode="popLayout">
             {sortedItems.map((item, index) => {
@@ -270,100 +264,107 @@ const Wishlist = () => {
               const stockValue = defaultVariant ? defaultVariant.stock : item.stock;
               const inStock =
                 stockValue == null || stockValue === "" || Number(stockValue) > 0;
+              const ratingCount = Number(item.totalReviews) || 0;
 
               return (
-                <motion.div
+                <motion.article
                   key={item.productId}
                   className={`${styles.card} ${removingId === item.productId ? styles.cardRemoving : ""}`}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.85, y: 20 }}
-                  transition={{ duration: 0.3, delay: index * 0.03 }}
-                  onClick={() => handleProductClick(item)}
+                  layout={!prefersReducedMotion}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={
+                    prefersReducedMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, scale: 0.96, y: 10 }
+                  }
+                  transition={
+                    prefersReducedMotion
+                      ? { duration: 0 }
+                      : {
+                          duration: 0.4,
+                          ease: [0.22, 1, 0.36, 1],
+                          delay: Math.min(index * 0.04, 0.28),
+                        }
+                  }
                 >
-                  {/* Image Section */}
-                  <div className={styles.imageWrapper}>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={styles.productImage}
-                      loading="lazy"
-                    />
+                  {/* Media */}
+                  <div className={styles.media}>
+                    <Link
+                      to={productPath(item)}
+                      className={styles.mediaLink}
+                      aria-label={item.name}
+                    >
+                      <img
+                        className={styles.image}
+                        src={item.image || PLACEHOLDER_IMG}
+                        alt={item.name}
+                        loading="lazy"
+                        onError={onImageError}
+                      />
+                    </Link>
 
-                    {/* Discount Badge */}
                     {hasDiscount && (
-                      <span className={styles.discountBadge}>
-                        -{priceInfo.discount}%
-                      </span>
+                      <span className={styles.badge}>{priceInfo.discount}% off</span>
                     )}
 
-                    {/* Remove / Heart Toggle */}
                     <button
+                      type="button"
                       className={styles.removeBtn}
                       onClick={(e) => handleRemove(e, item.productId)}
-                      aria-label="Remove from wishlist"
+                      aria-label={`Remove ${item.name} from wishlist`}
                       title="Remove from wishlist"
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
+                      <CloseIcon />
                     </button>
                   </div>
 
-                  {/* Info Section */}
-                  <div className={styles.cardBody}>
-                    {/* Brand */}
-                    {item.brand && (
-                      <span className={styles.brand}>{item.brand}</span>
-                    )}
+                  {/* Body */}
+                  <div className={styles.body}>
+                    {item.brand && <span className={styles.brand}>{item.brand}</span>}
 
-                    {/* Name */}
-                    <h3 className={styles.productName}>{item.name}</h3>
+                    <h3 className={styles.name}>
+                      <Link to={productPath(item)} className={styles.nameLink}>
+                        {item.name}
+                      </Link>
+                    </h3>
 
-                    {/* Rating */}
-                    {item.rating > 0 && (
-                      <StarRating rating={item.rating} count={item.totalReviews} />
-                    )}
-
-                    {/* Price */}
-                    <div className={styles.priceRow}>
-                      <span className={styles.salePrice}>
-                        {formatCurrency(priceInfo.sellingPrice, "INR")}
-                      </span>
-                      {hasDiscount && (
-                        <span className={styles.originalPrice}>
-                          {formatCurrency(priceInfo.originalPrice, "INR")}
+                    {ratingCount > 0 && (
+                      <span className={styles.rating}>
+                        <StarRating rating={item.rating || 0} size={13} />
+                        <span className={styles.ratingCount}>
+                          ({ratingCount.toLocaleString()})
                         </span>
-                      )}
-                    </div>
+                      </span>
+                    )}
 
-                    {/* Stock Status */}
-                    <div className={styles.stockStatus}>
-                      {inStock ? (
-                        <span className={styles.inStock}>In Stock</span>
-                      ) : (
-                        <span className={styles.outOfStock}>Out of Stock</span>
-                      )}
-                    </div>
+                    <PriceBlock
+                      price={priceInfo.sellingPrice}
+                      comparePrice={priceInfo.originalPrice}
+                      size="sm"
+                      showSavings={false}
+                    />
 
-                    {/* Action Buttons */}
-                    <div className={styles.cardActions}>
+                    <span
+                      className={`${styles.stock} ${inStock ? styles.inStock : styles.outOfStock}`}
+                    >
+                      <span className={styles.stockDot} aria-hidden="true" />
+                      {inStock ? "In stock" : "Out of stock"}
+                    </span>
+
+                    {/* Two clear actions: Add (brass) + Move (quiet) */}
+                    <div className={styles.actions}>
                       <button
-                        className={styles.addToCartBtn}
+                        type="button"
+                        className={styles.addBtn}
                         onClick={(e) => handleAddToCart(e, item)}
                         disabled={!inStock}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="9" cy="21" r="1" />
-                          <circle cx="20" cy="21" r="1" />
-                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                        </svg>
                         Add to Cart
                       </button>
                       <button
-                        className={styles.moveToCartBtn}
+                        type="button"
+                        className={styles.moveBtn}
                         onClick={(e) => handleMoveToCart(e, item)}
                         disabled={!inStock}
                       >
@@ -371,7 +372,7 @@ const Wishlist = () => {
                       </button>
                     </div>
                   </div>
-                </motion.div>
+                </motion.article>
               );
             })}
           </AnimatePresence>

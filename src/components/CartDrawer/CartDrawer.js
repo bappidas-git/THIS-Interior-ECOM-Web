@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useCart } from "../../hooks/useCart";
-import { useTheme } from "../../context/ThemeContext";
 import {
   formatCurrency,
   truncateText,
@@ -11,6 +10,7 @@ import {
   onImageError,
 } from "../../utils/helpers";
 import { FREE_SHIPPING_THRESHOLD } from "../../utils/constants";
+import { resolveTrustBadgeDetail } from "../../theme/tokens";
 import styles from "./CartDrawer.module.css";
 
 // Shipping shown while below the free threshold. Mirrors the Standard method's
@@ -20,7 +20,7 @@ const FLAT_SHIPPING = 99;
 
 const CartDrawer = ({ open, onClose }) => {
   const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
+  const reduceMotion = useReducedMotion();
   const {
     cartItems,
     updateQuantity,
@@ -32,6 +32,9 @@ const CartDrawer = ({ open, onClose }) => {
   const cart = cartItems || [];
   const cartCount = getCartItemCount ? getCartItemCount() : 0;
   const cartTotal = getCartTotal ? getCartTotal() : 0;
+  // Format money in the line currency (defaults INR today; the AED switch later
+  // flows through automatically because every line carries its own currency).
+  const currency = cart[0]?.currency || "INR";
 
   const shippingCost = cartTotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING;
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
@@ -40,15 +43,24 @@ const CartDrawer = ({ open, onClose }) => {
     (cartTotal / FREE_SHIPPING_THRESHOLD) * 100
   );
 
-  // Lock body scroll while the drawer is open so the page behind it can't move.
+  // Quiet, policy-level reassurance. The returns window is resolved from the
+  // shared config (never hardcoded); it hides itself if the store offers none.
+  const returnsLabel = resolveTrustBadgeDetail("easyReturns");
+
+  // Lock body scroll while the drawer is open and let Escape dismiss it.
   useEffect(() => {
-    if (!open) return;
-    const previous = document.body.style.overflow;
+    if (!open) return undefined;
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
     };
-  }, [open]);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, onClose]);
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity < 1) return;
@@ -64,51 +76,49 @@ const CartDrawer = ({ open, onClose }) => {
     navigate(path);
   };
 
-  const themeClass = isDarkMode ? styles.dark : styles.light;
+  // Reduced-motion-safe panel/backdrop transitions.
+  const panelInitial = reduceMotion ? { opacity: 0 } : { x: "100%" };
+  const panelAnimate = reduceMotion ? { opacity: 1 } : { x: 0 };
+  const panelExit = reduceMotion ? { opacity: 0 } : { x: "100%" };
+  const panelTransition = reduceMotion
+    ? { duration: 0 }
+    : { type: "spring", damping: 34, stiffness: 320 };
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop overlay */}
+          {/* Backdrop scrim */}
           <motion.div
             className={styles.backdrop}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3 }}
             onClick={onClose}
           />
 
           {/* Drawer panel */}
           <motion.aside
-            className={`${styles.drawer} ${themeClass}`}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className={styles.drawer}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-drawer-title"
+            initial={panelInitial}
+            animate={panelAnimate}
+            exit={panelExit}
+            transition={panelTransition}
           >
             {/* Header */}
-            <div className={styles.header}>
-              <div className={styles.headerLeft}>
-                <svg
-                  className={styles.headerIcon}
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                <h2 className={styles.title}>Shopping Cart</h2>
+            <header className={styles.header}>
+              <div className={styles.headerTitle}>
+                <h2 className={styles.title} id="cart-drawer-title">
+                  Your Cart
+                </h2>
                 {cartCount > 0 && (
-                  <span className={styles.itemCount}>{cartCount}</span>
+                  <span className={styles.itemCount}>
+                    {cartCount} {cartCount === 1 ? "item" : "items"}
+                  </span>
                 )}
               </div>
               <button
@@ -117,12 +127,12 @@ const CartDrawer = ({ open, onClose }) => {
                 aria-label="Close cart"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="1.6"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
@@ -130,60 +140,68 @@ const CartDrawer = ({ open, onClose }) => {
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
-            </div>
+            </header>
 
-            {/* Free shipping progress bar */}
+            {/* Free-shipping qualifier */}
             {cart.length > 0 && (
               <div className={styles.shippingBanner}>
                 {amountToFreeShipping > 0 ? (
                   <p className={styles.shippingText}>
-                    Add{" "}
-                    <strong>{formatCurrency(amountToFreeShipping)}</strong>{" "}
-                    more for <strong>free shipping</strong>
+                    You're{" "}
+                    <strong>
+                      {formatCurrency(amountToFreeShipping, currency)}
+                    </strong>{" "}
+                    away from complimentary shipping
                   </p>
                 ) : (
-                  <p className={styles.shippingText}>
+                  <p className={`${styles.shippingText} ${styles.shippingUnlocked}`}>
                     <svg
                       className={styles.checkIcon}
-                      width="16"
-                      height="16"
+                      width="15"
+                      height="15"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2.5"
+                      strokeWidth="2.2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    You qualify for <strong>free shipping!</strong>
+                    You've unlocked <strong>complimentary shipping</strong>
                   </p>
                 )}
-                <div className={styles.progressBarTrack}>
+                <div
+                  className={styles.progressBarTrack}
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(shippingProgress)}
+                >
                   <motion.div
                     className={styles.progressBarFill}
                     initial={{ width: 0 }}
                     animate={{ width: `${shippingProgress}%` }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    transition={{ duration: reduceMotion ? 0 : 0.7, ease: "easeOut" }}
                   />
                 </div>
               </div>
             )}
 
-            {/* Cart items list */}
+            {/* Items */}
             <div className={styles.itemsContainer}>
               {cart.length === 0 ? (
                 <div className={styles.emptyState}>
                   <motion.div
                     className={styles.emptyStateInner}
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.4, ease: "easeOut" }}
                   >
                     <svg
                       className={styles.emptyIcon}
-                      width="80"
-                      height="80"
+                      width="56"
+                      height="56"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -197,13 +215,13 @@ const CartDrawer = ({ open, onClose }) => {
                     </svg>
                     <h3 className={styles.emptyTitle}>Your cart is empty</h3>
                     <p className={styles.emptyText}>
-                      Looks like you haven't added anything to your cart yet.
+                      Curated pieces you add will be gathered here.
                     </p>
                     <button
                       className={styles.continueShoppingBtn}
                       onClick={() => handleNavigate("/")}
                     >
-                      Continue Shopping
+                      Continue shopping
                     </button>
                   </motion.div>
                 </div>
@@ -223,52 +241,86 @@ const CartDrawer = ({ open, onClose }) => {
                       <motion.div
                         key={item.id}
                         className={styles.cartItem}
-                        layout
-                        initial={{ opacity: 0, x: 40 }}
+                        layout={!reduceMotion}
+                        initial={
+                          reduceMotion
+                            ? { opacity: 0 }
+                            : { opacity: 0, x: 28 }
+                        }
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{
-                          opacity: 0,
-                          x: -40,
-                          height: 0,
-                          marginBottom: 0,
-                          padding: 0,
-                          overflow: "hidden",
+                        exit={
+                          reduceMotion
+                            ? { opacity: 0 }
+                            : {
+                                opacity: 0,
+                                x: -28,
+                                height: 0,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                                overflow: "hidden",
+                              }
+                        }
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.28,
+                          ease: [0.22, 1, 0.36, 1],
                         }}
-                        transition={{ duration: 0.25 }}
                       >
-                        <div
+                        <button
+                          type="button"
                           className={styles.itemImage}
                           onClick={() => handleNavigate(productHref)}
+                          aria-label={`View ${item.name}`}
                         >
                           <img
                             src={item.image || PLACEHOLDER_IMG}
                             alt={item.name}
                             onError={onImageError}
                           />
-                        </div>
+                        </button>
 
                         <div className={styles.itemDetails}>
-                          <div className={styles.itemMeta}>
-                            <h4
-                              className={styles.itemName}
-                              onClick={() => handleNavigate(productHref)}
+                          <div className={styles.itemHead}>
+                            <div className={styles.itemMeta}>
+                              <h4
+                                className={styles.itemName}
+                                onClick={() => handleNavigate(productHref)}
+                              >
+                                {truncateText(item.name, 45)}
+                              </h4>
+                              {item.variantName && (
+                                <span className={styles.itemVariant}>
+                                  {item.variantName}
+                                </span>
+                              )}
+                            </div>
+                            <button
+                              className={styles.removeBtn}
+                              onClick={() => handleRemoveItem(item.id)}
+                              aria-label={`Remove ${item.name}`}
                             >
-                              {truncateText(item.name, 45)}
-                            </h4>
-                            {item.variantName && (
-                              <span className={styles.itemVariant}>
-                                {item.variantName}
-                              </span>
-                            )}
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                              </svg>
+                            </button>
                           </div>
 
                           <div className={styles.itemPricing}>
                             <span className={styles.itemPrice}>
-                              {formatCurrency(item.price)}
+                              {formatCurrency(item.price, currency)}
                             </span>
                             {hasDiscount && (
                               <span className={styles.itemComparePrice}>
-                                {formatCurrency(item.comparePrice)}
+                                {formatCurrency(item.comparePrice, currency)}
                               </span>
                             )}
                           </div>
@@ -284,12 +336,12 @@ const CartDrawer = ({ open, onClose }) => {
                                 aria-label="Decrease quantity"
                               >
                                 <svg
-                                  width="14"
-                                  height="14"
+                                  width="13"
+                                  height="13"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   stroke="currentColor"
-                                  strokeWidth="2.5"
+                                  strokeWidth="2"
                                 >
                                   <line x1="5" y1="12" x2="19" y2="12" />
                                 </svg>
@@ -309,12 +361,12 @@ const CartDrawer = ({ open, onClose }) => {
                                 aria-label="Increase quantity"
                               >
                                 <svg
-                                  width="14"
-                                  height="14"
+                                  width="13"
+                                  height="13"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   stroke="currentColor"
-                                  strokeWidth="2.5"
+                                  strokeWidth="2"
                                 >
                                   <line x1="12" y1="5" x2="12" y2="19" />
                                   <line x1="5" y1="12" x2="19" y2="12" />
@@ -323,30 +375,8 @@ const CartDrawer = ({ open, onClose }) => {
                             </div>
 
                             <span className={styles.lineTotal}>
-                              {formatCurrency(lineTotal)}
+                              {formatCurrency(lineTotal, currency)}
                             </span>
-
-                            <button
-                              className={styles.removeBtn}
-                              onClick={() => handleRemoveItem(item.id)}
-                              aria-label="Remove item"
-                            >
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <polyline points="3 6 5 6 21 6" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                <line x1="10" y1="11" x2="10" y2="17" />
-                                <line x1="14" y1="11" x2="14" y2="17" />
-                              </svg>
-                            </button>
                           </div>
                         </div>
                       </motion.div>
@@ -356,19 +386,61 @@ const CartDrawer = ({ open, onClose }) => {
               )}
             </div>
 
-            {/* Cart summary - sticky bottom */}
+            {/* Quiet trust row */}
+            {cart.length > 0 && (
+              <div className={styles.trustRow}>
+                <span className={styles.trustItem}>
+                  <svg
+                    className={styles.trustIcon}
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0110 0v4" />
+                  </svg>
+                  Secure payment
+                </span>
+                {returnsLabel && (
+                  <span className={styles.trustItem}>
+                    <svg
+                      className={styles.trustIcon}
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="1 4 1 10 7 10" />
+                      <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+                    </svg>
+                    {returnsLabel}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Footer summary */}
             {cart.length > 0 && (
               <div className={styles.footer}>
                 <div className={styles.summarySection}>
                   <div className={styles.summaryRow}>
                     <span className={styles.summaryLabel}>Subtotal</span>
                     <span className={styles.summaryValue}>
-                      {formatCurrency(cartTotal)}
+                      {formatCurrency(cartTotal, currency)}
                     </span>
                   </div>
                   <div className={styles.summaryRow}>
                     <span className={styles.summaryLabel}>
-                      Estimated Shipping
+                      Estimated shipping
                     </span>
                     <span
                       className={`${styles.summaryValue} ${
@@ -377,25 +449,23 @@ const CartDrawer = ({ open, onClose }) => {
                     >
                       {shippingCost === 0
                         ? "Free"
-                        : formatCurrency(shippingCost)}
+                        : formatCurrency(shippingCost, currency)}
                     </span>
                   </div>
                 </div>
 
-                <div className={styles.footerActions}>
-                  <button
-                    className={styles.viewCartBtn}
-                    onClick={() => handleNavigate("/checkout")}
-                  >
-                    View Cart
-                  </button>
-                  <button
-                    className={styles.checkoutBtn}
-                    onClick={() => handleNavigate("/checkout")}
-                  >
-                    Checkout
-                  </button>
-                </div>
+                <button
+                  className={styles.checkoutBtn}
+                  onClick={() => handleNavigate("/checkout")}
+                >
+                  Checkout
+                </button>
+                <button
+                  className={styles.viewCartBtn}
+                  onClick={() => handleNavigate("/checkout")}
+                >
+                  View cart
+                </button>
               </div>
             )}
           </motion.aside>

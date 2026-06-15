@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   getProductMinPrice,
   buildCartItem,
@@ -31,6 +32,7 @@ const FrequentlyBoughtTogether = ({
   onAddToCart,
   currency = "INR",
 }) => {
+  const prefersReducedMotion = useReducedMotion();
   const items = useMemo(
     () => (Array.isArray(companions) ? companions.filter(Boolean) : []),
     [companions]
@@ -70,7 +72,14 @@ const FrequentlyBoughtTogether = ({
   );
 
   return (
-    <section className={styles.section} aria-label="Frequently bought together">
+    <motion.section
+      className={styles.section}
+      aria-label="Frequently bought together"
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
       <h2 className={styles.title}>Frequently bought together</h2>
       <div className={styles.layout}>
         <div className={styles.visual}>
@@ -133,7 +142,7 @@ const FrequentlyBoughtTogether = ({
           </button>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

@@ -18,6 +18,9 @@ import styles from "./ReviewsSection.module.css";
 //   totalRatingsCount  number  number of ratings behind the average (real)
 //   loading, error     boolean
 //   onRetry            fn
+//   onWriteReview      fn      optional — opens the (purchase-gated) ReviewModal
+//   hasReviewed        boolean labels the entry "Edit your review" vs "Write a review"
+//   reviewNotice       string  optional honest gating message (e.g. verified-buyers only)
 // =============================================================================
 const RatingBar = ({ star, count, total }) => {
   const pct = total > 0 ? (count / total) * 100 : 0;
@@ -39,6 +42,9 @@ const ReviewsSection = ({
   loading = false,
   error = false,
   onRetry,
+  onWriteReview,
+  hasReviewed = false,
+  reviewNotice = "",
 }) => {
   const list = Array.isArray(reviews) ? reviews : [];
   const breakdown = [5, 4, 3, 2, 1].map((star) => ({
@@ -48,6 +54,26 @@ const ReviewsSection = ({
 
   return (
     <div className={styles.section}>
+      {/* Section header + the (purchase-gated) "Write a review" entry */}
+      <header className={styles.header}>
+        <h3 className={styles.heading}>Customer reviews</h3>
+        {onWriteReview && (
+          <button
+            type="button"
+            className={styles.writeBtn}
+            onClick={onWriteReview}
+          >
+            {hasReviewed ? "Edit your review" : "Write a review"}
+          </button>
+        )}
+      </header>
+
+      {reviewNotice && (
+        <p className={styles.notice} role="status">
+          {reviewNotice}
+        </p>
+      )}
+
       {/* Summary */}
       <div className={styles.summary}>
         <div className={styles.avgBlock}>
@@ -95,7 +121,7 @@ const ReviewsSection = ({
         </div>
       ) : list.length === 0 ? (
         <div className={styles.state}>
-          <p>No written reviews yet. Be the first to share your experience.</p>
+          <p>No reviews yet — be the first to share your experience.</p>
         </div>
       ) : (
         <div className={styles.list}>

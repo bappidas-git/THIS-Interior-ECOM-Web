@@ -4,6 +4,65 @@
   gap: var(--sf-space-6);
 }
 
+/* ---- Header + "Write a review" entry ---- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-space-4);
+  flex-wrap: wrap;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-medium);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--sf-color-text);
+}
+
+/* Secondary, hairline-outline brass button (mirrors .sf-btn--secondary). */
+.writeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--sf-tap-target);
+  padding: 0 var(--sf-space-5);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-md);
+  background: transparent;
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  cursor: pointer;
+  transition: color var(--sf-transition), border-color var(--sf-transition),
+    background var(--sf-transition);
+}
+.writeBtn:hover {
+  color: var(--sf-color-primary);
+  border-color: var(--sf-color-primary);
+  background: var(--sf-color-primary-soft);
+}
+.writeBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* Honest gating message (e.g. "verified buyers only"). */
+.notice {
+  margin: calc(var(--sf-space-3) * -1) 0 0;
+  padding: var(--sf-space-3) var(--sf-space-4);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-color-surface-2);
+  color: var(--sf-color-text-secondary);
+  font-size: var(--sf-text-sm);
+  line-height: var(--sf-leading-normal);
+}
+
 /* ---- Summary ---- */
 .summary {
   display: grid;
@@ -27,8 +86,9 @@
 }
 
 .avgNumber {
-  font-size: var(--sf-text-3xl);
-  font-weight: var(--sf-font-bold);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-4xl);
+  font-weight: var(--sf-font-medium);
   color: var(--sf-color-text);
   line-height: 1;
 }
@@ -150,12 +210,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
   border-radius: var(--sf-radius-pill);
-  background: var(--sf-gradient-primary);
-  color: #fff;
-  font-weight: var(--sf-font-semibold);
+  background: var(--sf-color-primary-soft);
+  border: 1px solid var(--sf-color-border);
+  color: var(--sf-color-primary);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-lg);
+  font-weight: var(--sf-font-medium);
 }
 
 .userName {

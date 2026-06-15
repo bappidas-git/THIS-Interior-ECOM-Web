@@ -399,10 +399,9 @@ const Home = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* 1. Hero Section */}
-      <section className={styles.heroSection}>
-        <HeroSection />
-      </section>
+      {/* 1. Hero — cinematic, full-bleed; renders its own section + the slim
+          assurance strip beneath. */}
+      <HeroSection />
 
       {/* 2. Flash Deals */}
       {flashDeals.length > 0 && (

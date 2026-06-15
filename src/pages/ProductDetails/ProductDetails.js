@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import Swal from "sweetalert2";
 import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../hooks/useAuth";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../context/WishlistContext";
 import apiService from "../../services/api";
@@ -20,7 +22,40 @@ import {
   RelatedProducts,
   FrequentlyBoughtTogether,
 } from "../../components/storefront";
+import ReviewModal from "../../components/ReviewModal/ReviewModal";
 import styles from "./ProductDetails.module.css";
+
+// Short, privacy-friendly display name for a review, e.g. "Bappi D." — mirrors
+// the convention used by Order History (Prompt 21) and the seeded reviews.
+const reviewDisplayName = (user) => {
+  const first = user?.firstName?.trim() || "";
+  const last = user?.lastName?.trim() || "";
+  if (first && last) return `${first} ${last[0].toUpperCase()}.`;
+  return first || user?.email?.split("@")[0] || "Customer";
+};
+
+// Collapse the order's payment/fulfilment/shipping fields into a single display
+// status (mirrors Order History's derivation) so the PDP can purchase-gate the
+// "Write a review" entry to a delivered, kept order.
+const deriveOrderStatus = (order) => {
+  if (order.paymentStatus || order.fulfillmentStatus || order.shippingStatus) {
+    if (order.fulfillmentStatus === "returned") return "returned";
+    if (
+      order.fulfillmentStatus === "cancelled" ||
+      order.paymentStatus === "failed" ||
+      order.paymentStatus === "refunded"
+    ) {
+      return "cancelled";
+    }
+    if (order.shippingStatus === "delivered") return "delivered";
+    if (order.shippingStatus === "shipped") return "shipped";
+    return "processing";
+  }
+  return order.status || "processing";
+};
+
+// The PDP's below-the-fold information tabs (Description / Details / Reviews).
+const TAB_KEYS = ["description", "details", "reviews"];
 
 // =============================================================================
 // Product Detail Page (PDP)
@@ -69,9 +104,12 @@ const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
+  const { user, isAuthenticated, openAuthModal } = useAuth();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const prefersReducedMotion = useReducedMotion();
   const tabsRef = useRef(null);
+  const tabRefs = useRef({}); // roving-tabindex refs, keyed by tab id
   const buyBoxRef = useRef(null); // anchor for the sticky mobile Add-to-Cart bar
 
   // ── State ──────────────────────────────────────────────────────────────
@@ -90,6 +128,13 @@ const ProductDetails = () => {
   const [category, setCategory] = useState(null);
   const [settings, setSettings] = useState(null);
   const [shipping, setShipping] = useState([]);
+  // Reviews authoring (purchase-gated): the shopper's own review for this
+  // product (for the edit flow) + the most recent delivered order it can be
+  // reviewed from. Both stay null until they're a signed-in, verified buyer.
+  const [myReview, setMyReview] = useState(null);
+  const [reviewableOrder, setReviewableOrder] = useState(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewNotice, setReviewNotice] = useState("");
 
   // ── Fetch product ──────────────────────────────────────────────────────
   const fetchProduct = useCallback(async () => {
@@ -199,6 +244,40 @@ const ProductDetails = () => {
     }
   }, [product]);
 
+  // ── Review eligibility (purchase-gated) — verified buyers only ──────────
+  // For a signed-in shopper, find their existing review for this product (to
+  // drive the edit flow) and the most recent DELIVERED order containing it (the
+  // proof of purchase the moderation pipeline requires). Anonymous shoppers
+  // fetch nothing; the "Write a review" entry then routes them to sign in.
+  const fetchReviewEligibility = useCallback(async () => {
+    if (!product?.id || !isAuthenticated || !user?.id) {
+      setMyReview(null);
+      setReviewableOrder(null);
+      return;
+    }
+    try {
+      const [orders, mine] = await Promise.all([
+        apiService.orders.getByUserId(user.id).catch(() => []),
+        apiService.reviews.getMine(user.id).catch(() => []),
+      ]);
+      const existing =
+        (Array.isArray(mine) ? mine : []).find(
+          (r) => String(r.productId) === String(product.id)
+        ) || null;
+      setMyReview(existing);
+      const order =
+        (Array.isArray(orders) ? orders : [])
+          .filter((o) => deriveOrderStatus(o) === "delivered")
+          .find((o) =>
+            (o.items || []).some((it) => String(it.productId) === String(product.id))
+          ) || null;
+      setReviewableOrder(order);
+    } catch (error) {
+      setMyReview(null);
+      setReviewableOrder(null);
+    }
+  }, [product?.id, isAuthenticated, user?.id]);
+
   // ── Public store data for trust signals + transparent delivery info ─────
   useEffect(() => {
     apiService.settings.get().then(setSettings).catch(() => {});
@@ -216,6 +295,11 @@ const ProductDetails = () => {
       fetchAov();
     }
   }, [product, fetchReviews, fetchAov]);
+
+  // Re-run whenever the product or the auth/user identity changes (e.g. sign-in).
+  useEffect(() => {
+    fetchReviewEligibility();
+  }, [fetchReviewEligibility]);
 
   // ── Derived values ─────────────────────────────────────────────────────
   const images =
@@ -308,11 +392,120 @@ const ProductDetails = () => {
     tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  // ── "Write a review" entry — gated, but discoverable for everyone ────────
+  // Anonymous → sign in. Verified buyer (or a shopper editing their existing
+  // review) → open the form. Signed in without a delivered order → an honest
+  // explanation, never a dead button.
+  const handleWriteReview = useCallback(() => {
+    if (!isAuthenticated) {
+      openAuthModal?.("login");
+      return;
+    }
+    if (myReview || reviewableOrder) {
+      setReviewNotice("");
+      setReviewModalOpen(true);
+      return;
+    }
+    setReviewNotice(
+      "Only verified buyers can write a review. You'll be able to review this once your order is delivered."
+    );
+  }, [isAuthenticated, openAuthModal, myReview, reviewableOrder]);
+
+  // Submit (or edit) — carries the proof of purchase and (re)enters `pending`
+  // moderation, so it won't appear on the storefront until an admin approves it.
+  const handleSubmitReview = useCallback(
+    async ({ rating, title, body }) => {
+      if (!product) return;
+      const orderId = reviewableOrder?.id ?? myReview?.orderId ?? null;
+      const orderNumber = reviewableOrder?.orderNumber ?? myReview?.orderNumber ?? null;
+      await apiService.reviews.submit({
+        productId: product.id,
+        userId: user.id,
+        userName: reviewDisplayName(user),
+        rating,
+        title,
+        body,
+        orderId,
+        orderNumber,
+        isVerifiedPurchase: true,
+      });
+      const wasEditing = !!myReview;
+      setReviewModalOpen(false);
+      // Refresh the author's own review (so the entry now reads "Edit your
+      // review") and re-pull approved reviews (the new one stays hidden until
+      // moderated — by design).
+      fetchReviewEligibility();
+      fetchReviews();
+      Swal.fire({
+        icon: "success",
+        title: wasEditing ? "Review updated" : "Review submitted",
+        text: "Thanks! Your review will appear on the product page once it's approved.",
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    },
+    [product, user, reviewableOrder, myReview, fetchReviewEligibility, fetchReviews]
+  );
+
+  // Roving tabindex: arrow / Home / End move focus + selection across the tabs.
+  const handleTabKeyDown = useCallback(
+    (e) => {
+      const idx = TAB_KEYS.indexOf(activeTab);
+      let nextIdx = null;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") nextIdx = (idx + 1) % TAB_KEYS.length;
+      else if (e.key === "ArrowLeft" || e.key === "ArrowUp")
+        nextIdx = (idx - 1 + TAB_KEYS.length) % TAB_KEYS.length;
+      else if (e.key === "Home") nextIdx = 0;
+      else if (e.key === "End") nextIdx = TAB_KEYS.length - 1;
+      if (nextIdx == null) return;
+      e.preventDefault();
+      const key = TAB_KEYS[nextIdx];
+      setActiveTab(key);
+      requestAnimationFrame(() => tabRefs.current[key]?.focus());
+    },
+    [activeTab]
+  );
+
   // ── Render ─────────────────────────────────────────────────────────────
   if (loading) return <Skeleton />;
   if (notFound || !product) return <NotFound />;
 
   const wishlisted = isInWishlist(product.id);
+
+  // Slow, reduced-motion-safe reveal for the active tab panel.
+  const panelMotion = prefersReducedMotion
+    ? { initial: false }
+    : {
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+      };
+
+  // Spec table — build only the rows that have real values, so sparse products
+  // never show empty key/value pairs.
+  const dims = product.dimensions;
+  const dimensionsText = dims
+    ? typeof dims === "object"
+      ? [dims.length, dims.width, dims.height].filter((v) => v != null && v !== "").join(" × ")
+      : dims
+    : "";
+  const specRows = [
+    product.brand && ["Brand", product.brand],
+    currentSku && ["SKU", currentSku],
+    product.weight && ["Weight", product.weight],
+    dimensionsText && ["Dimensions", dimensionsText],
+    category?.name && ["Category", category.name],
+    product.tags && product.tags.length > 0 && ["Tags", product.tags.join(", ")],
+  ].filter(Boolean);
+
+  const TABS = [
+    { key: "description", label: "Description" },
+    { key: "details", label: "Details" },
+    { key: "reviews", label: `Reviews (${reviews.length})` },
+  ];
 
   return (
     <motion.div
@@ -465,102 +658,71 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* ── Below the fold: tabs ──────────────────────────────────────── */}
+        {/* ── Below the fold: quiet editorial tabs ──────────────────────── */}
         <div className={styles.tabsSection} ref={tabsRef}>
-          <div className={styles.tabNav} role="tablist" aria-label="Product information">
-            <button
-              role="tab"
-              aria-selected={activeTab === "description"}
-              className={`${styles.tabButton} ${activeTab === "description" ? styles.tabButtonActive : ""}`}
-              onClick={() => setActiveTab("description")}
-            >
-              Description
-            </button>
-            <button
-              role="tab"
-              aria-selected={activeTab === "reviews"}
-              className={`${styles.tabButton} ${activeTab === "reviews" ? styles.tabButtonActive : ""}`}
-              onClick={() => setActiveTab("reviews")}
-            >
-              Reviews ({reviews.length})
-            </button>
+          <div
+            className={styles.tabNav}
+            role="tablist"
+            aria-label="Product information"
+            onKeyDown={handleTabKeyDown}
+          >
+            {TABS.map((t) => {
+              const selected = activeTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  id={`pdp-tab-${t.key}`}
+                  ref={(el) => {
+                    tabRefs.current[t.key] = el;
+                  }}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  aria-controls="pdp-tabpanel"
+                  tabIndex={selected ? 0 : -1}
+                  className={`${styles.tabButton} ${selected ? styles.tabButtonActive : ""}`}
+                  onClick={() => setActiveTab(t.key)}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
           </div>
 
-          <div className={styles.tabContent}>
+          <div
+            className={styles.tabContent}
+            id="pdp-tabpanel"
+            role="tabpanel"
+            aria-labelledby={`pdp-tab-${activeTab}`}
+            tabIndex={0}
+          >
             {activeTab === "description" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-                className={styles.descriptionTab}
-              >
-                <div className={styles.fullDescription}>
-                  <h3>Product Description</h3>
-                  <p>{product.description || "No description available."}</p>
-                </div>
+              <motion.div key="description" {...panelMotion} className={styles.descriptionPanel}>
+                <p className={styles.prose}>
+                  {product.description || "No description available."}
+                </p>
+              </motion.div>
+            )}
 
-                <div className={styles.specTable}>
-                  <h3>Specifications</h3>
-                  <table>
-                    <tbody>
-                      {product.brand && (
-                        <tr>
-                          <td className={styles.specLabel}>Brand</td>
-                          <td className={styles.specValue}>{product.brand}</td>
-                        </tr>
-                      )}
-                      {currentSku && (
-                        <tr>
-                          <td className={styles.specLabel}>SKU</td>
-                          <td className={styles.specValue}>{currentSku}</td>
-                        </tr>
-                      )}
-                      {product.weight && (
-                        <tr>
-                          <td className={styles.specLabel}>Weight</td>
-                          <td className={styles.specValue}>{product.weight}</td>
-                        </tr>
-                      )}
-                      {product.dimensions && (
-                        <tr>
-                          <td className={styles.specLabel}>Dimensions</td>
-                          <td className={styles.specValue}>
-                            {typeof product.dimensions === "object"
-                              ? [
-                                  product.dimensions.length,
-                                  product.dimensions.width,
-                                  product.dimensions.height,
-                                ]
-                                  .filter((v) => v != null && v !== "")
-                                  .join(" × ")
-                              : product.dimensions}
-                          </td>
-                        </tr>
-                      )}
-                      {category?.name && (
-                        <tr>
-                          <td className={styles.specLabel}>Category</td>
-                          <td className={styles.specValue}>{category.name}</td>
-                        </tr>
-                      )}
-                      {product.tags && product.tags.length > 0 && (
-                        <tr>
-                          <td className={styles.specLabel}>Tags</td>
-                          <td className={styles.specValue}>{product.tags.join(", ")}</td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+            {activeTab === "details" && (
+              <motion.div key="details" {...panelMotion} className={styles.detailsPanel}>
+                {specRows.length > 0 ? (
+                  <dl className={styles.specList}>
+                    {specRows.map(([label, value]) => (
+                      <div className={styles.specRow} key={label}>
+                        <dt className={styles.specLabel}>{label}</dt>
+                        <dd className={styles.specValue}>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : (
+                  <p className={styles.prose}>No additional details available.</p>
+                )}
               </motion.div>
             )}
 
             {activeTab === "reviews" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-              >
+              <motion.div key="reviews" {...panelMotion}>
                 <ReviewsSection
                   reviews={reviews}
                   displayAvg={displayAvg}
@@ -568,6 +730,9 @@ const ProductDetails = () => {
                   loading={reviewsLoading}
                   error={reviewsError}
                   onRetry={fetchReviews}
+                  onWriteReview={handleWriteReview}
+                  hasReviewed={!!myReview}
+                  reviewNotice={reviewNotice}
                 />
               </motion.div>
             )}
@@ -602,6 +767,20 @@ const ProductDetails = () => {
         disabled={isOutOfStock}
         onAddToCart={handleAddClick}
         onBuyNow={handleBuyNow}
+      />
+
+      {/* ── Write / edit a review (purchase-gated; re-enters moderation) ──── */}
+      <ReviewModal
+        open={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+        product={{
+          productId: product.id,
+          name: product.name,
+          image: product.images?.[0] || product.image,
+        }}
+        existing={myReview}
+        onSubmit={handleSubmitReview}
+        isDarkMode={isDarkMode}
       />
     </motion.div>
   );

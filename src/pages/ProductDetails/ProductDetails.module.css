@@ -312,47 +312,66 @@
   border-radius: var(--sf-radius-sm);
 }
 
-.descriptionTab {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: var(--sf-space-10);
+/* The panel is focusable (roving-tabindex pattern) — give it a quiet ring. */
+.tabContent {
+  scroll-margin-top: 90px;
 }
 
-.fullDescription h3,
-.specTable h3 {
-  margin: 0 0 var(--sf-space-4);
-  font-family: var(--sf-font-display);
-  font-size: var(--sf-text-xl);
-  font-weight: var(--sf-font-medium);
-  color: var(--sf-color-text);
+.tabContent:focus-visible {
+  outline: 2px solid var(--sf-color-primary);
+  outline-offset: 6px;
+  border-radius: var(--sf-radius-sm);
 }
 
-.fullDescription p {
+/* Description — airy prose with a comfortable measure (line length). */
+.descriptionPanel {
+  max-width: 70ch;
+}
+
+.prose {
   margin: 0;
   font-size: var(--sf-text-md);
   line-height: var(--sf-leading-relaxed);
   color: var(--sf-color-text-secondary);
+  white-space: pre-line;
 }
 
-.specTable table {
-  width: 100%;
-  border-collapse: collapse;
+/* Details — a clean, hairline-ruled key/value list (present fields only). */
+.detailsPanel {
+  max-width: 640px;
 }
 
-.specTable td {
+.specList {
+  margin: 0;
+  padding: 0;
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr);
+  gap: var(--sf-space-4);
   padding: var(--sf-space-3) 0;
   border-bottom: 1px solid var(--sf-color-border);
-  font-size: var(--sf-text-sm);
+}
+
+.specRow:first-child {
+  border-top: 1px solid var(--sf-color-border);
 }
 
 .specLabel {
+  margin: 0;
+  font-size: var(--sf-text-sm);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
   color: var(--sf-color-text-muted);
-  width: 40%;
 }
 
 .specValue {
-  color: var(--sf-color-text);
+  margin: 0;
+  font-size: var(--sf-text-sm);
   font-weight: var(--sf-font-medium);
+  color: var(--sf-color-text);
+  overflow-wrap: anywhere;
 }
 
 /* ── Skeleton ────────────────────────────────────────────────────────────── */
@@ -471,10 +490,6 @@
   .gallerySection {
     position: static;
   }
-  .descriptionTab {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sf-space-6);
-  }
   .skeletonLayout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -486,6 +501,10 @@
   }
   .productName {
     font-size: var(--sf-text-2xl);
+  }
+  /* Keep the three tabs on one comfortable row on narrow screens. */
+  .tabNav {
+    gap: var(--sf-space-4);
   }
 }
 

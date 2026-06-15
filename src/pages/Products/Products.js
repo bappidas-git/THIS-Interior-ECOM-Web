@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { useSearchParams, Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../context/WishlistContext";
 import apiService from "../../services/api";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
+import BottomDrawer from "../../components/BottomDrawer/BottomDrawer";
+import { ProductCard, StarRating, PriceBlock } from "../../components/storefront";
 import {
   categoryParam,
   resolveCategory,
@@ -12,12 +13,13 @@ import {
   orderCategoriesHierarchically,
 } from "../../utils/categories";
 import {
-  formatCurrency,
   getProductMinPrice,
   truncateText,
   buildCartItem,
   productPath,
   getDeviceType,
+  onImageError,
+  PLACEHOLDER_IMG,
 } from "../../utils/helpers";
 import styles from "./Products.module.css";
 
@@ -58,93 +60,25 @@ const normalizeSort = (raw) => {
 };
 
 const PRICE_RANGES = [
-  { label: "Under \u20b9500", min: 0, max: 500 },
-  { label: "\u20b9500 \u2013 \u20b91,000", min: 500, max: 1000 },
-  { label: "\u20b91,000 \u2013 \u20b95,000", min: 1000, max: 5000 },
-  { label: "Above \u20b95,000", min: 5000, max: Infinity },
+  { label: "Under ₹500", min: 0, max: 500 },
+  { label: "₹500 – ₹1,000", min: 500, max: 1000 },
+  { label: "₹1,000 – ₹5,000", min: 1000, max: 5000 },
+  { label: "Above ₹5,000", min: 5000, max: Infinity },
 ];
 
 const RATING_OPTIONS = [4, 3, 2, 1];
 const DISCOUNT_OPTIONS = [50, 30, 20, 10];
 const PER_PAGE_OPTIONS = [12, 24, 48];
 
-// ---------------------------------------------------------------------------
-// Skeleton Card
-// ---------------------------------------------------------------------------
-const SkeletonCard = () => (
-  <div className={styles.card}>
-    <div className={`${styles.cardImageWrap} ${styles.skeleton} ${styles.skeletonImage}`} />
-    <div className={styles.cardBody}>
-      <div className={`${styles.skeleton} ${styles.skeletonLine}`} style={{ width: "75%" }} />
-      <div className={`${styles.skeleton} ${styles.skeletonLine}`} style={{ width: "50%", height: 14 }} />
-      <div className={`${styles.skeleton} ${styles.skeletonLine}`} style={{ width: "40%", height: 22, marginTop: 8 }} />
-    </div>
-  </div>
-);
+// Compact rupee figure for chips/labels (no paise) — calmer than formatCurrency.
+const inr = (v) => `₹${Number(v).toLocaleString("en-IN")}`;
 
 // ---------------------------------------------------------------------------
-// Star icons (inline SVG so we don't depend on icon libraries)
+// Small inline icons (no icon-library dependency); colour via currentColor so
+// they inherit the tokenized text/brass colours — no hardcoded hex.
 // ---------------------------------------------------------------------------
-const StarIcon = ({ filled, half }) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill={filled ? "#f59e0b" : "none"} stroke="#f59e0b" strokeWidth="2">
-    {half ? (
-      <>
-        <defs>
-          <linearGradient id="halfStar">
-            <stop offset="50%" stopColor="#f59e0b" />
-            <stop offset="50%" stopColor="transparent" />
-          </linearGradient>
-        </defs>
-        <polygon
-          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-          fill="url(#halfStar)"
-        />
-      </>
-    ) : (
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    )}
-  </svg>
-);
-
-const RatingStars = ({ value = 0, count }) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    if (i <= Math.floor(value)) stars.push(<StarIcon key={i} filled />);
-    else if (i - 0.5 <= value) stars.push(<StarIcon key={i} half />);
-    else stars.push(<StarIcon key={i} />);
-  }
-  return (
-    <span className={styles.stars}>
-      {stars}
-      {count !== undefined && <span className={styles.reviewCount}>({count.toLocaleString()})</span>}
-    </span>
-  );
-};
-
-// ---------------------------------------------------------------------------
-// SVG Icons
-// ---------------------------------------------------------------------------
-const HeartIcon = ({ filled }) =>
-  filled ? (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ec4899" stroke="#ec4899" strokeWidth="2">
-      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />
-    </svg>
-  ) : (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />
-    </svg>
-  );
-
-const CartIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9" cy="21" r="1" />
-    <circle cx="20" cy="21" r="1" />
-    <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
-  </svg>
-);
-
 const GridIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <rect x="3" y="3" width="7" height="7" rx="1" />
     <rect x="14" y="3" width="7" height="7" rx="1" />
     <rect x="3" y="14" width="7" height="7" rx="1" />
@@ -153,7 +87,7 @@ const GridIcon = () => (
 );
 
 const ListIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <rect x="3" y="4" width="18" height="4" rx="1" />
     <rect x="3" y="10" width="18" height="4" rx="1" />
     <rect x="3" y="16" width="18" height="4" rx="1" />
@@ -161,36 +95,66 @@ const ListIcon = () => (
 );
 
 const FilterIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
   </svg>
 );
 
-const CloseIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
-
 const ChevronLeft = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
 );
 
 const ChevronRight = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 6 15 12 9 18" /></svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><polyline points="9 6 15 12 9 18" /></svg>
+);
+
+// Disclosure chevron for the collapsible filter groups (rotates when open).
+const GroupChevron = () => (
+  <svg className={styles.groupChevron} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+);
+
+const HeartIcon = ({ filled }) => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />
+  </svg>
 );
 
 // ---------------------------------------------------------------------------
-// Empty state illustration (simple inline SVG)
+// Brand skeletons — calm shimmer (sf-skeleton primitive) in the card silhouette
+// ---------------------------------------------------------------------------
+const GridCardSkeleton = () => (
+  <div className={styles.skeletonCard} aria-hidden="true">
+    <div className={`sf-skeleton ${styles.skeletonMedia}`} />
+    <div className={styles.skeletonBody}>
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skBrand}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skName}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skPrice}`} />
+    </div>
+  </div>
+);
+
+const ListRowSkeleton = () => (
+  <div className={styles.skeletonRow} aria-hidden="true">
+    <div className={`sf-skeleton ${styles.skeletonRowMedia}`} />
+    <div className={styles.skeletonRowBody}>
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skName}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skLine}`} />
+      <span className={`sf-skeleton sf-skeleton--text ${styles.skPrice}`} />
+    </div>
+  </div>
+);
+
+// ---------------------------------------------------------------------------
+// Empty state illustration (simple inline SVG; tokenized via the page aliases)
 // ---------------------------------------------------------------------------
 const EmptyIllustration = () => (
-  <svg className={styles.emptyIllustration} width="200" height="160" viewBox="0 0 200 160" fill="none">
-    <rect x="40" y="30" width="120" height="90" rx="8" fill="var(--empty-box, #e2e8f0)" />
-    <rect x="55" y="50" width="90" height="10" rx="4" fill="var(--empty-line, #cbd5e1)" />
-    <rect x="55" y="70" width="60" height="10" rx="4" fill="var(--empty-line, #cbd5e1)" />
-    <rect x="55" y="90" width="75" height="10" rx="4" fill="var(--empty-line, #cbd5e1)" />
-    <circle cx="100" cy="135" r="18" fill="var(--empty-circle, #94a3b8)" opacity="0.3" />
-    <text x="100" y="140" textAnchor="middle" fontSize="20" fill="var(--empty-circle, #94a3b8)">?</text>
+  <svg className={styles.emptyIllustration} width="180" height="150" viewBox="0 0 200 160" fill="none" aria-hidden="true">
+    <rect x="40" y="30" width="120" height="90" rx="8" fill="var(--empty-box)" />
+    <rect x="55" y="50" width="90" height="10" rx="4" fill="var(--empty-line)" />
+    <rect x="55" y="70" width="60" height="10" rx="4" fill="var(--empty-line)" />
+    <rect x="55" y="90" width="75" height="10" rx="4" fill="var(--empty-line)" />
+    <circle cx="100" cy="135" r="18" fill="var(--empty-circle)" opacity="0.3" />
+    <text x="100" y="141" textAnchor="middle" fontSize="20" fill="var(--empty-circle)">?</text>
   </svg>
 );
 
@@ -198,9 +162,7 @@ const EmptyIllustration = () => (
 // Main Component
 // ---------------------------------------------------------------------------
 const Products = () => {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { isDarkMode } = useTheme();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -216,8 +178,6 @@ const Products = () => {
 
   // ---- Refs ----
   const mainRef = useRef(null); // top of results region, for page-change scroll
-  const mobileTriggerRef = useRef(null); // restore focus here when the sheet closes
-  const sheetCloseRef = useRef(null); // focus this when the sheet opens
   const pendingScrollRef = useRef(false); // set by pagination, consumed post-commit
 
   // ---- Read URL params ----
@@ -513,28 +473,6 @@ const Products = () => {
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
   }, [safePage, perPage]);
 
-  // ---- Mobile filter sheet: lock body scroll, close on Escape, manage focus ----
-  useEffect(() => {
-    if (!mobileFiltersOpen) return undefined;
-    // The trigger button is persistently mounted, so capturing it here is safe
-    // and keeps the effect-cleanup ref-stability lint rule happy.
-    const trigger = mobileTriggerRef.current;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") setMobileFiltersOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    const focusTimer = setTimeout(() => sheetCloseRef.current?.focus(), 60);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-      clearTimeout(focusTimer);
-      // Return focus to the trigger so keyboard users aren't dropped at <body>.
-      trigger?.focus();
-    };
-  }, [mobileFiltersOpen]);
-
   // ---- Helpers ----
   const hasActiveFilters =
     selectedCategories.length > 0 ||
@@ -617,6 +555,22 @@ const Products = () => {
     syncUrlParams({ min_price: minStr, max_price: maxStr, page: 1 });
   }, [minPrice, maxPrice, syncUrlParams]);
 
+  // Clear just the price bounds (used by the active-filter chip). Reuses the same
+  // URL params the page already manages.
+  const clearPriceFilter = useCallback(() => {
+    setMinPrice("");
+    setMaxPrice("");
+    setCurrentPage(1);
+    syncUrlParams({ min_price: "", max_price: "", page: 1 });
+  }, [syncUrlParams]);
+
+  // Clear the header-driven search query via its URL param (the sync effect then
+  // re-derives the listing).
+  const clearSearch = useCallback(() => {
+    setCurrentPage(1);
+    syncUrlParams({ search: "", page: 1 });
+  }, [syncUrlParams]);
+
   const handleSortChange = useCallback(
     (value) => {
       setSortBy(value);
@@ -644,15 +598,6 @@ const Products = () => {
       syncUrlParams({ per_page: value, page: 1 });
     },
     [syncUrlParams]
-  );
-
-  const handleProductClick = useCallback(
-    (product) => {
-      // Route is /products/:slug, resolved via getBySlug (with a legacy-id
-      // fallback + canonical redirect), so link by the human-readable slug.
-      navigate(productPath(product));
-    },
-    [navigate]
   );
 
   const handleAddToCart = useCallback(
@@ -717,17 +662,55 @@ const Products = () => {
     [categories]
   );
 
-  // ---- Breadcrumb ----
+  // ---- Breadcrumb (shared component prepends "Home"; contract is {label, link}) ----
   const breadcrumbItems = useMemo(() => {
-    const items = [
-      { label: "Home", path: "/" },
-      { label: "Products", path: "/products" },
-    ];
-    if (selectedCategories.length === 1) {
+    const hasCategory = selectedCategories.length === 1;
+    const items = [{ label: "Products", link: hasCategory ? "/products" : undefined }];
+    if (hasCategory) {
       items.push({ label: getCategoryName(selectedCategories[0]) });
     }
     return items;
   }, [selectedCategories, getCategoryName]);
+
+  // ---- Active-filter chips — derived from current state; each "remove" updates
+  // the very same URL params / setters the page already manages. ----
+  const activeFilterChips = useMemo(() => {
+    const chips = [];
+    selectedCategories.forEach((slug) => {
+      chips.push({
+        key: `cat-${slug}`,
+        label: getCategoryName(slug),
+        onRemove: () => handleCategoryToggle(slug),
+      });
+    });
+    if (minPrice !== "" || maxPrice !== "") {
+      let label;
+      if (minPrice !== "" && maxPrice !== "") label = `${inr(minPrice)} – ${inr(maxPrice)}`;
+      else if (minPrice !== "") label = `${inr(minPrice)}+`;
+      else label = `Under ${inr(maxPrice)}`;
+      chips.push({ key: "price", label, onRemove: clearPriceFilter });
+    }
+    if (minRating > 0) {
+      chips.push({ key: "rating", label: `${minRating}★ & up`, onRemove: () => handleRatingChange(0) });
+    }
+    if (minDiscount > 0) {
+      chips.push({ key: "discount", label: `${minDiscount}% off or more`, onRemove: () => handleDiscountChange(0) });
+    }
+    if (inStockOnly) {
+      chips.push({ key: "stock", label: "In stock", onRemove: handleInStockToggle });
+    }
+    selectedBrands.forEach((brand) => {
+      chips.push({ key: `brand-${brand}`, label: brand, onRemove: () => handleBrandToggle(brand) });
+    });
+    if (urlSearch) {
+      chips.push({ key: "search", label: `“${urlSearch}”`, onRemove: clearSearch });
+    }
+    return chips;
+  }, [
+    selectedCategories, minPrice, maxPrice, minRating, minDiscount, inStockOnly,
+    selectedBrands, urlSearch, getCategoryName, handleCategoryToggle, clearPriceFilter,
+    handleRatingChange, handleDiscountChange, handleInStockToggle, handleBrandToggle, clearSearch,
+  ]);
 
   // ---- Pagination range ----
   const paginationRange = useMemo(() => {
@@ -745,247 +728,346 @@ const Products = () => {
     return range;
   }, [safePage, totalPages]);
 
-  // ---- Filter Sidebar JSX (reused for desktop + mobile) ----
-  const renderFilters = (isMobile = false) => (
-    <div className={`${styles.filterContent} ${isMobile ? styles.filterContentMobile : ""}`}>
+  // ---- Filter groups JSX (reused for the desktop sidebar + the mobile drawer).
+  // Collapsible <details> groups with serif summaries; controls are tokenized. --
+  const renderFilters = () => (
+    <div className={styles.filterGroups}>
       {/* Categories */}
-      <div className={styles.filterSection}>
-        <h4 className={styles.filterTitle}>Categories</h4>
-        <div className={styles.filterList}>
-          {orderedCategories.ordered.map((cat) => (
-            <label
-              key={cat.id || cat.slug}
-              className={styles.checkboxLabel}
-              style={orderedCategories.depthOf(cat.id) ? { paddingLeft: orderedCategories.depthOf(cat.id) * 16 } : undefined}
-            >
-              <input
-                type="checkbox"
-                checked={selectedCategories.some(
-                  (t) => t === cat.slug || String(t) === String(cat.id)
-                )}
-                onChange={() => handleCategoryToggle(categoryParam(cat))}
-                className={styles.checkbox}
-              />
-              <span className={styles.checkboxText}>{cat.name}</span>
-              <span className={styles.filterCount}>
-                ({categoryCounts.get(String(cat.id)) || 0})
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Price Range */}
-      <div className={styles.filterSection}>
-        <h4 className={styles.filterTitle}>Price Range</h4>
-        <div className={styles.priceInputRow}>
-          <input
-            type="number"
-            placeholder="Min"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            className={styles.priceInput}
-          />
-          <span className={styles.priceSeparator}>to</span>
-          <input
-            type="number"
-            placeholder="Max"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className={styles.priceInput}
-          />
-          <button className={styles.priceGoBtn} onClick={handlePriceApply}>
-            Go
-          </button>
-        </div>
-        <div className={styles.quickRanges}>
-          {PRICE_RANGES.map((range) => (
-            <button
-              key={range.label}
-              className={styles.quickRangeBtn}
-              onClick={() => handlePriceRangeClick(range)}
-            >
-              {range.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Rating */}
-      <div className={styles.filterSection}>
-        <h4 className={styles.filterTitle}>Customer Rating</h4>
-        <div className={styles.filterList}>
-          {RATING_OPTIONS.map((r) => (
-            <label key={r} className={styles.radioLabel}>
-              <input
-                type="radio"
-                name="rating"
-                checked={minRating === r}
-                onChange={() => handleRatingChange(r)}
-                onClick={() => { if (minRating === r) handleRatingChange(0); }}
-                className={styles.radio}
-              />
-              <span className={styles.ratingOption}>
-                <RatingStars value={r} /> <span className={styles.ratingPlus}>{r}+ & up</span>
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Discount */}
-      <div className={styles.filterSection}>
-        <h4 className={styles.filterTitle}>Discount</h4>
-        <div className={styles.filterList}>
-          {DISCOUNT_OPTIONS.map((d) => (
-            <label key={d} className={styles.radioLabel}>
-              <input
-                type="radio"
-                name="discount"
-                checked={minDiscount === d}
-                onChange={() => handleDiscountChange(d)}
-                onClick={() => { if (minDiscount === d) handleDiscountChange(0); }}
-                className={styles.radio}
-              />
-              <span className={styles.checkboxText}>{d}% or more</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Availability */}
-      <div className={styles.filterSection}>
-        <h4 className={styles.filterTitle}>Availability</h4>
-        <label className={styles.toggleLabel}>
-          <span className={styles.checkboxText}>In Stock Only</span>
-          <button
-            className={`${styles.toggle} ${inStockOnly ? styles.toggleOn : ""}`}
-            onClick={handleInStockToggle}
-            type="button"
-            role="switch"
-            aria-checked={inStockOnly}
-          >
-            <span className={styles.toggleThumb} />
-          </button>
-        </label>
-      </div>
-
-      {/* Brand */}
-      {availableBrands.length > 0 && (
-        <div className={styles.filterSection}>
-          <h4 className={styles.filterTitle}>Brand</h4>
-          <div className={styles.filterList}>
-            {availableBrands.map((brand) => (
-              <label key={brand} className={styles.checkboxLabel}>
+      <details className={styles.group} open>
+        <summary className={styles.groupSummary}>
+          <span className={styles.groupTitle}>Categories</span>
+          <GroupChevron />
+        </summary>
+        <div className={styles.groupBody}>
+          <div className={styles.optionList}>
+            {orderedCategories.ordered.map((cat) => (
+              <label
+                key={cat.id || cat.slug}
+                className={styles.option}
+                style={orderedCategories.depthOf(cat.id) ? { paddingLeft: orderedCategories.depthOf(cat.id) * 16 } : undefined}
+              >
                 <input
                   type="checkbox"
-                  checked={selectedBrands.includes(brand)}
-                  onChange={() => handleBrandToggle(brand)}
+                  checked={selectedCategories.some(
+                    (t) => t === cat.slug || String(t) === String(cat.id)
+                  )}
+                  onChange={() => handleCategoryToggle(categoryParam(cat))}
                   className={styles.checkbox}
                 />
-                <span className={styles.checkboxText}>{brand}</span>
+                <span className={styles.optionText}>{cat.name}</span>
+                <span className={styles.optionCount}>
+                  {categoryCounts.get(String(cat.id)) || 0}
+                </span>
               </label>
             ))}
           </div>
         </div>
-      )}
+      </details>
 
-      {/* Clear All */}
-      {hasActiveFilters && (
-        <button className={styles.clearAllBtn} onClick={clearAllFilters}>
-          Clear All Filters
-        </button>
+      {/* Price Range */}
+      <details className={styles.group} open>
+        <summary className={styles.groupSummary}>
+          <span className={styles.groupTitle}>Price</span>
+          <GroupChevron />
+        </summary>
+        <div className={styles.groupBody}>
+          <div className={styles.priceFields}>
+            <input
+              type="number"
+              placeholder="Min"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className={styles.priceInput}
+              aria-label="Minimum price"
+            />
+            <span className={styles.priceSep}>to</span>
+            <input
+              type="number"
+              placeholder="Max"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className={styles.priceInput}
+              aria-label="Maximum price"
+            />
+            <button className={styles.priceApply} onClick={handlePriceApply} type="button">
+              Go
+            </button>
+          </div>
+          <div className={styles.quickRanges}>
+            {PRICE_RANGES.map((range) => (
+              <button
+                key={range.label}
+                className={styles.quickRange}
+                onClick={() => handlePriceRangeClick(range)}
+                type="button"
+              >
+                {range.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      {/* Rating */}
+      <details className={styles.group} open>
+        <summary className={styles.groupSummary}>
+          <span className={styles.groupTitle}>Customer Rating</span>
+          <GroupChevron />
+        </summary>
+        <div className={styles.groupBody}>
+          <div className={styles.optionList}>
+            {RATING_OPTIONS.map((r) => (
+              <label key={r} className={styles.option}>
+                <input
+                  type="radio"
+                  name="rating"
+                  checked={minRating === r}
+                  onChange={() => handleRatingChange(r)}
+                  onClick={() => { if (minRating === r) handleRatingChange(0); }}
+                  className={styles.radio}
+                />
+                <span className={styles.ratingOption}>
+                  <StarRating rating={r} size={14} />
+                  <span className={styles.ratingText}>{r} & up</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      {/* Discount */}
+      <details className={styles.group} open>
+        <summary className={styles.groupSummary}>
+          <span className={styles.groupTitle}>Discount</span>
+          <GroupChevron />
+        </summary>
+        <div className={styles.groupBody}>
+          <div className={styles.optionList}>
+            {DISCOUNT_OPTIONS.map((d) => (
+              <label key={d} className={styles.option}>
+                <input
+                  type="radio"
+                  name="discount"
+                  checked={minDiscount === d}
+                  onChange={() => handleDiscountChange(d)}
+                  onClick={() => { if (minDiscount === d) handleDiscountChange(0); }}
+                  className={styles.radio}
+                />
+                <span className={styles.optionText}>{d}% or more</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      {/* Availability */}
+      <details className={styles.group} open>
+        <summary className={styles.groupSummary}>
+          <span className={styles.groupTitle}>Availability</span>
+          <GroupChevron />
+        </summary>
+        <div className={styles.groupBody}>
+          <label className={styles.toggleRow}>
+            <span className={styles.optionText}>In stock only</span>
+            <button
+              className={`${styles.toggle} ${inStockOnly ? styles.toggleOn : ""}`}
+              onClick={handleInStockToggle}
+              type="button"
+              role="switch"
+              aria-checked={inStockOnly}
+            >
+              <span className={styles.toggleThumb} />
+            </button>
+          </label>
+        </div>
+      </details>
+
+      {/* Brand */}
+      {availableBrands.length > 0 && (
+        <details className={styles.group} open>
+          <summary className={styles.groupSummary}>
+            <span className={styles.groupTitle}>Brand</span>
+            <GroupChevron />
+          </summary>
+          <div className={styles.groupBody}>
+            <div className={styles.optionList}>
+              {availableBrands.map((brand) => (
+                <label key={brand} className={styles.option}>
+                  <input
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand)}
+                    onChange={() => handleBrandToggle(brand)}
+                    className={styles.checkbox}
+                  />
+                  <span className={styles.optionText}>{brand}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </details>
       )}
     </div>
   );
 
-  // ---- Product card ----
-  const renderProductCard = (product, index) => {
+  // ---- List-mode row (calm horizontal layout; reuses StarRating + PriceBlock) ----
+  const renderListRow = (product) => {
     const priceInfo = getProductMinPrice(product);
     const discount = priceInfo.discount;
     const wishlisted = isInWishlist(product.id);
+    const ratingCount = Number(product.totalReviews) || 0;
+    const outOfStock = product.stock === 0;
 
     return (
-      <motion.div
-        key={product.id}
-        className={`${styles.cardWrap} ${viewMode === "list" ? styles.cardWrapList : ""}`}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: Math.min(index * 0.04, 0.4) }}
-      >
-        <div
-          className={`${styles.card} ${viewMode === "list" ? styles.cardList : ""}`}
-          onClick={() => handleProductClick(product)}
-        >
-          {/* Image area */}
-          <div className={styles.cardImageWrap}>
-            <img
-              src={product.images?.[0] || product.image || "https://placehold.co/400x300?text=No+Image"}
-              alt={product.name}
-              className={styles.cardImage}
-              loading="lazy"
-            />
-            {/* Wishlist */}
-            <button
-              className={styles.wishlistBtn}
-              onClick={(e) => handleWishlistToggle(e, product)}
-              aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-            >
-              <HeartIcon filled={wishlisted} />
-            </button>
-            {/* Discount badge */}
-            {discount > 0 && (
-              <span className={styles.discountBadge}>{discount}% OFF</span>
+      <article key={product.id} className={styles.listRow}>
+        <Link to={productPath(product)} className={styles.listMedia} aria-label={product.name}>
+          <img
+            className={styles.listImage}
+            src={product.images?.[0] || product.image || PLACEHOLDER_IMG}
+            alt={product.name}
+            loading="lazy"
+            onError={onImageError}
+          />
+          {discount > 0 && <span className={styles.listBadge}>{discount}% off</span>}
+        </Link>
+
+        <div className={styles.listBody}>
+          <div className={styles.listInfo}>
+            {product.brand && <span className={styles.listBrand}>{product.brand}</span>}
+            <h3 className={styles.listName}>
+              <Link to={productPath(product)} className={styles.listNameLink}>
+                {product.name}
+              </Link>
+            </h3>
+            {ratingCount > 0 && (
+              <span className={styles.listRating}>
+                <StarRating rating={product.rating || 0} size={14} />
+                <span className={styles.listRatingCount}>({ratingCount.toLocaleString()})</span>
+              </span>
+            )}
+            {product.shortDescription && (
+              <p className={styles.listDesc}>{truncateText(product.shortDescription, 160)}</p>
             )}
           </div>
 
-          {/* Body */}
-          <div className={styles.cardBody}>
-            <h3 className={styles.cardTitle}>{viewMode === "list" ? product.name : truncateText(product.name, 48)}</h3>
-
-            {viewMode === "list" && product.shortDescription && (
-              <p className={styles.cardDesc}>{truncateText(product.shortDescription, 120)}</p>
-            )}
-
-            {/* Social proof — shown ONLY when real ratings exist (no hollow "(0)") */}
-            {(product.totalReviews || 0) > 0 && (
-              <div className={styles.cardRating}>
-                <RatingStars value={product.rating || 0} count={product.totalReviews || 0} />
-              </div>
-            )}
-
-            <div className={styles.cardPriceRow}>
-              <span className={styles.cardPrice}>
-                {formatCurrency(priceInfo.sellingPrice, "INR")}
-              </span>
-              {priceInfo.originalPrice > priceInfo.sellingPrice && (
-                <span className={styles.cardComparePrice}>
-                  {formatCurrency(priceInfo.originalPrice, "INR")}
-                </span>
-              )}
-              {discount > 0 && (
-                <span className={styles.cardDiscountText}>{discount}% off</span>
-              )}
-            </div>
-
+          <div className={styles.listAside}>
+            <PriceBlock
+              price={priceInfo.sellingPrice}
+              comparePrice={priceInfo.originalPrice}
+              size="md"
+              showSavings={false}
+            />
             {product.stock !== undefined && product.stock <= 5 && product.stock > 0 && (
-              <span className={styles.lowStock}>Only {product.stock} left</span>
+              <span className={styles.listStockLow}>Only {product.stock} left</span>
             )}
-            {product.stock === 0 && (
-              <span className={styles.outOfStock}>Out of Stock</span>
-            )}
-
-            <button
-              className={styles.addToCartBtn}
-              onClick={(e) => handleAddToCart(e, product)}
-              disabled={product.stock === 0}
-            >
-              <CartIcon />
-              <span>Add to Cart</span>
-            </button>
+            {outOfStock && <span className={styles.listStockOut}>Out of stock</span>}
+            <div className={styles.listActions}>
+              <button
+                type="button"
+                className={styles.listAddBtn}
+                onClick={(e) => handleAddToCart(e, product)}
+                disabled={outOfStock}
+              >
+                {outOfStock ? "Out of Stock" : "Add to Cart"}
+              </button>
+              <button
+                type="button"
+                className={`${styles.listWishBtn} ${wishlisted ? styles.listWishActive : ""}`}
+                onClick={(e) => handleWishlistToggle(e, product)}
+                aria-pressed={wishlisted}
+                aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              >
+                <HeartIcon filled={wishlisted} />
+              </button>
+            </div>
           </div>
         </div>
-      </motion.div>
+      </article>
+    );
+  };
+
+  // ---- Results region (skeleton / error / grid|list / empty) ----
+  const renderResults = () => {
+    if (loading) {
+      return viewMode === "grid" ? (
+        <div className={styles.grid}>
+          {Array.from({ length: Math.min(perPage, 12) }).map((_, i) => (
+            <GridCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.listView}>
+          {Array.from({ length: Math.min(perPage, 6) }).map((_, i) => (
+            <ListRowSkeleton key={i} />
+          ))}
+        </div>
+      );
+    }
+
+    if (fetchError) {
+      // Fetch failed — never masquerade as "No products found".
+      return (
+        <div className={styles.stateBox}>
+          <div className={styles.errorIcon}>
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <h3 className={styles.stateTitle}>Couldn't load products</h3>
+          <p className={styles.stateText}>
+            Something went wrong while fetching the catalogue. Please check your
+            connection and try again.
+          </p>
+          <button className={styles.stateBtn} onClick={fetchCatalog} type="button">
+            Try Again
+          </button>
+        </div>
+      );
+    }
+
+    if (paginatedProducts.length > 0) {
+      return viewMode === "grid" ? (
+        <div className={styles.grid}>
+          {paginatedProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={addToCart}
+              onToggleWishlist={toggleWishlist}
+              isWishlisted={isInWishlist(product.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.listView}>
+          {paginatedProducts.map((product) => renderListRow(product))}
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.stateBox}>
+        <EmptyIllustration />
+        <h3 className={styles.stateTitle}>No products match</h3>
+        <p className={styles.stateText}>
+          {urlSearch ? (
+            <>
+              We could not find anything for{" "}
+              <strong>&ldquo;{urlSearch}&rdquo;</strong>. Try a different search
+              or adjust your filters.
+            </>
+          ) : (
+            "We could not find any products matching your criteria. Try adjusting your filters."
+          )}
+        </p>
+        {hasAnyConstraint && (
+          <button className={styles.stateBtn} onClick={clearAllFilters} type="button">
+            Clear all filters
+          </button>
+        )}
+      </div>
     );
   };
 
@@ -993,49 +1075,38 @@ const Products = () => {
   // RENDER
   // ============================
   return (
-    <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+    <div className={styles.page}>
       {/* Breadcrumb */}
-      <nav className={styles.breadcrumb}>
-        {breadcrumbItems.map((item, i) => (
-          <React.Fragment key={i}>
-            {i > 0 && <span className={styles.breadcrumbSep}>&gt;</span>}
-            {item.path ? (
-              <a href={item.path} className={styles.breadcrumbLink} onClick={(e) => { e.preventDefault(); navigate(item.path); }}>
-                {item.label}
-              </a>
-            ) : (
-              <span className={styles.breadcrumbCurrent}>{item.label}</span>
-            )}
-          </React.Fragment>
-        ))}
-      </nav>
+      <div className={styles.crumbWrap}>
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
 
       <div className={styles.layout}>
         {/* ===== Desktop filter sidebar ===== */}
         <aside className={styles.sidebar}>
           <div className={styles.sidebarHeader}>
-            <h3 className={styles.sidebarTitle}>Filters</h3>
+            <h2 className={styles.sidebarTitle}>Filters</h2>
             {hasActiveFilters && (
-              <button className={styles.clearLink} onClick={clearAllFilters}>
-                Clear All
+              <button className={styles.clearLink} onClick={clearAllFilters} type="button">
+                Clear all
               </button>
             )}
           </div>
-          {renderFilters(false)}
+          {renderFilters()}
         </aside>
 
         {/* ===== Main content ===== */}
         <main className={styles.main} ref={mainRef}>
-          {/* Sort bar */}
-          <div className={styles.sortBar}>
-            <div className={styles.sortBarLeft}>
+          {/* Sort + view bar */}
+          <div className={styles.toolbar}>
+            <div className={styles.toolbarLeft}>
               {/* Mobile filter trigger */}
               <button
                 className={styles.mobileFilterBtn}
                 onClick={() => setMobileFiltersOpen(true)}
-                ref={mobileTriggerRef}
                 aria-haspopup="dialog"
                 aria-expanded={mobileFiltersOpen}
+                type="button"
               >
                 <FilterIcon />
                 <span>Filters</span>
@@ -1044,32 +1115,31 @@ const Products = () => {
 
               <span className={styles.resultsCount}>
                 {loading ? (
-                  "Loading products…"
+                  "Loading…"
                 ) : fetchError ? (
                   "Couldn't load products"
                 ) : filteredProducts.length === 0 ? (
-                  "No products found"
+                  "No products"
                 ) : filteredProducts.length > perPage ? (
                   <>
-                    Showing{" "}
                     <strong>
                       {(safePage - 1) * perPage + 1}&ndash;
                       {Math.min(safePage * perPage, filteredProducts.length)}
                     </strong>{" "}
-                    of <strong>{filteredProducts.length}</strong> products
+                    of <strong>{filteredProducts.length}</strong>
                   </>
                 ) : (
                   <>
-                    Showing <strong>{filteredProducts.length}</strong>{" "}
+                    <strong>{filteredProducts.length}</strong>{" "}
                     {filteredProducts.length === 1 ? "product" : "products"}
                   </>
                 )}
               </span>
             </div>
 
-            <div className={styles.sortBarRight}>
-              <label className={styles.sortLabel}>
-                Sort by:
+            <div className={styles.toolbarRight}>
+              <label className={styles.sortField}>
+                <span className={styles.sortLabel}>Sort</span>
                 <select
                   value={sortBy}
                   onChange={(e) => handleSortChange(e.target.value)}
@@ -1083,11 +1153,13 @@ const Products = () => {
                 </select>
               </label>
 
-              <div className={styles.viewToggle}>
+              <div className={styles.viewToggle} role="group" aria-label="View mode">
                 <button
                   className={`${styles.viewBtn} ${viewMode === "grid" ? styles.viewBtnActive : ""}`}
                   onClick={() => setViewMode("grid")}
                   aria-label="Grid view"
+                  aria-pressed={viewMode === "grid"}
+                  type="button"
                 >
                   <GridIcon />
                 </button>
@@ -1095,6 +1167,8 @@ const Products = () => {
                   className={`${styles.viewBtn} ${viewMode === "list" ? styles.viewBtnActive : ""}`}
                   onClick={() => setViewMode("list")}
                   aria-label="List view"
+                  aria-pressed={viewMode === "list"}
+                  type="button"
                 >
                   <ListIcon />
                 </button>
@@ -1102,83 +1176,57 @@ const Products = () => {
             </div>
           </div>
 
-          {/* Product grid / list */}
-          {loading ? (
-            <div className={`${styles.grid} ${viewMode === "list" ? styles.gridList : ""}`}>
-              {Array.from({ length: perPage }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
-            </div>
-          ) : fetchError ? (
-            /* Fetch failed — never masquerade as "No products found" */
-            <div className={styles.emptyState}>
-              <div className={styles.errorIcon}>
-                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-              </div>
-              <h3 className={styles.emptyTitle}>Couldn't load products</h3>
-              <p className={styles.emptyText}>
-                Something went wrong while fetching the catalogue. Please check
-                your connection and try again.
-              </p>
-              <button className={styles.emptyBtn} onClick={fetchCatalog}>
-                Try Again
-              </button>
-            </div>
-          ) : paginatedProducts.length > 0 ? (
-            <div className={`${styles.grid} ${viewMode === "list" ? styles.gridList : ""}`}>
-              {paginatedProducts.map((product, index) => renderProductCard(product, index))}
-            </div>
-          ) : (
-            <div className={styles.emptyState}>
-              <EmptyIllustration />
-              <h3 className={styles.emptyTitle}>No products found</h3>
-              <p className={styles.emptyText}>
-                {urlSearch ? (
-                  <>
-                    We could not find any products matching{" "}
-                    <strong>&ldquo;{urlSearch}&rdquo;</strong>. Try a different
-                    search or adjust your filters.
-                  </>
-                ) : (
-                  "We could not find any products matching your criteria. Try adjusting your filters."
-                )}
-              </p>
-              {hasAnyConstraint && (
-                <button className={styles.emptyBtn} onClick={clearAllFilters}>
-                  Clear All Filters
+          {/* Active-filter chips (removable) */}
+          {activeFilterChips.length > 0 && (
+            <div className={styles.chipsRow}>
+              {activeFilterChips.map((chip) => (
+                <button
+                  key={chip.key}
+                  type="button"
+                  className={styles.chip}
+                  onClick={chip.onRemove}
+                  aria-label={`Remove filter: ${chip.label}`}
+                >
+                  <span className={styles.chipText}>{chip.label}</span>
+                  <span className={styles.chipX} aria-hidden="true">&times;</span>
                 </button>
-              )}
+              ))}
+              <button
+                type="button"
+                className={styles.chipsClear}
+                onClick={clearAllFilters}
+              >
+                Clear all
+              </button>
             </div>
           )}
 
-          {/* Pagination */}
-          {!loading && filteredProducts.length > perPage && (
-            <div className={styles.pagination}>
-              <div className={styles.paginationLeft}>
-                <label className={styles.perPageLabel}>
-                  Items per page:
-                  <select
-                    value={perPage}
-                    onChange={(e) => handlePerPageChange(Number(e.target.value))}
-                    className={styles.perPageSelect}
-                  >
-                    {PER_PAGE_OPTIONS.map((n) => (
-                      <option key={n} value={n}>{n}</option>
-                    ))}
-                  </select>
-                </label>
-              </div>
+          {/* Results */}
+          {renderResults()}
 
-              <div className={styles.paginationCenter}>
+          {/* Pagination */}
+          {!loading && !fetchError && filteredProducts.length > perPage && (
+            <div className={styles.pagination}>
+              <label className={styles.perPageLabel}>
+                <span>Per page</span>
+                <select
+                  value={perPage}
+                  onChange={(e) => handlePerPageChange(Number(e.target.value))}
+                  className={styles.perPageSelect}
+                >
+                  {PER_PAGE_OPTIONS.map((n) => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </label>
+
+              <div className={styles.pager}>
                 <button
                   className={styles.pageBtn}
                   disabled={safePage <= 1}
                   onClick={() => handlePageChange(safePage - 1)}
                   aria-label="Previous page"
+                  type="button"
                 >
                   <ChevronLeft />
                   <span className={styles.pageBtnText}>Prev</span>
@@ -1187,13 +1235,15 @@ const Products = () => {
                 {paginationRange.map((item, i) =>
                   item === "..." ? (
                     <span key={`ellipsis-${i}`} className={styles.pageEllipsis}>
-                      ...
+                      &hellip;
                     </span>
                   ) : (
                     <button
                       key={item}
                       className={`${styles.pageBtn} ${safePage === item ? styles.pageBtnActive : ""}`}
                       onClick={() => handlePageChange(item)}
+                      aria-current={safePage === item ? "page" : undefined}
+                      type="button"
                     >
                       {item}
                     </button>
@@ -1205,76 +1255,47 @@ const Products = () => {
                   disabled={safePage >= totalPages}
                   onClick={() => handlePageChange(safePage + 1)}
                   aria-label="Next page"
+                  type="button"
                 >
                   <span className={styles.pageBtnText}>Next</span>
                   <ChevronRight />
                 </button>
               </div>
 
-              <div className={styles.paginationRight}>
-                <span className={styles.pageInfo}>
-                  Page {safePage} of {totalPages}
-                </span>
-              </div>
+              <span className={styles.pageStatus}>
+                Page {safePage} of {totalPages}
+              </span>
             </div>
           )}
         </main>
       </div>
 
-      {/* ===== Mobile filter bottom sheet ===== */}
-      <AnimatePresence>
-        {mobileFiltersOpen && (
-          <motion.div
-            className={styles.overlay}
-            onClick={() => setMobileFiltersOpen(false)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+      {/* ===== Mobile filter sheet (tokenized BottomDrawer) ===== */}
+      <BottomDrawer
+        open={mobileFiltersOpen}
+        onClose={() => setMobileFiltersOpen(false)}
+        title="Filters"
+      >
+        {renderFilters()}
+        <div className={styles.drawerActions}>
+          <button
+            className={styles.drawerClear}
+            onClick={clearAllFilters}
+            disabled={!hasAnyConstraint}
+            type="button"
           >
-            <motion.div
-              className={styles.bottomSheet}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Product filters"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={styles.bottomSheetHeader}>
-                <h3 className={styles.bottomSheetTitle}>Filters</h3>
-                <button
-                  className={styles.bottomSheetClose}
-                  onClick={() => setMobileFiltersOpen(false)}
-                  aria-label="Close filters"
-                  ref={sheetCloseRef}
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-              <div className={styles.bottomSheetBody}>{renderFilters(true)}</div>
-              <div className={styles.bottomSheetFooter}>
-                <button
-                  className={styles.bottomSheetClearBtn}
-                  onClick={clearAllFilters}
-                  disabled={!hasAnyConstraint}
-                >
-                  Clear All
-                </button>
-                <button
-                  className={styles.bottomSheetApplyBtn}
-                  onClick={() => setMobileFiltersOpen(false)}
-                >
-                  Show {filteredProducts.length}{" "}
-                  {filteredProducts.length === 1 ? "Result" : "Results"}
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Clear all
+          </button>
+          <button
+            className={styles.drawerApply}
+            onClick={() => setMobileFiltersOpen(false)}
+            type="button"
+          >
+            Show {filteredProducts.length}{" "}
+            {filteredProducts.length === 1 ? "result" : "results"}
+          </button>
+        </div>
+      </BottomDrawer>
     </div>
   );
 };

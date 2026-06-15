@@ -12,7 +12,8 @@
   padding-bottom: calc(var(--sf-space-3) + env(safe-area-inset-bottom));
   background: var(--sf-color-surface);
   border-top: 1px solid var(--sf-color-border);
-  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.12);
+  /* warm, diffuse upward shadow — mirrors the brand shadow tone */
+  box-shadow: 0 -4px 20px rgba(38, 32, 23, 0.12);
   transform: translateY(110%);
   transition: transform var(--sf-transition);
   /* Hidden by default on desktop; this is a mobile-first device. */
@@ -36,6 +37,7 @@
   border-radius: var(--sf-radius-sm);
   object-fit: cover;
   background: var(--sf-color-surface-2);
+  border: 1px solid var(--sf-color-border);
   flex-shrink: 0;
 }
 
@@ -86,23 +88,26 @@
   border-radius: var(--sf-radius-md);
   font-weight: var(--sf-font-semibold);
   font-size: var(--sf-text-sm);
+  letter-spacing: var(--sf-tracking-wide);
+  text-transform: uppercase;
   cursor: pointer;
-  transition: filter var(--sf-transition-fast), background var(--sf-transition-fast),
-    color var(--sf-transition-fast);
+  transition: background var(--sf-transition-fast), color var(--sf-transition-fast),
+    filter var(--sf-transition-fast);
   white-space: nowrap;
 }
 
 .addBtn {
   border: none;
-  background: var(--sf-gradient-primary);
+  background: var(--sf-color-primary);
   color: var(--sf-color-primary-contrast);
 }
 
 .addBtn:hover:not(:disabled) {
-  filter: brightness(1.05);
+  background: var(--sf-color-primary-dark);
 }
 
-.addBtnDone {
+.addBtnDone,
+.addBtnDone:hover:not(:disabled) {
   background: var(--sf-color-success);
 }
 
@@ -131,5 +136,32 @@
   .bar {
     display: flex;
     z-index: 1300;
+  }
+}
+
+/* Phones: condense so the price + (optional Buy Now) + Add CTA always share one
+   row without crowding. The struck compare price is the first to go; the name
+   still truncates. */
+@media (max-width: 480px) {
+  .bar {
+    padding-left: var(--sf-space-3);
+    padding-right: var(--sf-space-3);
+    gap: var(--sf-space-2);
+  }
+
+  .compare {
+    display: none;
+  }
+
+  .addBtn,
+  .buyNow {
+    padding: 0 var(--sf-space-3);
+  }
+}
+
+/* Very small phones: drop the decorative thumbnail to guarantee the CTAs fit. */
+@media (max-width: 360px) {
+  .thumb {
+    display: none;
   }
 }

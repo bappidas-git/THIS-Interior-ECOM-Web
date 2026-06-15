@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   TrendingUp,
   LocalFireDepartment,
@@ -17,7 +17,6 @@ import {
   LightModeOutlined,
   ChevronRight,
   Close as CloseIcon,
-  ShoppingCartRounded,
   // Category glyphs
   DevicesOther,
   LaptopMac,
@@ -42,11 +41,15 @@ import { useDealsConfig } from "../../context/DealsConfigContext";
 import apiService from "../../services/api";
 import { categoryParam } from "../../utils/categories";
 import { APP_NAME } from "../../utils/constants";
+import { LOGO_WHITE, BRAND } from "../../theme/brand";
+import { onImageError } from "../../utils/helpers";
 import styles from "./SidebarMenu.module.css";
 
 // Categories are admin-managed, so we map a name to a representative glyph by
 // keyword and fall back to a generic icon — it never breaks on an unseen name.
 // Order matters: more specific rules come first (e.g. "women" before "men").
+// The glyphs are rendered in a single restrained monochrome/brass treatment via
+// the stylesheet — never a per-category colour.
 const CATEGORY_ICON_RULES = [
   [/laptop|computer|\bpc\b/i, LaptopMac],
   [/audio|headphone|speaker|earbud|sound/i, HeadphonesOutlined],
@@ -70,19 +73,21 @@ const getCategoryIcon = (name = "") => {
   return rule ? rule[1] : CategoryOutlined;
 };
 
-// Curated quick links shown above the category tree.
+// Curated quick links shown above the category tree. Icons are styled as quiet
+// monochrome line glyphs by the stylesheet (no per-link colour).
 const QUICK_LINKS = [
-  { label: "Trending Now", icon: TrendingUp, tone: "toneIndigo", to: "/products?filter=trending" },
-  { label: "Today's Deals", icon: LocalFireDepartment, tone: "toneRed", to: "/special-offers", badge: "HOT" },
-  { label: "New Arrivals", icon: AutoAwesome, tone: "toneViolet", to: "/products?sort=newest" },
-  { label: "Best Sellers", icon: EmojiEvents, tone: "toneAmber", to: "/products?filter=best-sellers" },
-  { label: "Special Offers", icon: CardGiftcard, tone: "tonePink", to: "/special-offers" },
+  { label: "Trending Now", icon: TrendingUp, to: "/products?filter=trending" },
+  { label: "Today's Deals", icon: LocalFireDepartment, to: "/special-offers", badge: "HOT" },
+  { label: "New Arrivals", icon: AutoAwesome, to: "/products?sort=newest" },
+  { label: "Best Sellers", icon: EmojiEvents, to: "/products?filter=best-sellers" },
+  { label: "Special Offers", icon: CardGiftcard, to: "/special-offers" },
 ];
 
 const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const reduceMotion = useReducedMotion();
   // Drop the deals quick links when the admin disables the Special Offers page.
   const { enabled: dealsEnabled } = useDealsConfig();
   const quickLinks = useMemo(
@@ -171,8 +176,6 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
     return user.name || user.email || "User";
   };
 
-  const themeAttr = isDarkMode ? "dark" : "light";
-
   // Build a parent → children index. The API already returns active categories
   // sorted by sortOrder, so grouping preserves the intended order per level.
   // A category is treated as top-level when it has no parent OR its parent isn't
@@ -229,25 +232,37 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
     visible: { opacity: 1 },
   };
 
-  const panelVariants = {
-    hidden: { x: "-100%" },
-    visible: { x: 0, transition: { type: "spring", damping: 32, stiffness: 320 } },
-    exit: { x: "-100%", transition: { type: "spring", damping: 34, stiffness: 320 } },
-  };
+  // Slow editorial slide-in; collapses to a plain fade under reduced motion.
+  const panelVariants = reduceMotion
+    ? {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 },
+        exit: { opacity: 0 },
+      }
+    : {
+        hidden: { x: "-100%" },
+        visible: { x: 0, transition: { type: "spring", damping: 34, stiffness: 280 } },
+        exit: { x: "-100%", transition: { type: "spring", damping: 36, stiffness: 300 } },
+      };
 
-  const contentVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { delay: 0.12, duration: 0.3 } },
-  };
+  const contentVariants = reduceMotion
+    ? { hidden: { opacity: 1 }, visible: { opacity: 1 } }
+    : {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { delay: 0.14, duration: 0.32 } },
+      };
 
-  const rowAnim = (i) => ({
-    initial: { opacity: 0, x: -14 },
-    animate: {
-      opacity: 1,
-      x: 0,
-      transition: { delay: 0.1 + i * 0.035, duration: 0.28, ease: "easeOut" },
-    },
-  });
+  const rowAnim = (i) =>
+    reduceMotion
+      ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
+      : {
+          initial: { opacity: 0, x: -12 },
+          animate: {
+            opacity: 1,
+            x: 0,
+            transition: { delay: 0.12 + i * 0.03, duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+          },
+        };
 
   let rowIndex = 0;
   const nextRow = () => rowAnim(rowIndex++);
@@ -261,7 +276,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
         onClick={() => handleNavigate(item.to)}
         {...nextRow()}
       >
-        <span className={`${styles.rowIcon} ${styles[item.tone]}`}>
+        <span className={styles.rowIcon}>
           <Icon />
         </span>
         <span className={styles.rowLabel}>{item.label}</span>
@@ -292,7 +307,6 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
           <motion.aside
             ref={panelRef}
             className={styles.panel}
-            data-theme={themeAttr}
             variants={panelVariants}
             initial="hidden"
             animate="visible"
@@ -302,15 +316,19 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
             aria-label={`${APP_NAME} menu`}
             tabIndex={-1}
           >
-            {/* ============ Hero ============ */}
+            {/* ============ Hero (always-dark charcoal band, white wordmark) ============ */}
             <div className={styles.hero}>
               <div className={styles.heroTop}>
-                <div className={styles.brand}>
-                  <span className={styles.brandIcon}>
-                    <ShoppingCartRounded />
-                  </span>
-                  <span className={styles.brandName}>{APP_NAME}</span>
-                </div>
+                <span className={styles.brand}>
+                  <img
+                    src={LOGO_WHITE}
+                    alt={BRAND.name}
+                    className={styles.logo}
+                    width="300"
+                    height="148"
+                    onError={onImageError}
+                  />
+                </span>
                 <button
                   className={styles.closeBtn}
                   onClick={onClose}
@@ -386,7 +404,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   aria-expanded={categoriesExpanded}
                   {...nextRow()}
                 >
-                  <span className={`${styles.rowIcon} ${styles.toneBrand}`}>
+                  <span className={`${styles.rowIcon} ${styles.rowIconAccent}`}>
                     <GridViewRounded />
                   </span>
                   <span className={styles.rowLabel}>Shop by Category</span>
@@ -401,9 +419,9 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   {categoriesExpanded && (
                     <motion.div
                       className={styles.catPanel}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
+                      initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+                      animate={reduceMotion ? {} : { height: "auto", opacity: 1 }}
+                      exit={reduceMotion ? {} : { height: 0, opacity: 0 }}
                       transition={{ duration: 0.28, ease: "easeInOut" }}
                     >
                       {categoriesLoading ? (
@@ -451,9 +469,9 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                                   {hasKids && isOpen && (
                                     <motion.div
                                       className={styles.catChildrenWrap}
-                                      initial={{ height: 0, opacity: 0 }}
-                                      animate={{ height: "auto", opacity: 1 }}
-                                      exit={{ height: 0, opacity: 0 }}
+                                      initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+                                      animate={reduceMotion ? {} : { height: "auto", opacity: 1 }}
+                                      exit={reduceMotion ? {} : { height: 0, opacity: 0 }}
                                       transition={{ duration: 0.24, ease: "easeInOut" }}
                                     >
                                       <div className={styles.catChildren}>
@@ -500,7 +518,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   onClick={() => handleNavigate("/orders")}
                   {...nextRow()}
                 >
-                  <span className={`${styles.rowIcon} ${styles.toneNeutral}`}>
+                  <span className={styles.rowIcon}>
                     <ShoppingBagOutlined />
                   </span>
                   <span className={styles.rowLabel}>My Orders</span>
@@ -512,7 +530,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   onClick={() => handleNavigate("/wishlist")}
                   {...nextRow()}
                 >
-                  <span className={`${styles.rowIcon} ${styles.toneNeutral}`}>
+                  <span className={styles.rowIcon}>
                     <FavoriteBorder />
                   </span>
                   <span className={styles.rowLabel}>My Wishlist</span>
@@ -524,7 +542,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   onClick={() => handleNavigate("/profile")}
                   {...nextRow()}
                 >
-                  <span className={`${styles.rowIcon} ${styles.toneNeutral}`}>
+                  <span className={styles.rowIcon}>
                     <PersonOutline />
                   </span>
                   <span className={styles.rowLabel}>My Profile</span>
@@ -537,7 +555,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                     onClick={handleLogout}
                     {...nextRow()}
                   >
-                    <span className={`${styles.rowIcon} ${styles.toneRed}`}>
+                    <span className={styles.rowIcon}>
                       <LogoutIcon />
                     </span>
                     <span className={styles.rowLabel}>Logout</span>
@@ -555,7 +573,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   onClick={() => handleNavigate("/support")}
                   {...nextRow()}
                 >
-                  <span className={`${styles.rowIcon} ${styles.toneNeutral}`}>
+                  <span className={styles.rowIcon}>
                     <HeadsetMicOutlined />
                   </span>
                   <span className={styles.rowLabel}>Help &amp; Support</span>
@@ -570,7 +588,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
                   aria-label="Toggle dark mode"
                   {...nextRow()}
                 >
-                  <span className={`${styles.rowIcon} ${styles.toneNeutral}`}>
+                  <span className={styles.rowIcon}>
                     {isDarkMode ? <DarkModeOutlined /> : <LightModeOutlined />}
                   </span>
                   <span className={styles.rowLabel}>

@@ -486,3 +486,351 @@
     margin-bottom: var(--sf-space-10);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   "MADE WITH" MARKS — quiet, monochrome brand/materials strip
+   A calm hairline-framed band (sits between two dividers). Honest brand voice —
+   never fabricated press logos.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.marks {
+  padding: var(--sf-space-12) 0;
+}
+
+.marksEyebrow {
+  margin: 0 0 var(--sf-space-6);
+  text-align: center;
+  color: var(--sf-color-text-muted);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+}
+
+.marksRow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-5) var(--sf-space-8);
+}
+
+.mark {
+  color: var(--sf-color-text-muted);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  transition: color var(--sf-transition);
+}
+
+.mark:hover {
+  color: var(--sf-color-text-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TESTIMONIALS — slow, elegant carousel of real approved reviews
+   Slides cross-fade in place (token transitions, so reduced-motion zeroes them).
+   ═══════════════════════════════════════════════════════════════════════════ */
+.testimonialLoading {
+  max-width: 60ch;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sf-space-4);
+}
+
+.testimonialEmpty {
+  margin: 0;
+  text-align: center;
+  color: var(--sf-color-text-muted);
+  font-style: italic;
+  font-size: var(--sf-text-md);
+}
+
+.carousel {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* All slides occupy the same grid cell, so the track height is the tallest
+   slide and cross-fades never shift the layout. */
+.carouselTrack {
+  display: grid;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sf-space-5);
+  margin: 0;
+  padding: var(--sf-space-2) var(--sf-space-2) 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--sf-transition-slow) var(--sf-ease-editorial),
+    visibility 0s linear var(--sf-transition-slow);
+}
+
+.slideActive {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--sf-transition-slow) var(--sf-ease-editorial);
+}
+
+.quote {
+  margin: 0;
+  max-width: 56ch;
+}
+
+.quote p {
+  margin: 0;
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-display);
+  font-style: italic;
+  font-weight: var(--sf-font-normal);
+  font-size: clamp(1.4rem, 2.6vw, var(--sf-text-2xl));
+  line-height: var(--sf-leading-tight);
+  letter-spacing: var(--sf-tracking-tight);
+  text-wrap: balance;
+}
+
+.byline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-3);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--sf-radius-pill);
+  background: var(--sf-color-primary-soft);
+  color: var(--sf-color-primary);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-lg);
+  line-height: 1;
+}
+
+.bylineText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.author {
+  color: var(--sf-color-text);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-semibold);
+}
+
+.verified {
+  color: var(--sf-color-success);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-medium);
+}
+
+.carouselControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-5);
+  margin-top: var(--sf-space-8);
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--sf-tap-target);
+  height: var(--sf-tap-target);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-pill);
+  background: var(--sf-color-surface);
+  color: var(--sf-color-text-secondary);
+  cursor: pointer;
+  transition: color var(--sf-transition-fast),
+    border-color var(--sf-transition-fast), background var(--sf-transition-fast);
+}
+
+.navBtn:hover {
+  color: var(--sf-color-primary);
+  border-color: var(--sf-color-primary);
+  background: var(--sf-color-primary-soft);
+}
+
+.navBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-2);
+}
+
+/* The visible dot is the 8px content box; the 4px padding enlarges the hit
+   area without growing the mark (background-clip keeps the fill inset). */
+.dot {
+  width: 16px;
+  height: 16px;
+  padding: 4px;
+  border: none;
+  border-radius: var(--sf-radius-pill);
+  background: var(--sf-color-border-strong);
+  background-clip: content-box;
+  cursor: pointer;
+  transition: background var(--sf-transition-fast), transform var(--sf-transition-fast);
+}
+
+.dot:hover {
+  background: var(--sf-color-text-muted);
+  background-clip: content-box;
+}
+
+.dotActive {
+  background: var(--sf-color-primary);
+  background-clip: content-box;
+  transform: scale(1.25);
+}
+
+.dot:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EXPLAINER STEPPER — styling in three steps (our promise)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.steps {
+  padding: var(--sf-space-16) 0;
+  background: var(--sf-color-surface-2);
+}
+
+.stepGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sf-space-10);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 var(--sf-space-4);
+}
+
+.stepNum {
+  font-family: var(--sf-font-display);
+  font-style: italic;
+  font-size: var(--sf-text-lg);
+  color: var(--sf-color-primary);
+  letter-spacing: var(--sf-tracking-wide);
+}
+
+.stepIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: var(--sf-space-4) 0 var(--sf-space-5);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-pill);
+  background: var(--sf-color-surface);
+  color: var(--sf-color-primary);
+}
+
+.stepTitle {
+  margin: 0 0 var(--sf-space-3);
+  font-family: var(--sf-font-display);
+  font-weight: var(--sf-font-medium);
+  font-size: var(--sf-text-2xl);
+  line-height: var(--sf-leading-tight);
+  color: var(--sf-color-text);
+}
+
+.stepBody {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--sf-color-text-secondary);
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
+}
+
+@media (max-width: 768px) {
+  .steps {
+    padding: var(--sf-space-12) 0;
+  }
+
+  .stepGrid {
+    grid-template-columns: 1fr;
+    gap: var(--sf-space-10);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CLOSING BRAND CTA — large dark send-off (white logo) into the footer
+   Top-padded dark band; the reused <Newsletter/> below brings its own padding,
+   so together they read as one continuous charcoal close.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.closing {
+  padding: var(--sf-space-16) var(--sf-space-6) 0;
+  background: var(--sf-color-dark-bg);
+  color: var(--sf-color-dark-text-secondary);
+  text-align: center;
+}
+
+.closingInner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.closingLogo {
+  display: block;
+  width: auto;
+  height: 64px;
+  margin: 0 auto var(--sf-space-6);
+  opacity: 0.95;
+}
+
+.closingTitle {
+  margin: 0;
+  color: var(--sf-color-dark-text);
+  font-family: var(--sf-font-display);
+  font-weight: var(--sf-font-medium);
+  font-size: clamp(2rem, 4.5vw, var(--sf-text-4xl));
+  line-height: var(--sf-leading-display);
+  letter-spacing: var(--sf-tracking-tight);
+  text-wrap: balance;
+}
+
+.closingAccent {
+  font-style: italic;
+  color: var(--sf-color-dark-accent);
+}
+
+.closingLede {
+  margin: var(--sf-space-5) auto 0;
+  max-width: 46ch;
+  color: var(--sf-color-dark-text-secondary);
+  font-size: clamp(1rem, 1.4vw, var(--sf-text-lg));
+  line-height: var(--sf-leading-normal);
+}

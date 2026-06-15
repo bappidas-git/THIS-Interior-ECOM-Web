@@ -19,9 +19,10 @@ books, beauty… all dressed by the same components from real data).
 
 ```
 src/theme/
-  storefront-tokens.css   ← design tokens (CSS custom properties). RE-SKIN HERE.
-  tokens.js               ← JS token mirror + STOREFRONT_CONFIG (content config)
-  colors.js               ← brand palette for the MUI layer (admin + MUI bits)
+  storefront-tokens.css     ← design tokens (CSS custom properties). RE-SKIN HERE.
+  storefront-primitives.css ← shared UI primitive classes (.sf-btn, .sf-input …)
+  tokens.js                 ← JS token mirror + STOREFRONT_CONFIG (content config)
+  colors.js                 ← brand palette for the MUI layer (admin + MUI bits)
 
 src/components/storefront/ ← the reusable, domain-agnostic component library
   StarRating, PriceBlock, SocialProof, VariantSelector, QuantityStepper,
@@ -46,6 +47,32 @@ the same tokens and the relevant principles.
   the same source and its CTAs match the rest of the storefront.
 - **To launch a new client:** edit `storefront-tokens.css` (and, if you use the
   MUI layer, keep `colors.js` in sync). No component code changes.
+
+### Shared UI primitives (the low-level visual vocabulary)
+`src/theme/storefront-primitives.css` defines brand-themed, **global** utility
+classes that every page can drop in. They read only from `--sf-*` tokens (so
+they re-skin and dark-mode automatically) and are inert until applied (the admin
+panel never uses them, so it is unaffected):
+
+| Primitive | Classes |
+|-----------|---------|
+| Buttons   | `.sf-btn` + `.sf-btn--primary` / `--secondary` / `--tertiary`, `--uppercase`, `--block` |
+| Form controls | `.sf-input`, `.sf-select`, `.sf-textarea`, `.sf-checkbox`, `.sf-radio`, `.sf-label` |
+| Badges/chips | `.sf-badge` (+ `--discount`), `.sf-chip` (+ `--active`) |
+| Cards/panels | `.sf-card` (+ `--hover`), `.sf-panel` |
+| Tabs | `.sf-tabs`, `.sf-tab` (+ `--active`) |
+| Loaders | `.sf-skeleton` (+ `--text` / `--circle`), `.sf-spinner` |
+
+**Which button do I use?**
+- **MUI `<Button>`** (`@mui/material`) → already brand-styled by the `MuiButton`
+  overrides in `src/context/ThemeContext.js`. Use MUI variants:
+  `contained` = primary, `outlined` = secondary/ghost, `text` = tertiary.
+- **Plain `<button>` / `<a>` / CSS-Module markup** → use the `.sf-btn*` classes.
+
+The MUI overrides and the `.sf-btn*` classes are intentionally kept visually
+identical (same tokens, radius, hover), so the two layers match. The same
+applies to inputs (`MuiTextField` ↔ `.sf-input`) and cards (`MuiCard` ↔
+`.sf-card`). Reduced-motion collapses the shimmer/spin automatically.
 
 ### How per-client content/config works
 `src/theme/tokens.js → STOREFRONT_CONFIG` controls *content* choices without

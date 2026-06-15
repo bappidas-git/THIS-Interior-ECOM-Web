@@ -4,12 +4,18 @@
    src/theme/storefront-tokens.css — see STOREFRONT_UX_GUIDELINES.md. */
 @import "./theme/storefront-tokens.css";
 
+/* Shared, brand-themed UI primitives (.sf-btn, .sf-input, .sf-badge, .sf-card,
+   .sf-tab, .sf-skeleton …). Imported after the tokens it consumes. */
+@import "./theme/storefront-primitives.css";
+
 body {
   margin: 0;
   /* Points at the brand sans token (--sf-font-family) defined in
      theme/storefront-tokens.css, imported just above. */
   font-family: var(--sf-font-family);
   color: var(--sf-color-text);
+  font-size: var(--sf-text-base);
+  line-height: var(--sf-leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -25,6 +31,36 @@ code {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ===========================================================================
+ * GLOBAL ELEMENT DEFAULTS (storefront)
+ * Scoped to :not(.admin-area) so the admin panel keeps its own design system.
+ * A consistent brass focus-visible ring, warm text selection, and a brass
+ * default link colour — all via tokens, all flip with dark mode.
+ * ======================================================================== */
+/* One focus indicator across the storefront: the brass --sf-shadow-focus ring.
+   The .sf-* primitives use the same token, so whichever rule wins the cascade
+   the ring is identical — no doubled outline. */
+body:not(.admin-area) :focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+body:not(.admin-area) ::selection {
+  background: var(--sf-color-primary-soft);
+  color: var(--sf-color-text);
+}
+
+/* Base default for bare links; styled components (CSS Modules) override via
+   their higher specificity, so this only dresses otherwise-unstyled anchors. */
+body:not(.admin-area) a {
+  color: var(--sf-color-primary);
+  text-decoration: none;
+}
+body:not(.admin-area) a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /*

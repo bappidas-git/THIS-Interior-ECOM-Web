@@ -113,6 +113,15 @@
   --sf-color-discount-bg: #e6efdd;
   --sf-color-badge-bg: #f0eae0;        /* neutral sand chip background */
 
+  /* ---- Shared component primitives -------------------------------------
+     Low-level tokens the global UI vocabulary reads (buttons, inputs, chips,
+     cards, tabs, loaders) so primitives never hardcode hex. The focus ring
+     itself is --sf-shadow-focus; the hairline divider is --sf-border-hairline
+     (both above). These add the missing pieces. */
+  --sf-color-chip-bg: var(--sf-color-surface-2);        /* category chip fill */
+  --sf-color-skeleton-base: var(--sf-color-surface-2);  /* loader base (greige) */
+  --sf-color-skeleton-highlight: #f6f1e9;               /* the shimmer sweep */
+
   /* ---- Radius — editorial restraint (calm, near-square corners) --------- */
   --sf-radius-sm: 2px;
   --sf-radius-md: 4px;
@@ -230,6 +239,13 @@ body.dark {
   --sf-color-discount: #6bbf8a;
   --sf-color-discount-bg: rgba(47, 125, 79, 0.20);
   --sf-color-badge-bg: rgba(201, 160, 90, 0.16);
+
+  /* Skeleton: base (--sf-color-surface-2) and surface-hover collapse to the
+     same charcoal in dark mode, so give the shimmer a distinctly lighter
+     sweep to keep loaders legible. */
+  --sf-color-chip-bg: var(--sf-color-surface-2);
+  --sf-color-skeleton-base: #26221d;
+  --sf-color-skeleton-highlight: #383229;
 
   --sf-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
   --sf-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);

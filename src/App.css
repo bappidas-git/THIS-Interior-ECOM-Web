@@ -282,8 +282,8 @@ body.admin-area.dark *::-webkit-scrollbar-thumb:hover {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(168, 85, 247, 0.2);
-  border-top-color: var(--neon-purple);
+  border: 3px solid var(--sf-color-border);
+  border-top-color: var(--sf-color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -346,24 +346,29 @@ body.admin-area.dark *::-webkit-scrollbar-thumb:hover {
    SweetAlert2 theming
    Swal renders directly under <body>, outside both MUI ThemeProviders,
    so it can't inherit the palette. Theme it from the body-level mode
-   classes instead: body.light / body.dark (set by ThemeContext) pick the
-   storefront palette, and body.admin-area (set while an admin screen is
-   mounted) swaps the playful storefront look for the flat admin design
-   language. Everything is expressed through SweetAlert2's own CSS
-   variables so a per-call confirmButtonColor (the destructive reds on
-   delete/logout confirms) still wins — Swal sets those as inline
-   variables on the button itself.
+   classes instead. There are three layers, in source order:
+
+     1. SHARED NEUTRAL BASE (body.light / body.dark) — the flat values the
+        ADMIN popups inherit. The admin overrides the rest itself. Keep
+        these neutral; the admin relies on inheriting them.
+     2. ADMIN AREA (body.admin-area.*) — the flat slate admin skin. LEFT
+        UNCHANGED so /admin stays identical for every client.
+     3. STOREFRONT BRAND SKIN (body.{light,dark}:not(.admin-area)) — the
+        THIS Interiors warm/brass skin. Excluded from admin via
+        :not(.admin-area), and higher-specificity than the base, so it
+        dresses only the storefront and never leaks into the admin.
+
+   Everything is expressed through SweetAlert2's own CSS variables so a
+   per-call confirmButtonColor (the destructive reds on delete/logout
+   confirms) still wins — Swal sets those as inline variables on the
+   button itself — and the confirm/cancel return values are untouched.
    ===================================================================== */
+
+/* 1. Shared neutral base — inherited by the admin popups below. */
 body.light .swal2-popup {
   --swal2-background: #ffffff;
   --swal2-color: #1a202c;
-  --swal2-border-radius: 16px;
-  --swal2-confirm-button-background-color: #667eea;
   --swal2-cancel-button-background-color: #64748b;
-  --swal2-confirm-button-border-radius: 10px;
-  --swal2-cancel-button-border-radius: 10px;
-  --swal2-action-button-focus-box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.4);
-  --swal2-timer-progress-bar-background: rgba(102, 126, 234, 0.5);
 }
 
 /* secondary text tone for the message body (title inherits popup color) */
@@ -372,18 +377,9 @@ body.light .swal2-html-container {
 }
 
 body.dark .swal2-popup {
-  --swal2-background: #1a1f3a;
-  --swal2-color: #f5f7fa;
-  --swal2-border: 1px solid rgba(168, 85, 247, 0.25);
-  --swal2-border-radius: 16px;
-  --swal2-confirm-button-background-color: #a855f7;
   --swal2-cancel-button-background-color: #475569;
-  --swal2-confirm-button-border-radius: 10px;
-  --swal2-cancel-button-border-radius: 10px;
   --swal2-close-button-color: #a0aec0;
-  --swal2-action-button-focus-box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.45);
   --swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.3);
-  --swal2-toast-border: 1px solid rgba(168, 85, 247, 0.25);
   --swal2-toast-box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
@@ -391,16 +387,7 @@ body.dark .swal2-popup:not(.swal2-toast) {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
-body.dark .swal2-html-container {
-  color: #a0aec0;
-}
-
-body.light .swal2-popup.swal2-toast,
-body.dark .swal2-popup.swal2-toast {
-  --swal2-border-radius: 12px;
-}
-
-/* Admin area: flat surfaces, 6-8px radii, slate palette */
+/* 2. Admin area: flat surfaces, 6-8px radii, slate palette — UNCHANGED */
 body.admin-area.light .swal2-popup,
 body.admin-area.dark .swal2-popup {
   --swal2-border-radius: 8px;
@@ -427,4 +414,48 @@ body.admin-area.dark .swal2-popup {
 
 body.admin-area.dark .swal2-html-container {
   color: #94a3b8;
+}
+
+/* 3. Storefront brand skin (THIS Interiors) — tokens flip with dark mode.
+   Scoped :not(.admin-area) so it never touches the admin popups above. */
+body.light:not(.admin-area) .swal2-popup,
+body.dark:not(.admin-area) .swal2-popup {
+  --swal2-background: var(--sf-color-surface);
+  --swal2-color: var(--sf-color-text);
+  --swal2-border: var(--sf-border-hairline);
+  --swal2-border-radius: var(--sf-radius-lg);
+  --swal2-confirm-button-background-color: var(--sf-color-primary);
+  --swal2-confirm-button-color: var(--sf-color-primary-contrast);
+  --swal2-cancel-button-background-color: var(--sf-color-surface-2);
+  --swal2-cancel-button-color: var(--sf-color-text);
+  --swal2-confirm-button-border-radius: var(--sf-radius-md);
+  --swal2-cancel-button-border-radius: var(--sf-radius-md);
+  --swal2-close-button-color: var(--sf-color-text-muted);
+  --swal2-action-button-focus-box-shadow: var(--sf-shadow-focus);
+  --swal2-timer-progress-bar-background: var(--sf-color-primary);
+  --swal2-toast-border: var(--sf-border-hairline);
+  --swal2-toast-box-shadow: var(--sf-shadow-md);
+}
+
+/* Serif title — the editorial brand voice. */
+body:not(.admin-area) .swal2-title {
+  font-family: var(--sf-font-display);
+  font-weight: var(--sf-font-medium);
+  color: var(--sf-color-text);
+}
+
+body.light:not(.admin-area) .swal2-html-container,
+body.dark:not(.admin-area) .swal2-html-container {
+  color: var(--sf-color-text-secondary);
+}
+
+/* Calm, diffuse popup shadow + calm toast radius. */
+body.light:not(.admin-area) .swal2-popup:not(.swal2-toast),
+body.dark:not(.admin-area) .swal2-popup:not(.swal2-toast) {
+  box-shadow: var(--sf-shadow-lg);
+}
+
+body.light:not(.admin-area) .swal2-popup.swal2-toast,
+body.dark:not(.admin-area) .swal2-popup.swal2-toast {
+  --swal2-border-radius: var(--sf-radius-md);
 }

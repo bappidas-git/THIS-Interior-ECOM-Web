@@ -1,0 +1,411 @@
+/* =============================================================================
+ * STOREFRONT UI PRIMITIVES  —  the shared, low-level visual vocabulary
+ * =============================================================================
+ *
+ * Reusable, brand-themed building blocks every storefront page can drop in:
+ * buttons, form controls, badges/chips, cards/panels, tabs and loaders. They
+ * read ONLY from the `--sf-*` design tokens (theme/storefront-tokens.css), so a
+ * client re-skin flows through automatically and dark mode is inherited (the
+ * tokens flip under `body.dark`). No component ever hardcodes a hex.
+ *
+ * These are plain GLOBAL utility classes (not CSS-Module-scoped): apply them by
+ * name — e.g. `<button class="sf-btn sf-btn--primary">` — from any page or
+ * component. They are inert until applied, so the admin panel (which never adds
+ * them) is unaffected.
+ *
+ * ── WHICH BUTTON DO I USE? ───────────────────────────────────────────────────
+ *   • MUI `<Button>` (the `@mui/material` layer) → already brand-styled by the
+ *     MuiButton overrides in src/context/ThemeContext.js. Use MUI variants:
+ *       contained → primary,  outlined → secondary/ghost,  text → tertiary.
+ *   • Plain `<button>` / `<a>` / CSS-Module markup → use the `.sf-btn*` classes
+ *     below. They are kept visually identical to the MUI overrides on purpose.
+ *
+ * Editorial brass aesthetic: solid-brass primary, hairline-outline secondary,
+ * quiet text tertiary; calm radii; letter-spaced uppercase labels; slow tonal
+ * hovers (no loud gradients, no glow). Reduced-motion is respected at the end.
+ * ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * BUTTONS
+ * ------------------------------------------------------------------------- */
+.sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-2);
+  min-height: var(--sf-tap-target);
+  padding: 0 var(--sf-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--sf-radius-md);
+  background: transparent;
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-medium);
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--sf-transition), color var(--sf-transition),
+    border-color var(--sf-transition), box-shadow var(--sf-transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Uppercase, letter-spaced editorial labels (opt-in). */
+.sf-btn--uppercase {
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+}
+
+/* Primary — solid brass, contrast text, subtle lift on hover. */
+.sf-btn--primary {
+  background: var(--sf-color-primary);
+  color: var(--sf-color-primary-contrast);
+  border-color: var(--sf-color-primary);
+}
+.sf-btn--primary:hover {
+  background: var(--sf-color-primary-dark);
+  border-color: var(--sf-color-primary-dark);
+  box-shadow: var(--sf-shadow-sm);
+}
+
+/* Secondary — ghost/outline: hairline border, brass text + border on hover. */
+.sf-btn--secondary {
+  background: transparent;
+  color: var(--sf-color-text);
+  border-color: var(--sf-color-border);
+}
+.sf-btn--secondary:hover {
+  color: var(--sf-color-primary);
+  border-color: var(--sf-color-primary);
+  background: var(--sf-color-primary-soft);
+}
+
+/* Tertiary — quiet text link, thin underline on hover. Compact hit area. */
+.sf-btn--tertiary {
+  min-height: auto;
+  padding: var(--sf-space-2) var(--sf-space-2);
+  background: transparent;
+  color: var(--sf-color-primary);
+  border-color: transparent;
+}
+.sf-btn--tertiary:hover {
+  color: var(--sf-color-primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* Full-width helper. */
+.sf-btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.sf-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.sf-btn:disabled,
+.sf-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * FORM CONTROLS — white/surface fill, hairline border, brass focus ring,
+ * comfortable ≥44px targets, muted placeholder, danger state for errors.
+ * ------------------------------------------------------------------------- */
+.sf-input,
+.sf-select,
+.sf-textarea {
+  width: 100%;
+  min-height: var(--sf-tap-target);
+  padding: var(--sf-space-3) var(--sf-space-4);
+  background: var(--sf-color-surface);
+  color: var(--sf-color-text);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-md);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-base);
+  line-height: var(--sf-leading-normal);
+  transition: border-color var(--sf-transition-fast),
+    box-shadow var(--sf-transition-fast);
+}
+
+.sf-input::placeholder,
+.sf-textarea::placeholder {
+  color: var(--sf-color-text-muted);
+  opacity: 1; /* Firefox dims placeholders by default */
+}
+
+.sf-input:hover,
+.sf-select:hover,
+.sf-textarea:hover {
+  border-color: var(--sf-color-border-strong);
+}
+
+.sf-input:focus,
+.sf-select:focus,
+.sf-textarea:focus {
+  outline: none;
+  border-color: var(--sf-color-primary);
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.sf-input:disabled,
+.sf-select:disabled,
+.sf-textarea:disabled {
+  background: var(--sf-color-surface-2);
+  color: var(--sf-color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Error state — set aria-invalid="true" or add .sf-input--error. */
+.sf-input--error,
+.sf-select--error,
+.sf-textarea--error,
+.sf-input[aria-invalid="true"],
+.sf-select[aria-invalid="true"],
+.sf-textarea[aria-invalid="true"] {
+  border-color: var(--sf-color-danger);
+}
+.sf-input--error:focus,
+.sf-input[aria-invalid="true"]:focus,
+.sf-select--error:focus,
+.sf-textarea--error:focus {
+  box-shadow: 0 0 0 3px var(--sf-color-danger-bg);
+}
+
+.sf-textarea {
+  min-height: calc(var(--sf-tap-target) * 2);
+  resize: vertical;
+}
+
+/* Native select keeps its caret; just align the right padding for it. */
+.sf-select {
+  padding-right: var(--sf-space-8);
+  cursor: pointer;
+}
+
+/* Form label — sans body type per brand; .sf-label--serif for an editorial
+   serif label where a page wants it. */
+.sf-label {
+  display: block;
+  margin-bottom: var(--sf-space-2);
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-medium);
+}
+.sf-label--serif {
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-md);
+  font-weight: var(--sf-font-medium);
+}
+
+/* Checkbox / radio — brass tick via accent-color, comfortable size. Wrap in a
+   label with adequate padding for the tap target. */
+.sf-checkbox,
+.sf-radio {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--sf-color-primary);
+  cursor: pointer;
+}
+.sf-checkbox:focus-visible,
+.sf-radio:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+  border-radius: var(--sf-radius-sm);
+}
+
+/* ---------------------------------------------------------------------------
+ * BADGES / CHIPS / PILLS — restrained sand/greige, uppercase micro-labels.
+ * "New", category chips, discount %. Never urgency styling.
+ * ------------------------------------------------------------------------- */
+.sf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1);
+  padding: var(--sf-space-1) var(--sf-space-2);
+  background: var(--sf-color-badge-bg);
+  color: var(--sf-color-text-secondary);
+  border-radius: var(--sf-radius-sm);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Discount / savings — keeps the dedicated discount tokens. */
+.sf-badge--discount {
+  background: var(--sf-color-discount-bg);
+  color: var(--sf-color-discount);
+}
+
+/* Chip / pill — category filters, removable tags. */
+.sf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-2);
+  min-height: 32px;
+  padding: var(--sf-space-1) var(--sf-space-4);
+  background: var(--sf-color-chip-bg);
+  color: var(--sf-color-text);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-pill);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--sf-transition-fast),
+    border-color var(--sf-transition-fast), color var(--sf-transition-fast);
+}
+.sf-chip:hover {
+  border-color: var(--sf-color-primary);
+  color: var(--sf-color-primary);
+}
+.sf-chip--active,
+.sf-chip[aria-pressed="true"] {
+  background: var(--sf-color-primary-soft);
+  border-color: var(--sf-color-primary);
+  color: var(--sf-color-primary);
+}
+.sf-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* ---------------------------------------------------------------------------
+ * CARDS / PANELS — flat surface + hairline border (not heavy shadow); a soft
+ * lift on hover. Calm radii.
+ * ------------------------------------------------------------------------- */
+.sf-card,
+.sf-panel {
+  background: var(--sf-color-surface);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-lg);
+}
+.sf-card {
+  transition: border-color var(--sf-transition),
+    box-shadow var(--sf-transition), transform var(--sf-transition);
+}
+.sf-card--hover:hover {
+  border-color: var(--sf-color-border-strong);
+  box-shadow: var(--sf-shadow-sm);
+}
+.sf-panel {
+  padding: var(--sf-space-6);
+}
+
+/* ---------------------------------------------------------------------------
+ * TABS — quiet underline / active-ink (PDP, Checkout steps, Profile, Help).
+ * Active = brass underline; inactive = muted ink.
+ * ------------------------------------------------------------------------- */
+.sf-tabs {
+  display: flex;
+  gap: var(--sf-space-6);
+  border-bottom: 1px solid var(--sf-color-border);
+}
+.sf-tab {
+  appearance: none;
+  min-height: var(--sf-tap-target);
+  padding: var(--sf-space-3) 0;
+  margin-bottom: -1px; /* sit the active underline on the row's hairline */
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--sf-color-text-secondary);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-medium);
+  cursor: pointer;
+  transition: color var(--sf-transition-fast),
+    border-color var(--sf-transition-fast);
+}
+.sf-tab:hover {
+  color: var(--sf-color-text);
+}
+.sf-tab--active,
+.sf-tab[aria-selected="true"] {
+  color: var(--sf-color-primary);
+  border-bottom-color: var(--sf-color-primary);
+}
+.sf-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+  border-radius: var(--sf-radius-sm);
+}
+
+/* ---------------------------------------------------------------------------
+ * LOADERS — tokenized skeleton shimmer + spinner. Reused by later prompts; the
+ * page-level skeletons already read the same surface tokens.
+ * ------------------------------------------------------------------------- */
+.sf-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--sf-radius-md);
+  background-color: var(--sf-color-skeleton-base);
+  background-image: linear-gradient(
+    90deg,
+    var(--sf-color-skeleton-base) 0%,
+    var(--sf-color-skeleton-highlight) 50%,
+    var(--sf-color-skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: sf-shimmer 1.4s ease-in-out infinite;
+}
+.sf-skeleton--text {
+  height: 0.9em;
+  border-radius: var(--sf-radius-sm);
+}
+.sf-skeleton--circle {
+  border-radius: var(--sf-radius-pill);
+}
+
+@keyframes sf-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.sf-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--sf-color-border);
+  border-top-color: var(--sf-color-primary);
+  border-radius: 50%;
+  animation: sf-spin 0.7s linear infinite;
+}
+
+@keyframes sf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * REDUCED MOTION — collapse the shimmer/spin for users who prefer it. (The
+ * token-driven transitions already zero out via storefront-tokens.css.)
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .sf-skeleton {
+    animation: none;
+    background-image: none;
+  }
+  .sf-spinner {
+    animation-duration: 1.6s;
+  }
+}

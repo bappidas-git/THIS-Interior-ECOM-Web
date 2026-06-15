@@ -320,28 +320,16 @@
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid;
+  /* Brass spinner via tokens — flips automatically with dark mode, so the
+     per-data-theme colour overrides are no longer needed. */
+  border: 3px solid var(--sf-color-border);
+  border-top-color: var(--sf-color-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 
-.overlay[data-theme="dark"] .spinner {
-  border-color: rgba(255, 255, 255, 0.1);
-  border-top-color: #6366f1;
-}
-
-.overlay[data-theme="light"] .spinner {
-  border-color: #e5e7eb;
-  border-top-color: #6366f1;
-}
-
-.overlay[data-theme="dark"] .loadingState span {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.9rem;
-}
-
-.overlay[data-theme="light"] .loadingState span {
-  color: #94a3b8;
+.loadingState span {
+  color: var(--sf-color-text-muted);
   font-size: 0.9rem;
 }
 

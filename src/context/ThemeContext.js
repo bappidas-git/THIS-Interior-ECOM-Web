@@ -57,6 +57,101 @@ const iconButtonTouchOverrides = {
   },
 };
 
+// ── Brand primitives, shared by the light & dark MUI themes ────────────────
+// These are kept visually identical to the `.sf-*` CSS-Module classes in
+// theme/storefront-primitives.css, so MUI-based and CSS-module buttons/inputs/
+// cards look the same. Colours read from the --sf-* tokens (which flip under
+// body.dark), so a single definition serves both themes and no hex is hardcoded.
+//
+//   MUI variant → brand role:  contained → primary,
+//                              outlined  → secondary / ghost,
+//                              text      → tertiary link.
+const buttonOverrides = {
+  styleOverrides: {
+    root: {
+      minHeight: "var(--sf-tap-target)",
+      borderRadius: "var(--sf-radius-md)",
+      padding: "0 var(--sf-space-6)",
+      fontSize: "var(--sf-text-sm)",
+      fontWeight: 500,
+      // Editorial calm: a slow tonal shift, no scale.
+      transition:
+        "background var(--sf-transition), color var(--sf-transition), border-color var(--sf-transition), box-shadow var(--sf-transition)",
+      "&:hover": { transform: "none" },
+    },
+    // Letter-spaced uppercase labels for an editorial feel (opt-in).
+    sizeLarge: { padding: "0 var(--sf-space-8)" },
+    contained: {
+      background: "var(--sf-color-primary)",
+      color: "var(--sf-color-primary-contrast)",
+      boxShadow: "none",
+      "&:hover": {
+        background: "var(--sf-color-primary-dark)",
+        boxShadow: "var(--sf-shadow-sm)",
+      },
+    },
+    outlined: {
+      borderColor: "var(--sf-color-border)",
+      color: "var(--sf-color-text)",
+      "&:hover": {
+        borderColor: "var(--sf-color-primary)",
+        color: "var(--sf-color-primary)",
+        background: "var(--sf-color-primary-soft)",
+      },
+    },
+    text: {
+      color: "var(--sf-color-primary)",
+      "&:hover": {
+        background: "transparent",
+        color: "var(--sf-color-primary-dark)",
+        textDecoration: "underline",
+        textUnderlineOffset: "3px",
+      },
+    },
+  },
+};
+
+const cardOverrides = {
+  styleOverrides: {
+    root: {
+      borderRadius: "var(--sf-radius-lg)",
+      backgroundColor: "var(--sf-color-surface)",
+      backgroundImage: "none",
+      // Flat surface + hairline border (not a heavy shadow); soft lift on hover.
+      border: "var(--sf-border-hairline)",
+      boxShadow: "var(--sf-shadow-xs)",
+      transition:
+        "box-shadow var(--sf-transition), border-color var(--sf-transition)",
+      "&:hover": {
+        borderColor: "var(--sf-color-border-strong)",
+        boxShadow: "var(--sf-shadow-sm)",
+      },
+    },
+  },
+};
+
+const textFieldOverrides = {
+  styleOverrides: {
+    root: {
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "var(--sf-radius-md)",
+        backgroundColor: "var(--sf-color-surface)",
+        "& fieldset": { borderColor: "var(--sf-color-border)" },
+        "&:hover fieldset": { borderColor: "var(--sf-color-border-strong)" },
+        "&.Mui-focused fieldset": {
+          borderColor: "var(--sf-color-primary)",
+          borderWidth: "1px",
+        },
+        // Brass focus ring, matching .sf-input.
+        "&.Mui-focused": { boxShadow: "var(--sf-shadow-focus)" },
+        "&.Mui-error.Mui-focused": {
+          boxShadow: "0 0 0 3px var(--sf-color-danger-bg)",
+        },
+      },
+    },
+  },
+};
+
 export const ThemeContextProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -96,61 +191,9 @@ export const ThemeContextProvider = ({ children }) => {
       borderRadius: 8,
     },
     components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: "8px",
-            padding: "10px 22px",
-            fontSize: "0.95rem",
-            // Editorial calm: no lift, no glow — just a tonal shift.
-            transition:
-              "background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
-            "&:hover": {
-              transform: "none",
-              boxShadow: "none",
-            },
-          },
-          contained: {
-            background: LIGHT.gradient.primary,
-            color: "#ffffff",
-            boxShadow: "none",
-            "&:hover": {
-              background: LIGHT.gradient.primaryReverse,
-              boxShadow: "0 6px 16px rgba(38, 32, 23, 0.14)",
-            },
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: "12px",
-            border: "1px solid #e4ddd2",
-            boxShadow: "0 1px 2px rgba(38, 32, 23, 0.05)",
-            transition: "box-shadow 0.35s ease, border-color 0.35s ease",
-            "&:hover": {
-              borderColor: "#d6ccbc",
-              boxShadow: "0 8px 24px rgba(38, 32, 23, 0.08)",
-            },
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
-              "&:hover fieldset": {
-                borderColor: LIGHT.primary.main,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: LIGHT.primary.main,
-                borderWidth: "1.5px",
-              },
-            },
-          },
-        },
-      },
+      MuiButton: buttonOverrides,
+      MuiCard: cardOverrides,
+      MuiTextField: textFieldOverrides,
       MuiDrawer: {
         styleOverrides: {
           paper: {
@@ -195,63 +238,9 @@ export const ThemeContextProvider = ({ children }) => {
       borderRadius: 8,
     },
     components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: "8px",
-            padding: "10px 22px",
-            fontSize: "0.95rem",
-            transition:
-              "background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
-            "&:hover": {
-              transform: "none",
-              boxShadow: "none",
-            },
-          },
-          contained: {
-            background: DARK.gradient.primary,
-            // Dark-mode brass is light, so its fill takes ink (not white) text.
-            color: "#1a1815",
-            boxShadow: "none",
-            "&:hover": {
-              background: DARK.gradient.primaryReverse,
-              boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4)",
-            },
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: "12px",
-            background: "rgba(33, 30, 26, 0.8)",
-            backdropFilter: "blur(10px)",
-            border: `1px solid rgba(201, 160, 90, 0.18)`,
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
-            transition: "box-shadow 0.35s ease, border-color 0.35s ease",
-            "&:hover": {
-              borderColor: "rgba(201, 160, 90, 0.34)",
-              boxShadow: "0 12px 32px rgba(0, 0, 0, 0.5)",
-            },
-          },
-        },
-      },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
-              "&:hover fieldset": {
-                borderColor: DARK.primary.main,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: DARK.primary.main,
-                borderWidth: "1.5px",
-              },
-            },
-          },
-        },
-      },
+      MuiButton: buttonOverrides,
+      MuiCard: cardOverrides,
+      MuiTextField: textFieldOverrides,
       MuiDrawer: {
         styleOverrides: {
           paper: {

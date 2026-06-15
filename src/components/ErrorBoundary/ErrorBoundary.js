@@ -1,21 +1,9 @@
 import React from "react";
 
-// Resolve the active theme without depending on React context (this component
-// must work even if the provider tree above it failed to render).
-const isDarkTheme = () => {
-  try {
-    const saved = localStorage.getItem("theme");
-    if (saved === "dark") return true;
-    if (saved === "light") return false;
-    return (
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-  } catch {
-    return false;
-  }
-};
+// Brand-themed fallback. Colours are read from the --sf-* design tokens (defined
+// on :root / body.dark via the imported CSS, independent of React), so the
+// fallback adopts the storefront's warm palette and flips with dark mode without
+// depending on the React context tree above it.
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -44,41 +32,15 @@ class ErrorBoundary extends React.Component {
   render() {
     if (!this.state.hasError) return this.props.children;
 
-    const dark = isDarkTheme();
-    const palette = dark
-      ? {
-          bg: "#0a0e27",
-          card: "#1a1f3a",
-          border: "rgba(168, 85, 247, 0.25)",
-          heading: "#f5f7fa",
-          text: "#a0aec0",
-          detailsBg: "#0f1430",
-          detailsText: "#f4a9a9",
-          primaryGradient: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
-          ghostBorder: "rgba(255,255,255,0.22)",
-          ghostText: "#e2e8f0",
-        }
-      : {
-          bg: "#f5f7fa",
-          card: "#ffffff",
-          border: "rgba(102, 126, 234, 0.2)",
-          heading: "#1a202c",
-          text: "#4a5568",
-          detailsBg: "#f7f8fb",
-          detailsText: "#b4232b",
-          primaryGradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          ghostBorder: "rgba(26,32,44,0.18)",
-          ghostText: "#1a202c",
-        };
-
     const btnBase = {
-      padding: "12px 24px",
-      borderRadius: "12px",
-      fontSize: "0.95rem",
+      minHeight: "var(--sf-tap-target)",
+      padding: "0 var(--sf-space-6)",
+      borderRadius: "var(--sf-radius-md)",
+      fontSize: "var(--sf-text-sm)",
       fontWeight: 600,
       cursor: "pointer",
-      transition: "transform 0.15s ease, box-shadow 0.15s ease",
-      fontFamily: "inherit",
+      fontFamily: "var(--sf-font-family)",
+      transition: "var(--sf-transition)",
     };
 
     return (
@@ -89,47 +51,51 @@ class ErrorBoundary extends React.Component {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "24px",
-          background: palette.bg,
-          fontFamily:
-            '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          padding: "var(--sf-space-6)",
+          background: "var(--sf-color-bg)",
+          fontFamily: "var(--sf-font-family)",
         }}
       >
         <div
           style={{
             width: "100%",
             maxWidth: "520px",
-            background: palette.card,
-            border: `1px solid ${palette.border}`,
-            borderRadius: "20px",
-            padding: "40px 32px",
+            background: "var(--sf-color-surface)",
+            border: "1px solid var(--sf-color-border)",
+            borderRadius: "var(--sf-radius-lg)",
+            padding: "var(--sf-space-12) var(--sf-space-8)",
             textAlign: "center",
-            boxShadow: dark
-              ? "0 20px 60px rgba(0,0,0,0.45)"
-              : "0 20px 60px rgba(102,126,234,0.15)",
+            boxShadow: "var(--sf-shadow-md)",
           }}
         >
-          <div style={{ fontSize: "52px", lineHeight: 1, marginBottom: "16px" }}>
+          <div
+            style={{
+              fontSize: "52px",
+              lineHeight: 1,
+              marginBottom: "var(--sf-space-4)",
+            }}
+          >
             <span role="img" aria-label="warning">
               ⚠️
             </span>
           </div>
           <h1
             style={{
-              margin: "0 0 10px",
-              fontSize: "1.6rem",
-              fontWeight: 700,
-              color: palette.heading,
+              margin: "0 0 var(--sf-space-3)",
+              fontFamily: "var(--sf-font-display)",
+              fontSize: "var(--sf-text-2xl)",
+              fontWeight: 500,
+              color: "var(--sf-color-text)",
             }}
           >
             Something went wrong
           </h1>
           <p
             style={{
-              margin: "0 0 28px",
-              fontSize: "1rem",
-              lineHeight: 1.6,
-              color: palette.text,
+              margin: "0 0 var(--sf-space-8)",
+              fontSize: "var(--sf-text-base)",
+              lineHeight: "var(--sf-leading-relaxed)",
+              color: "var(--sf-color-text-secondary)",
             }}
           >
             An unexpected error occurred while rendering this page. You can try
@@ -139,7 +105,7 @@ class ErrorBoundary extends React.Component {
           <div
             style={{
               display: "flex",
-              gap: "12px",
+              gap: "var(--sf-space-3)",
               justifyContent: "center",
               flexWrap: "wrap",
             }}
@@ -149,9 +115,9 @@ class ErrorBoundary extends React.Component {
               onClick={this.handleReload}
               style={{
                 ...btnBase,
-                border: "none",
-                color: "#ffffff",
-                background: palette.primaryGradient,
+                border: "1px solid var(--sf-color-primary)",
+                color: "var(--sf-color-primary-contrast)",
+                background: "var(--sf-color-primary)",
               }}
             >
               Reload Page
@@ -162,8 +128,8 @@ class ErrorBoundary extends React.Component {
               style={{
                 ...btnBase,
                 background: "transparent",
-                color: palette.ghostText,
-                border: `1px solid ${palette.ghostBorder}`,
+                color: "var(--sf-color-text)",
+                border: "1px solid var(--sf-color-border)",
               }}
             >
               Go Home
@@ -173,15 +139,15 @@ class ErrorBoundary extends React.Component {
           {this.state.error && (
             <details
               style={{
-                marginTop: "28px",
+                marginTop: "var(--sf-space-8)",
                 textAlign: "left",
-                color: palette.text,
+                color: "var(--sf-color-text-secondary)",
               }}
             >
               <summary
                 style={{
                   cursor: "pointer",
-                  fontSize: "0.85rem",
+                  fontSize: "var(--sf-text-sm)",
                   fontWeight: 600,
                   userSelect: "none",
                 }}
@@ -190,12 +156,12 @@ class ErrorBoundary extends React.Component {
               </summary>
               <pre
                 style={{
-                  marginTop: "12px",
-                  padding: "16px",
-                  borderRadius: "10px",
-                  background: palette.detailsBg,
-                  color: palette.detailsText,
-                  fontSize: "0.8rem",
+                  marginTop: "var(--sf-space-3)",
+                  padding: "var(--sf-space-4)",
+                  borderRadius: "var(--sf-radius-md)",
+                  background: "var(--sf-color-surface-2)",
+                  color: "var(--sf-color-danger)",
+                  fontSize: "var(--sf-text-xs)",
                   whiteSpace: "pre-wrap",
                   wordBreak: "break-word",
                   maxHeight: "240px",

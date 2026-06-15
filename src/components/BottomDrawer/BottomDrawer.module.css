@@ -1,10 +1,102 @@
-.backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1300; }
-.drawer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-radius: 16px 16px 0 0; z-index: 1301; max-height: 80vh; overflow-y: auto; }
-.dark { background: #1e293b; color: #e2e8f0; }
-.handle { width: 40px; height: 4px; border-radius: 2px; background: #d1d5db; margin: 12px auto 0; }
-.dark .handle { background: #475569; }
-.drawerHeader { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; }
-.dark .drawerHeader { border-color: #334155; }
-.drawerHeader h3 { font-size: 1.1rem; font-weight: 600; }
-.closeBtn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: inherit; padding: 0; line-height: 1; }
-.drawerContent { padding: 16px 20px; }
+/* =============================================================================
+   BottomDrawer — generic slide-up sheet (mobile filters, pickers, sort menus)
+   -----------------------------------------------------------------------------
+   Tokenized editorial surface: a calm radius on the top corners, a quiet grab
+   handle, a serif title and a hairline header divider. Reads ONLY from the
+   --sf-* design tokens (which flip under body.dark), so dark mode is inherited
+   and no colour is hardcoded.
+   ========================================================================== */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  background: var(--sf-color-overlay);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1301;
+  max-height: 80vh;
+  overflow-y: auto;
+  outline: none;
+  background: var(--sf-color-surface);
+  color: var(--sf-color-text);
+  border-top: var(--sf-border-hairline);
+  border-radius: var(--sf-radius-xl) var(--sf-radius-xl) 0 0;
+  box-shadow: var(--sf-shadow-lg);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  font-family: var(--sf-font-family);
+}
+
+/* Quiet grab handle. */
+.handle {
+  width: 40px;
+  height: 4px;
+  margin: var(--sf-space-3) auto 0;
+  border-radius: var(--sf-radius-pill);
+  background: var(--sf-color-border-strong);
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-space-4);
+  padding: var(--sf-space-4) var(--sf-space-5);
+  border-bottom: var(--sf-border-hairline);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-tight);
+  color: var(--sf-color-text);
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sf-tap-target);
+  height: var(--sf-tap-target);
+  margin-right: calc(-1 * var(--sf-space-2));
+  border: none;
+  border-radius: var(--sf-radius-md);
+  background: transparent;
+  color: var(--sf-color-text-secondary);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--sf-transition-fast),
+    background var(--sf-transition-fast);
+}
+
+.closeBtn:hover {
+  color: var(--sf-color-primary);
+  background: var(--sf-color-primary-soft);
+}
+
+.closeBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.drawerContent {
+  padding: var(--sf-space-5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .drawer {
+    transition: none;
+  }
+}

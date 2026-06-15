@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Swal from "sweetalert2";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../hooks/useAuth";
@@ -72,6 +72,9 @@ const Profile = () => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
   const { user, isAuthenticated, isLoading: authLoading, logout, updateUser } = useAuth();
+  // Calm, reduced-motion-safe panel transitions (gates the Framer animations
+  // below; CSS token transitions already zero out under the same preference).
+  const prefersReducedMotion = useReducedMotion();
 
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
@@ -470,18 +473,25 @@ const Profile = () => {
 
   const passwordStrength = getPasswordStrength(passwordForm.newPassword);
 
+  // Shared calm tab-panel transition — a gentle fade/rise, collapsed to an
+  // instant swap when the user prefers reduced motion.
+  const sectionMotion = prefersReducedMotion
+    ? { initial: false, animate: { opacity: 1 }, exit: { opacity: 1 }, transition: { duration: 0 } }
+    : {
+        initial: { opacity: 0, y: 8 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -8 },
+        transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+      };
+
   // ---- Render sections ----
   const renderProfileSection = () => (
-    <motion.div
-      key="profile"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-    >
+    <motion.div key="profile" {...sectionMotion}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Personal Information</h2>
-        <p className={styles.sectionSubtitle}>Manage your personal details</p>
+        <div>
+          <h2 className={styles.sectionTitle}>Personal Information</h2>
+          <p className={styles.sectionSubtitle}>Manage your personal details</p>
+        </div>
       </div>
 
       <div className={styles.avatarBlock}>
@@ -524,7 +534,7 @@ const Profile = () => {
             placeholder="Enter last name"
           />
         </div>
-        <div className={styles.formGroup}>
+        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
           <label className={styles.formLabel}>Email Address</label>
           <input
             type="email"
@@ -535,7 +545,7 @@ const Profile = () => {
           />
           <span className={styles.fieldHint}>Email cannot be changed</span>
         </div>
-        <div className={styles.formGroup}>
+        <div className={`${styles.formGroup} ${styles.fullWidth}`}>
           <label className={styles.formLabel}>Phone Number</label>
           <input
             type="tel"
@@ -561,13 +571,7 @@ const Profile = () => {
   );
 
   const renderAddressesSection = () => (
-    <motion.div
-      key="addresses"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-    >
+    <motion.div key="addresses" {...sectionMotion}>
       <div className={styles.sectionHeader}>
         <div>
           <h2 className={styles.sectionTitle}>My Addresses</h2>
@@ -822,18 +826,14 @@ const Profile = () => {
   );
 
   const renderPasswordSection = () => (
-    <motion.div
-      key="password"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-    >
+    <motion.div key="password" {...sectionMotion}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Change Password</h2>
-        <p className={styles.sectionSubtitle}>
-          Update your password to keep your account secure
-        </p>
+        <div>
+          <h2 className={styles.sectionTitle}>Change Password</h2>
+          <p className={styles.sectionSubtitle}>
+            Update your password to keep your account secure
+          </p>
+        </div>
       </div>
 
       <div className={styles.passwordFormWrapper}>
@@ -1001,18 +1001,14 @@ const Profile = () => {
   );
 
   const renderWalletSection = () => (
-    <motion.div
-      key="wallet"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-    >
+    <motion.div key="wallet" {...sectionMotion}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Store Credit</h2>
-        <p className={styles.sectionSubtitle}>
-          Your wallet balance and transaction history
-        </p>
+        <div>
+          <h2 className={styles.sectionTitle}>Store Credit</h2>
+          <p className={styles.sectionSubtitle}>
+            Your wallet balance and transaction history
+          </p>
+        </div>
       </div>
 
       <div className={styles.walletBalanceCard}>
@@ -1116,14 +1112,14 @@ const Profile = () => {
   };
 
   return (
-    <div className={`${styles.profilePage} ${isDarkMode ? styles.dark : ""}`}>
+    <div className={styles.profilePage}>
       <div className={styles.container}>
         {/* Page Header */}
         <motion.div
           className={styles.pageHeader}
-          initial={{ opacity: 0, y: -10 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
         >
           <h1 className={styles.pageTitle}>My Account</h1>
           <p className={styles.pageSubtitle}>
@@ -1137,9 +1133,10 @@ const Profile = () => {
             className={`${styles.feedback} ${styles[`feedback_${feedback.type}`]}`}
             role="status"
             aria-live="polite"
-            initial={{ opacity: 0, y: 20 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
           >
             <span>{feedback.message}</span>
             <button
@@ -1172,9 +1169,9 @@ const Profile = () => {
           {/* Sidebar */}
           <motion.aside
             className={styles.sidebar}
-            initial={{ opacity: 0, x: -20 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
           >
             {/* Sidebar user card */}
             <div className={styles.sidebarUserCard}>
@@ -1219,7 +1216,9 @@ const Profile = () => {
           </motion.aside>
 
           {/* Main content */}
-          <main className={styles.mainContent}>{renderActiveSection()}</main>
+          <main className={styles.mainContent}>
+            <AnimatePresence mode="wait">{renderActiveSection()}</AnimatePresence>
+          </main>
         </div>
       </div>
     </div>

@@ -597,10 +597,20 @@
 }
 
 /* ==========================================================================
-   Change Password tab (Prompt 19 refines the internals) — tokenized here so
-   it stays consistent with the shell.
+   Change Password tab — tokenized current/new/confirm fields with quiet eye
+   toggles, a refined strength meter, and a calm requirements checklist that
+   ticks live. Fully token-driven (the strength ramp flips under body.dark).
    ========================================================================== */
 .passwordFormWrapper {
+  /* Strength ramp — semantic tokens, weak → strong. Mirrors AuthModal so both
+     password surfaces share one colour vocabulary; resolved on the inline
+     meter styles, and inherited by dark mode with the rest of the --sf-* set. */
+  --strength-empty: var(--surface-2);
+  --strength-weak: var(--danger);
+  --strength-fair: var(--sf-color-warning);
+  --strength-good: var(--accent);
+  --strength-strong: var(--success);
+
   max-width: 480px;
 }
 
@@ -608,110 +618,147 @@
   position: relative;
 }
 
+/* Leave room for the eye toggle on the trailing edge. */
 .passwordInputWrapper .formInput {
-  padding-right: var(--sf-space-12);
+  padding-right: calc(var(--sf-space-10) + var(--sf-space-1));
 }
 
+/* Eye toggle — a quiet icon button (mirrors AuthModal's eyeBtn). */
 .passwordToggle {
   position: absolute;
-  right: var(--sf-space-3);
+  right: var(--sf-space-2);
   top: 50%;
   transform: translateY(-50%);
-  padding: var(--sf-space-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   background: none;
   border: none;
-  color: var(--accent);
-  font-family: var(--sf-font-family);
-  font-size: var(--sf-text-xs);
-  font-weight: var(--sf-font-semibold);
-  text-transform: uppercase;
-  letter-spacing: var(--sf-tracking-wide);
+  border-radius: var(--sf-radius-sm);
+  color: var(--text-muted);
   cursor: pointer;
+  transition: color var(--sf-transition-fast),
+    background var(--sf-transition-fast);
 }
 
+.passwordToggle:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.passwordToggle:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* ---- Strength meter (4 segments, weak → strong) ---- */
 .strengthMeter {
   display: flex;
   align-items: center;
-  gap: var(--sf-space-2);
-  margin-top: var(--sf-space-2);
+  gap: var(--sf-space-3);
+  margin-top: var(--sf-space-3);
 }
 
 .strengthBar {
   display: flex;
-  gap: 4px;
+  gap: var(--sf-space-1);
   flex: 1;
-  max-width: 160px;
+  max-width: 220px;
 }
 
 .strengthSegment {
   height: 4px;
   flex: 1;
   border-radius: var(--sf-radius-pill);
-  background: var(--surface-2);
+  background: var(--strength-empty);
   transition: background-color var(--sf-transition);
 }
 
 .strengthLabel {
+  flex-shrink: 0;
+  min-width: 4em;
   font-size: var(--sf-text-xs);
   font-weight: var(--sf-font-semibold);
+  letter-spacing: var(--sf-tracking-wide);
+  text-transform: uppercase;
 }
 
+/* ---- Requirements checklist — calm; each row ticks live ---- */
 .passwordRequirements {
-  margin-top: var(--sf-space-5);
-  padding: var(--sf-space-4);
+  margin-top: var(--sf-space-6);
+  padding: var(--sf-space-5);
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--sf-radius-md);
 }
 
 .requirementsTitle {
-  margin: 0 0 var(--sf-space-2);
-  font-size: var(--sf-text-sm);
+  margin: 0 0 var(--sf-space-3);
+  font-size: var(--sf-text-xs);
   font-weight: var(--sf-font-semibold);
-  color: var(--text-secondary);
+  letter-spacing: var(--sf-tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .requirementsList {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  gap: var(--sf-space-2);
 }
 
-.requirementsList li {
-  position: relative;
-  padding-left: var(--sf-space-5);
-  font-size: var(--sf-text-xs);
+.requirementItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-2);
+  font-size: var(--sf-text-sm);
   color: var(--text-muted);
-  line-height: 1.9;
+  transition: color var(--sf-transition-fast);
 }
 
-.requirementsList li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.6em;
-  width: 8px;
-  height: 8px;
+/* Marker — a hollow ring that fills with a brass-contrast tick when met. */
+.requirementMarker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
   border-radius: var(--sf-radius-pill);
   border: 1px solid var(--border-strong);
   background: transparent;
+  color: transparent;
+  transition: background var(--sf-transition-fast),
+    border-color var(--sf-transition-fast), color var(--sf-transition-fast);
 }
 
-.requirementsList li.requirementMet {
-  color: var(--success);
+.requirementMarker svg {
+  width: 11px;
+  height: 11px;
 }
 
-.requirementsList li.requirementMet::before {
-  border-color: var(--success);
+.requirementMet {
+  color: var(--text-secondary);
+}
+
+.requirementMet .requirementMarker {
   background: var(--success);
+  border-color: var(--success);
+  color: var(--accent-contrast);
 }
 
 /* ==========================================================================
-   My Addresses tab (Prompt 19 refines the internals) — tokenized here so it
-   stays consistent with the shell.
+   My Addresses tab — elegant address cards (a quiet label chip + a brass
+   "Default" marker, hairline-framed), a refined form in an airy grid, a calm
+   default-selector, quiet card actions, and an airy "add address" affordance.
    ========================================================================== */
 .addressFormCard {
-  padding: var(--sf-space-5);
+  padding: var(--sf-space-6);
   margin-bottom: var(--sf-space-6);
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -719,21 +766,53 @@
 }
 
 .addressFormTitle {
-  margin: 0 0 var(--sf-space-4);
+  margin: 0 0 var(--sf-space-5);
   font-family: var(--sf-font-display);
   font-size: var(--sf-text-lg);
   font-weight: var(--sf-font-medium);
   color: var(--text-primary);
 }
 
+/* Three-up city / state / postal row, nested inside the airy form grid. */
+.addressTriple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--sf-space-5);
+}
+
+/* ---- Form options — label selector + the calm default-selector ---- */
+.addressFormOptions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-5);
+  margin-top: var(--sf-space-6);
+  padding-top: var(--sf-space-5);
+  border-top: 1px solid var(--border);
+}
+
+.addressLabelField {
+  display: flex;
+  flex-direction: column;
+}
+
+.optionLabel {
+  display: block;
+  margin-bottom: var(--sf-space-2);
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-medium);
+  color: var(--text-secondary);
+}
+
 .labelSelector {
   display: flex;
   gap: var(--sf-space-2);
-  margin-bottom: var(--sf-space-5);
 }
 
 .labelChip {
-  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-2);
+  min-height: 36px;
   padding: var(--sf-space-1) var(--sf-space-4);
   border: 1px solid var(--border);
   border-radius: var(--sf-radius-pill);
@@ -748,6 +827,16 @@
     background var(--sf-transition-fast);
 }
 
+.labelChipIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.labelChipIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
 .labelChip:hover {
   color: var(--accent);
   border-color: var(--accent);
@@ -760,26 +849,79 @@
   color: var(--accent);
 }
 
-.checkboxGroup {
-  margin-top: var(--sf-space-4);
+.labelChip:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
 }
 
-.checkboxLabel {
+/* Default selector — a refined custom checkbox with a brass tick. */
+.defaultToggle {
   display: flex;
-  align-items: center;
-  gap: var(--sf-space-2);
+  align-items: flex-start;
+  gap: var(--sf-space-3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.defaultToggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.defaultToggleMark {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--sf-radius-sm);
+  background: var(--surface);
+  transition: background var(--sf-transition-fast),
+    border-color var(--sf-transition-fast);
+}
+
+.defaultToggleInput:checked + .defaultToggleMark {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.defaultToggleInput:checked + .defaultToggleMark::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid var(--accent-contrast);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.defaultToggleInput:focus-visible + .defaultToggleMark {
+  box-shadow: var(--sf-shadow-focus);
+}
+
+.defaultToggleText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.defaultToggleTitle {
   font-size: var(--sf-text-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
+  font-weight: var(--sf-font-medium);
+  color: var(--text-primary);
 }
 
-.checkbox {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--accent);
-  cursor: pointer;
+.defaultToggleHint {
+  font-size: var(--sf-text-xs);
+  color: var(--text-muted);
 }
 
+/* ---- Address list + cards ---- */
 .addressList {
   display: flex;
   flex-direction: column;
@@ -791,14 +933,18 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--sf-radius-lg);
-  transition: border-color var(--sf-transition);
+  transition: border-color var(--sf-transition),
+    box-shadow var(--sf-transition);
 }
 
 .addressCard:hover {
   border-color: var(--border-strong);
+  box-shadow: var(--sf-shadow-xs);
 }
 
-.addressCardDefault {
+/* The default card wears a quiet brass tint + ring. */
+.addressCardDefault,
+.addressCardDefault:hover {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
@@ -807,31 +953,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--sf-space-2);
-  margin-bottom: var(--sf-space-3);
+  gap: var(--sf-space-3);
+  margin-bottom: var(--sf-space-4);
 }
 
-.addressLabelRow {
-  display: flex;
+/* Label — a quiet neutral chip with a small glyph (brass is reserved for the
+   Default marker + actions, so the label reads as a calm tag). */
+.addressLabel {
+  display: inline-flex;
   align-items: center;
   gap: var(--sf-space-2);
-}
-
-.addressLabel {
-  padding: var(--sf-space-1) var(--sf-space-2);
-  border-radius: var(--sf-radius-sm);
-  background: var(--accent-soft);
-  color: var(--accent);
+  padding: var(--sf-space-1) var(--sf-space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-pill);
+  background: var(--surface-2);
+  color: var(--text-secondary);
   font-size: var(--sf-text-xs);
   font-weight: var(--sf-font-semibold);
   text-transform: uppercase;
   letter-spacing: var(--sf-tracking-wide);
 }
 
+.addressLabelIcon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.addressLabelIcon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Brass "Default" marker. */
 .defaultBadge {
-  padding: var(--sf-space-1) var(--sf-space-2);
-  border-radius: var(--sf-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1);
+  padding: var(--sf-space-1) var(--sf-space-3);
+  border-radius: var(--sf-radius-pill);
   background: var(--accent);
   color: var(--accent-contrast);
   font-size: var(--sf-text-xs);
@@ -840,9 +1000,61 @@
   letter-spacing: var(--sf-tracking-wide);
 }
 
-.addressActions {
+.defaultBadgeIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.defaultBadgeIcon svg {
+  width: 11px;
+  height: 11px;
+}
+
+.addressCardBody {
+  line-height: var(--sf-leading-normal);
+}
+
+.addressName {
+  margin: 0 0 var(--sf-space-1);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-lg);
+  font-weight: var(--sf-font-medium);
+  color: var(--text-primary);
+}
+
+.addressText {
+  margin: 0;
+  font-size: var(--sf-text-sm);
+  color: var(--text-secondary);
+}
+
+.addressPhone {
   display: flex;
-  gap: var(--sf-space-4);
+  align-items: center;
+  gap: var(--sf-space-2);
+  margin: var(--sf-space-3) 0 0;
+  font-size: var(--sf-text-sm);
+  font-weight: var(--sf-font-medium);
+  color: var(--text-primary);
+}
+
+.addressPhoneLabel {
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-muted);
+}
+
+/* ---- Card actions — quiet, hairline-separated footer ---- */
+.addressCardActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sf-space-5);
+  margin-top: var(--sf-space-4);
+  padding-top: var(--sf-space-4);
+  border-top: 1px solid var(--border);
 }
 
 .actionLink {
@@ -863,6 +1075,12 @@
   text-underline-offset: 3px;
 }
 
+.actionLink:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+  border-radius: var(--sf-radius-sm);
+}
+
 .actionLink:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -873,28 +1091,82 @@
   color: var(--danger);
 }
 
-.addressCardBody {
-  line-height: var(--sf-leading-normal);
-}
-
-.addressName {
-  margin: 0;
-  font-size: var(--sf-text-base);
-  font-weight: var(--sf-font-semibold);
-  color: var(--text-primary);
-}
-
-.addressText {
-  margin: 0;
-  font-size: var(--sf-text-sm);
+/* ---- Airy "add address" affordance — a dashed, hairline tile ---- */
+.addAddressTile {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-3);
+  width: 100%;
+  padding: var(--sf-space-5);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--sf-radius-lg);
+  background: transparent;
   color: var(--text-secondary);
+  font-family: var(--sf-font-family);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--sf-transition-fast),
+    border-color var(--sf-transition-fast),
+    background var(--sf-transition-fast);
 }
 
-.addressPhone {
-  margin: var(--sf-space-2) 0 0;
-  font-size: var(--sf-text-sm);
+.addAddressTile:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.addAddressTile:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* The empty (first-address) variant breathes more and centres. */
+.addAddressTileEmpty {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sf-space-2);
+  padding: var(--sf-space-12) var(--sf-space-5);
+  text-align: center;
+}
+
+.addAddressIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--sf-radius-pill);
+  border: 1px solid currentColor;
+  color: inherit;
+}
+
+.addAddressIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.addAddressTextWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.addAddressText {
+  font-size: var(--sf-text-base);
   font-weight: var(--sf-font-medium);
-  color: var(--text-primary);
+}
+
+.addAddressTileEmpty .addAddressText {
+  margin-top: var(--sf-space-2);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-lg);
+}
+
+.addAddressHint {
+  font-size: var(--sf-text-sm);
+  color: var(--text-muted);
 }
 
 /* ---- Empty state — serene ---- */
@@ -1153,9 +1425,8 @@
     width: 100%;
   }
 
-  .addressCardHeader {
-    flex-direction: column;
-    align-items: flex-start;
+  .addressTriple {
+    grid-template-columns: 1fr;
   }
 }
 

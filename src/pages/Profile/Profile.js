@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Swal from "sweetalert2";
-import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../hooks/useAuth";
 import apiService from "../../services/api";
 import { formatDate, formatCurrency, getInitials, generateId, isValidPhone } from "../../utils/helpers";
@@ -68,9 +67,70 @@ const TabIcon = ({ icon }) => {
   return icons[icon] || null;
 };
 
+// ---- Small inline icons (sized by their CSS context) ----
+const EyeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+const EyeOffIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" />
+  </svg>
+);
+
+// Quiet glyph for an address card's label chip (Home / Work / Other).
+const addressLabelIcon = (label) => {
+  switch (label) {
+    case "Work":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="14" rx="2" />
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+        </svg>
+      );
+    case "Other":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+      );
+    case "Home":
+    default:
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+        </svg>
+      );
+  }
+};
+
 const Profile = () => {
   const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
   const { user, isAuthenticated, isLoading: authLoading, logout, updateUser } = useAuth();
   // Calm, reduced-motion-safe panel transitions (gates the Framer animations
   // below; CSS token transitions already zero out under the same preference).
@@ -247,10 +307,12 @@ const Profile = () => {
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
 
-    if (score <= 2) return { level: 1, label: "Weak", color: "#ef4444" };
-    if (score <= 4) return { level: 2, label: "Fair", color: "#f59e0b" };
-    if (score <= 5) return { level: 3, label: "Good", color: "#3b82f6" };
-    return { level: 4, label: "Strong", color: "#22c55e" };
+    // Colours are token references resolved by the strength meter's CSS scope
+    // (.passwordFormWrapper), so dark mode flips with the rest of the tokens.
+    if (score <= 2) return { level: 1, label: "Weak", color: "var(--strength-weak)" };
+    if (score <= 4) return { level: 2, label: "Fair", color: "var(--strength-fair)" };
+    if (score <= 5) return { level: 3, label: "Good", color: "var(--strength-good)" };
+    return { level: 4, label: "Strong", color: "var(--strength-strong)" };
   };
 
   const handlePasswordSubmit = async () => {
@@ -577,40 +639,13 @@ const Profile = () => {
           <h2 className={styles.sectionTitle}>My Addresses</h2>
           <p className={styles.sectionSubtitle}>Manage your delivery addresses</p>
         </div>
-        {!showAddressForm && (
-          <button
-            className={styles.btnOutline}
-            onClick={() => {
-              resetAddressForm();
-              setShowAddressForm(true);
-            }}
-          >
-            + Add New Address
-          </button>
-        )}
       </div>
 
       {showAddressForm && (
         <div className={styles.addressFormCard}>
           <h3 className={styles.addressFormTitle}>
-            {editingAddressIndex !== null ? "Edit Address" : "Add New Address"}
+            {editingAddressIndex !== null ? "Edit address" : "Add a new address"}
           </h3>
-
-          <div className={styles.labelSelector}>
-            {["Home", "Work", "Other"].map((label) => (
-              <button
-                key={label}
-                className={`${styles.labelChip} ${
-                  addressForm.label === label ? styles.labelChipActive : ""
-                }`}
-                onClick={() =>
-                  setAddressForm((prev) => ({ ...prev, label }))
-                }
-              >
-                {label}
-              </button>
-            ))}
-          </div>
 
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
@@ -668,40 +703,42 @@ const Profile = () => {
                 placeholder="Landmark, Area (optional)"
               />
             </div>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>City *</label>
-              <input
-                type="text"
-                name="city"
-                value={addressForm.city}
-                onChange={handleAddressChange}
-                className={styles.formInput}
-                placeholder="Enter city"
-              />
+            <div className={`${styles.fullWidth} ${styles.addressTriple}`}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>City *</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={addressForm.city}
+                  onChange={handleAddressChange}
+                  className={styles.formInput}
+                  placeholder="City"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>State *</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={addressForm.state}
+                  onChange={handleAddressChange}
+                  className={styles.formInput}
+                  placeholder="State"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Postal Code *</label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={addressForm.postalCode}
+                  onChange={handleAddressChange}
+                  className={styles.formInput}
+                  placeholder="Postal code"
+                />
+              </div>
             </div>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>State *</label>
-              <input
-                type="text"
-                name="state"
-                value={addressForm.state}
-                onChange={handleAddressChange}
-                className={styles.formInput}
-                placeholder="Enter state"
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Postal Code *</label>
-              <input
-                type="text"
-                name="postalCode"
-                value={addressForm.postalCode}
-                onChange={handleAddressChange}
-                className={styles.formInput}
-                placeholder="Enter postal code"
-              />
-            </div>
-            <div className={styles.formGroup}>
+            <div className={`${styles.formGroup} ${styles.fullWidth}`}>
               <label className={styles.formLabel}>Country</label>
               <input
                 type="text"
@@ -714,16 +751,43 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className={styles.checkboxGroup}>
-            <label className={styles.checkboxLabel}>
+          <div className={styles.addressFormOptions}>
+            <div className={styles.addressLabelField}>
+              <span className={styles.optionLabel}>Label this address</span>
+              <div className={styles.labelSelector}>
+                {["Home", "Work", "Other"].map((label) => (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.labelChip} ${
+                      addressForm.label === label ? styles.labelChipActive : ""
+                    }`}
+                    onClick={() => setAddressForm((prev) => ({ ...prev, label }))}
+                  >
+                    <span className={styles.labelChipIcon} aria-hidden="true">
+                      {addressLabelIcon(label)}
+                    </span>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <label className={styles.defaultToggle}>
               <input
                 type="checkbox"
                 name="isDefault"
                 checked={addressForm.isDefault}
                 onChange={handleAddressChange}
-                className={styles.checkbox}
+                className={styles.defaultToggleInput}
               />
-              <span>Set as default address</span>
+              <span className={styles.defaultToggleMark} aria-hidden="true" />
+              <span className={styles.defaultToggleText}>
+                <span className={styles.defaultToggleTitle}>Set as default address</span>
+                <span className={styles.defaultToggleHint}>
+                  Use this address by default at checkout
+                </span>
+              </span>
             </label>
           </div>
 
@@ -751,254 +815,267 @@ const Profile = () => {
       )}
 
       <div className={styles.addressList}>
-        {addresses.length === 0 && !showAddressForm ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>
-              <TabIcon icon="location" />
+        {addresses.map((addr, index) => (
+          <div
+            key={index}
+            className={`${styles.addressCard} ${
+              addr.isDefault ? styles.addressCardDefault : ""
+            }`}
+          >
+            <div className={styles.addressCardHeader}>
+              <span className={styles.addressLabel}>
+                <span className={styles.addressLabelIcon} aria-hidden="true">
+                  {addressLabelIcon(addr.label)}
+                </span>
+                {addr.label}
+              </span>
+              {addr.isDefault && (
+                <span className={styles.defaultBadge}>
+                  <span className={styles.defaultBadgeIcon} aria-hidden="true">
+                    <StarIcon />
+                  </span>
+                  Default
+                </span>
+              )}
             </div>
-            <p className={styles.emptyText}>No addresses saved yet</p>
-            <p className={styles.emptySubtext}>
-              Add an address to make checkout faster
-            </p>
+
+            <div className={styles.addressCardBody}>
+              <p className={styles.addressName}>
+                {[addr.firstName, addr.lastName].filter(Boolean).join(" ") ||
+                  addr.fullName ||
+                  ""}
+              </p>
+              <p className={styles.addressText}>
+                {addr.addressLine1}
+                {addr.addressLine2 ? `, ${addr.addressLine2}` : ""}
+              </p>
+              <p className={styles.addressText}>
+                {addr.city}, {addr.state} {addr.postalCode || addr.zipCode || ""}
+              </p>
+              <p className={styles.addressText}>{addr.country}</p>
+              <p className={styles.addressPhone}>
+                <span className={styles.addressPhoneLabel}>Phone</span>
+                {addr.phone}
+              </p>
+            </div>
+
+            <div className={styles.addressCardActions}>
+              {!addr.isDefault && (
+                <button
+                  className={styles.actionLink}
+                  onClick={() => handleSetDefaultAddress(index)}
+                  disabled={loading}
+                >
+                  Set as default
+                </button>
+              )}
+              <button
+                className={styles.actionLink}
+                onClick={() => handleAddressEdit(index)}
+                disabled={loading}
+              >
+                Edit
+              </button>
+              <button
+                className={`${styles.actionLink} ${styles.actionLinkDanger}`}
+                onClick={() => handleAddressDelete(index)}
+                disabled={loading}
+              >
+                Delete
+              </button>
+            </div>
           </div>
-        ) : (
-          addresses.map((addr, index) => (
-            <div
-              key={index}
-              className={`${styles.addressCard} ${
-                addr.isDefault ? styles.addressCardDefault : ""
-              }`}
-            >
-              <div className={styles.addressCardHeader}>
-                <div className={styles.addressLabelRow}>
-                  <span className={styles.addressLabel}>{addr.label}</span>
-                  {addr.isDefault && (
-                    <span className={styles.defaultBadge}>Default</span>
-                  )}
-                </div>
-                <div className={styles.addressActions}>
-                  {!addr.isDefault && (
-                    <button
-                      className={styles.actionLink}
-                      onClick={() => handleSetDefaultAddress(index)}
-                      disabled={loading}
-                    >
-                      Set Default
-                    </button>
-                  )}
-                  <button
-                    className={styles.actionLink}
-                    onClick={() => handleAddressEdit(index)}
-                    disabled={loading}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className={`${styles.actionLink} ${styles.actionLinkDanger}`}
-                    onClick={() => handleAddressDelete(index)}
-                    disabled={loading}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-              <div className={styles.addressCardBody}>
-                <p className={styles.addressName}>
-                  {[addr.firstName, addr.lastName].filter(Boolean).join(" ") ||
-                    addr.fullName ||
-                    ""}
-                </p>
-                <p className={styles.addressText}>
-                  {addr.addressLine1}
-                  {addr.addressLine2 ? `, ${addr.addressLine2}` : ""}
-                </p>
-                <p className={styles.addressText}>
-                  {addr.city}, {addr.state} {addr.postalCode || addr.zipCode || ""}
-                </p>
-                <p className={styles.addressText}>{addr.country}</p>
-                <p className={styles.addressPhone}>Phone: {addr.phone}</p>
-              </div>
-            </div>
-          ))
+        ))}
+
+        {!showAddressForm && (
+          <button
+            type="button"
+            className={`${styles.addAddressTile} ${
+              addresses.length === 0 ? styles.addAddressTileEmpty : ""
+            }`}
+            onClick={() => {
+              resetAddressForm();
+              setShowAddressForm(true);
+            }}
+          >
+            <span className={styles.addAddressIcon} aria-hidden="true">
+              <PlusIcon />
+            </span>
+            <span className={styles.addAddressTextWrap}>
+              <span className={styles.addAddressText}>
+                {addresses.length === 0 ? "Add your first address" : "Add a new address"}
+              </span>
+              {addresses.length === 0 && (
+                <span className={styles.addAddressHint}>
+                  Save an address to make checkout faster
+                </span>
+              )}
+            </span>
+          </button>
         )}
       </div>
     </motion.div>
   );
 
-  const renderPasswordSection = () => (
-    <motion.div key="password" {...sectionMotion}>
-      <div className={styles.sectionHeader}>
-        <div>
-          <h2 className={styles.sectionTitle}>Change Password</h2>
-          <p className={styles.sectionSubtitle}>
-            Update your password to keep your account secure
-          </p>
-        </div>
-      </div>
+  const renderPasswordSection = () => {
+    // Live requirements — the same checks the strength meter scores, surfaced as
+    // a checklist that ticks as the user types (validation logic unchanged).
+    const pw = passwordForm.newPassword;
+    const passwordRules = [
+      { label: "At least 8 characters", met: pw.length >= 8 },
+      { label: "One uppercase letter", met: /[A-Z]/.test(pw) },
+      { label: "One lowercase letter", met: /[a-z]/.test(pw) },
+      { label: "One number", met: /[0-9]/.test(pw) },
+      { label: "One special character", met: /[^A-Za-z0-9]/.test(pw) },
+    ];
+    const confirmMismatch =
+      passwordForm.confirmPassword &&
+      passwordForm.newPassword !== passwordForm.confirmPassword;
 
-      <div className={styles.passwordFormWrapper}>
-        <div className={styles.formGroupStacked}>
-          <label className={styles.formLabel}>Current Password *</label>
-          <div className={styles.passwordInputWrapper}>
-            <input
-              type={showPasswords.current ? "text" : "password"}
-              name="currentPassword"
-              value={passwordForm.currentPassword}
-              onChange={handlePasswordChange}
-              className={styles.formInput}
-              placeholder="Enter current password"
-            />
-            <button
-              type="button"
-              className={styles.passwordToggle}
-              onClick={() =>
-                setShowPasswords((p) => ({ ...p, current: !p.current }))
-              }
-            >
-              {showPasswords.current ? "Hide" : "Show"}
-            </button>
+    return (
+      <motion.div key="password" {...sectionMotion}>
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 className={styles.sectionTitle}>Change Password</h2>
+            <p className={styles.sectionSubtitle}>
+              Update your password to keep your account secure
+            </p>
           </div>
         </div>
 
-        <div className={styles.formGroupStacked}>
-          <label className={styles.formLabel}>New Password *</label>
-          <div className={styles.passwordInputWrapper}>
-            <input
-              type={showPasswords.new ? "text" : "password"}
-              name="newPassword"
-              value={passwordForm.newPassword}
-              onChange={handlePasswordChange}
-              className={styles.formInput}
-              placeholder="Enter new password"
-            />
-            <button
-              type="button"
-              className={styles.passwordToggle}
-              onClick={() =>
-                setShowPasswords((p) => ({ ...p, new: !p.new }))
-              }
-            >
-              {showPasswords.new ? "Hide" : "Show"}
-            </button>
-          </div>
-          {passwordForm.newPassword && (
-            <div className={styles.strengthMeter}>
-              <div className={styles.strengthBar}>
-                {[1, 2, 3, 4].map((seg) => (
-                  <div
-                    key={seg}
-                    className={styles.strengthSegment}
-                    style={{
-                      backgroundColor:
-                        seg <= passwordStrength.level
-                          ? passwordStrength.color
-                          : isDarkMode
-                          ? "rgba(255,255,255,0.1)"
-                          : "#e5e7eb",
-                    }}
-                  />
-                ))}
-              </div>
-              <span
-                className={styles.strengthLabel}
-                style={{ color: passwordStrength.color }}
+        <div className={styles.passwordFormWrapper}>
+          <div className={styles.formGroupStacked}>
+            <label className={styles.formLabel}>Current Password *</label>
+            <div className={styles.passwordInputWrapper}>
+              <input
+                type={showPasswords.current ? "text" : "password"}
+                name="currentPassword"
+                value={passwordForm.currentPassword}
+                onChange={handlePasswordChange}
+                className={styles.formInput}
+                placeholder="Enter current password"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() =>
+                  setShowPasswords((p) => ({ ...p, current: !p.current }))
+                }
+                aria-label={showPasswords.current ? "Hide password" : "Show password"}
               >
-                {passwordStrength.label}
-              </span>
+                {showPasswords.current ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
             </div>
-          )}
-        </div>
-
-        <div className={styles.formGroupStacked}>
-          <label className={styles.formLabel}>Confirm New Password *</label>
-          <div className={styles.passwordInputWrapper}>
-            <input
-              type={showPasswords.confirm ? "text" : "password"}
-              name="confirmPassword"
-              value={passwordForm.confirmPassword}
-              onChange={handlePasswordChange}
-              className={styles.formInput}
-              placeholder="Confirm new password"
-            />
-            <button
-              type="button"
-              className={styles.passwordToggle}
-              onClick={() =>
-                setShowPasswords((p) => ({ ...p, confirm: !p.confirm }))
-              }
-            >
-              {showPasswords.confirm ? "Hide" : "Show"}
-            </button>
           </div>
-          {passwordForm.confirmPassword &&
-            passwordForm.newPassword !== passwordForm.confirmPassword && (
+
+          <div className={styles.formGroupStacked}>
+            <label className={styles.formLabel}>New Password *</label>
+            <div className={styles.passwordInputWrapper}>
+              <input
+                type={showPasswords.new ? "text" : "password"}
+                name="newPassword"
+                value={passwordForm.newPassword}
+                onChange={handlePasswordChange}
+                className={styles.formInput}
+                placeholder="Enter new password"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => setShowPasswords((p) => ({ ...p, new: !p.new }))}
+                aria-label={showPasswords.new ? "Hide password" : "Show password"}
+              >
+                {showPasswords.new ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            </div>
+            {passwordForm.newPassword && (
+              <div className={styles.strengthMeter}>
+                <div className={styles.strengthBar}>
+                  {[1, 2, 3, 4].map((seg) => (
+                    <div
+                      key={seg}
+                      className={styles.strengthSegment}
+                      style={{
+                        backgroundColor:
+                          seg <= passwordStrength.level
+                            ? passwordStrength.color
+                            : "var(--strength-empty)",
+                      }}
+                    />
+                  ))}
+                </div>
+                <span
+                  className={styles.strengthLabel}
+                  style={{ color: passwordStrength.color }}
+                >
+                  {passwordStrength.label}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.formGroupStacked}>
+            <label className={styles.formLabel}>Confirm New Password *</label>
+            <div className={styles.passwordInputWrapper}>
+              <input
+                type={showPasswords.confirm ? "text" : "password"}
+                name="confirmPassword"
+                value={passwordForm.confirmPassword}
+                onChange={handlePasswordChange}
+                className={styles.formInput}
+                placeholder="Confirm new password"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() =>
+                  setShowPasswords((p) => ({ ...p, confirm: !p.confirm }))
+                }
+                aria-label={showPasswords.confirm ? "Hide password" : "Show password"}
+              >
+                {showPasswords.confirm ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            </div>
+            {confirmMismatch && (
               <span className={styles.fieldError}>Passwords do not match</span>
             )}
-        </div>
+          </div>
 
-        <div className={styles.passwordRequirements}>
-          <p className={styles.requirementsTitle}>Password Requirements:</p>
-          <ul className={styles.requirementsList}>
-            <li
-              className={
-                passwordForm.newPassword.length >= 8
-                  ? styles.requirementMet
-                  : ""
-              }
-            >
-              At least 8 characters
-            </li>
-            <li
-              className={
-                /[A-Z]/.test(passwordForm.newPassword)
-                  ? styles.requirementMet
-                  : ""
-              }
-            >
-              One uppercase letter
-            </li>
-            <li
-              className={
-                /[a-z]/.test(passwordForm.newPassword)
-                  ? styles.requirementMet
-                  : ""
-              }
-            >
-              One lowercase letter
-            </li>
-            <li
-              className={
-                /[0-9]/.test(passwordForm.newPassword)
-                  ? styles.requirementMet
-                  : ""
-              }
-            >
-              One number
-            </li>
-            <li
-              className={
-                /[^A-Za-z0-9]/.test(passwordForm.newPassword)
-                  ? styles.requirementMet
-                  : ""
-              }
-            >
-              One special character
-            </li>
-          </ul>
-        </div>
+          <div className={styles.passwordRequirements}>
+            <p className={styles.requirementsTitle}>Password requirements</p>
+            <ul className={styles.requirementsList}>
+              {passwordRules.map((rule) => (
+                <li
+                  key={rule.label}
+                  className={`${styles.requirementItem} ${
+                    rule.met ? styles.requirementMet : ""
+                  }`}
+                >
+                  <span className={styles.requirementMarker} aria-hidden="true">
+                    <CheckIcon />
+                  </span>
+                  <span>{rule.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className={styles.formActions}>
-          <button
-            className={styles.btnPrimary}
-            onClick={handlePasswordSubmit}
-            disabled={loading}
-          >
-            {loading ? "Updating..." : "Update Password"}
-          </button>
+          <div className={styles.formActions}>
+            <button
+              className={styles.btnPrimary}
+              onClick={handlePasswordSubmit}
+              disabled={loading}
+            >
+              {loading ? "Updating..." : "Update Password"}
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.div>
-  );
+      </motion.div>
+    );
+  };
 
   const renderWalletSection = () => (
     <motion.div key="wallet" {...sectionMotion}>

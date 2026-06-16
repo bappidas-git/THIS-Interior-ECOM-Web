@@ -95,8 +95,8 @@
       ],
       "isActive": true,
       "createdAt": "2025-06-01T10:00:00.000Z",
-      "updatedAt": "2026-06-14T14:22:33.376Z",
-      "storeCredit": 888
+      "updatedAt": "2026-06-16T13:06:51.746Z",
+      "storeCredit": 669
     }
   ],
   "admins": [
@@ -1879,7 +1879,50 @@
       ]
     }
   ],
-  "cart": [],
+  "cart": [
+    {
+      "productId": 1,
+      "variantId": "v1",
+      "variantName": "Brushed Brass",
+      "name": "Lumière Fluted Glass Table Lamp",
+      "image": "https://placehold.co/600x400/b07d56/FFFFFF?text=Lumiere%20Table%20Lamp",
+      "price": 640,
+      "comparePrice": 820,
+      "currency": "AED",
+      "quantity": 1,
+      "stock": 16,
+      "userId": 3,
+      "id": 1
+    },
+    {
+      "productId": 3,
+      "variantId": "v1",
+      "variantName": "Antique Brass",
+      "name": "Noor Brass Arc Floor Lamp",
+      "image": "https://placehold.co/600x400/9c6644/FFFFFF?text=Noor%20Floor%20Lamp",
+      "price": 1290,
+      "comparePrice": 1650,
+      "currency": "AED",
+      "quantity": 1,
+      "stock": 12,
+      "userId": 3,
+      "id": 2
+    },
+    {
+      "productId": 9,
+      "variantId": "v1",
+      "variantName": "Chalk · Small",
+      "name": "Terra Fluted Stoneware Planter",
+      "image": "https://placehold.co/600x400/7f5539/FFFFFF?text=Terra%20Planter",
+      "price": 245,
+      "comparePrice": 320,
+      "currency": "AED",
+      "quantity": 1,
+      "stock": 18,
+      "userId": 3,
+      "id": 3
+    }
+  ],
   "orders": [
     {
       "id": 1,
@@ -2740,6 +2783,82 @@
           "action": "Order placed"
         }
       ]
+    },
+    {
+      "items": [
+        {
+          "productId": 2,
+          "variantId": "v1",
+          "name": "Aurelia Ribbed Ceramic Vase - Ivory · Medium",
+          "image": "https://placehold.co/600x400/b5764f/FFFFFF?text=Aurelia%20Vase",
+          "sku": "",
+          "price": 185,
+          "quantity": 1,
+          "subtotal": 185
+        }
+      ],
+      "shippingAddress": {
+        "id": 1,
+        "label": "Home",
+        "firstName": "Bappi",
+        "lastName": "Das",
+        "phone": "+919707112233",
+        "addressLine1": "Moutupuri, Barpeta",
+        "addressLine2": "Near BH College",
+        "city": "Howly",
+        "state": "Assam",
+        "postalCode": "781316",
+        "country": "India",
+        "isDefault": true
+      },
+      "billingAddress": {
+        "id": 1,
+        "label": "Home",
+        "firstName": "Bappi",
+        "lastName": "Das",
+        "phone": "+919707112233",
+        "addressLine1": "Moutupuri, Barpeta",
+        "addressLine2": "Near BH College",
+        "city": "Howly",
+        "state": "Assam",
+        "postalCode": "781316",
+        "country": "India",
+        "isDefault": true
+      },
+      "subtotal": 185,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingAmount": 25,
+      "taxAmount": 9,
+      "total": 219,
+      "storeCreditUsed": 219,
+      "amountPayable": 0,
+      "paymentMethod": "store_credit",
+      "paymentStatus": "paid",
+      "fulfillmentStatus": "fulfilled",
+      "shippingStatus": "shipped",
+      "trackingNumber": "645654656456546",
+      "notes": "",
+      "userId": 3,
+      "orderNumber": "ORD-MQGNP3F6-KLZF",
+      "shiprocketOrderId": null,
+      "createdAt": "2026-06-16T13:06:51.666Z",
+      "updatedAt": "2026-06-16T13:08:22.562Z",
+      "statusHistory": [
+        {
+          "at": "2026-06-16T13:06:51.666Z",
+          "by": "Customer",
+          "action": "Order placed"
+        },
+        {
+          "at": "2026-06-16T13:08:22.582Z",
+          "by": "Admin User",
+          "action": "Fulfilled & shipped",
+          "note": "Tracking 645654656456546 · tracking link added"
+        }
+      ],
+      "id": 12,
+      "trackingUrl": "https://google.com"
     }
   ],
   "returns": [
@@ -3043,6 +3162,23 @@
       "gatewayResponse": {},
       "createdAt": "2026-06-14T14:22:33.254Z",
       "updatedAt": "2026-06-14T14:22:33.254Z"
+    },
+    {
+      "orderId": 12,
+      "orderNumber": "ORD-MQGNP3F6-KLZF",
+      "userId": 3,
+      "amount": 219,
+      "currency": "INR",
+      "paymentMethod": "store_credit",
+      "gateway": "store_credit",
+      "transactionId": "wallet_MQGNP3FX",
+      "gatewayOrderId": null,
+      "status": "captured",
+      "storeCreditApplied": 219,
+      "gatewayResponse": {},
+      "createdAt": "2026-06-16T13:06:51.693Z",
+      "updatedAt": "2026-06-16T13:06:51.693Z",
+      "id": 10
     }
   ],
   "refunds": [
@@ -3418,59 +3554,6 @@
       "id": 1
     },
     {
-      "productId": 1,
-      "slug": "lumiere-fluted-glass-table-lamp",
-      "name": "Lumière Fluted Glass Table Lamp",
-      "image": "https://placehold.co/600x400/b07d56/FFFFFF?text=Lumiere%20Table%20Lamp",
-      "brand": "Lumière by THIS",
-      "price": 640,
-      "comparePrice": 820,
-      "rating": 4.7,
-      "totalReviews": 64,
-      "shortDescription": "Fluted glass table lamp with a warm linen shade for soft, ambient light.",
-      "variants": [
-        {
-          "id": "v1",
-          "name": "Brushed Brass",
-          "price": 640,
-          "stock": 16,
-          "sku": "LMP-LUM-TBL-BRS",
-          "attributes": {
-            "Finish": "Brushed Brass"
-          },
-          "swatchHex": "#c9a24b"
-        },
-        {
-          "id": "v2",
-          "name": "Matte Black",
-          "price": 640,
-          "stock": 14,
-          "sku": "LMP-LUM-TBL-BLK",
-          "attributes": {
-            "Finish": "Matte Black"
-          },
-          "swatchHex": "#2b2b2b"
-        },
-        {
-          "id": "v3",
-          "name": "Polished Nickel",
-          "price": 680,
-          "stock": 8,
-          "sku": "LMP-LUM-TBL-NKL",
-          "attributes": {
-            "Finish": "Polished Nickel"
-          },
-          "swatchHex": "#b8bcc0"
-        }
-      ],
-      "stock": 38,
-      "trending": true,
-      "hot": false,
-      "addedAt": "2026-06-14T13:57:57.354Z",
-      "userId": 3,
-      "id": 2
-    },
-    {
       "productId": 8,
       "slug": "sahara-handwoven-wool-rug",
       "name": "Sahara Handwoven Wool Rug",
@@ -3683,6 +3766,20 @@
       "balanceBefore": 1888,
       "balanceAfter": 888,
       "createdAt": "2026-06-14T14:22:33.343Z"
+    },
+    {
+      "userId": 3,
+      "type": "debit",
+      "amount": 219,
+      "reason": "Applied to order ORD-MQGNP3F6-KLZF",
+      "orderId": 12,
+      "orderNumber": "ORD-MQGNP3F6-KLZF",
+      "refundId": null,
+      "refundNumber": null,
+      "balanceBefore": 888,
+      "balanceAfter": 669,
+      "createdAt": "2026-06-16T13:06:51.726Z",
+      "id": 4
     }
   ],
   "dealsConfig": {

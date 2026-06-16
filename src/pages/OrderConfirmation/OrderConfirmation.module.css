@@ -1,420 +1,321 @@
-/* ===== Base Page ===== */
-.page {
-  min-height: 100vh;
-  padding: 2rem 0 4rem;
-  background: #f5f7fa;
-  color: #1a202c;
-}
+/* ==========================================================================
+   Order Confirmation — the editorial "thank you" + invoice (THIS Interiors)
+   --------------------------------------------------------------------------
+   A calm, reassuring confirmation: a restrained brass success medallion + a
+   serif "Thank you", a quiet copy-able order number with the placed date, a
+   hairline delivery banner, a clean hairline-ruled invoice/summary (items +
+   totals incl. store-credit "amount paid"), the shipping address in a calm
+   card, a warm-semantic payment-method + status indicator, and refined actions.
 
-.dark {
-  background: #0a0e27;
-  color: #e2e8f0;
+   Fully token-driven. Per the UX guidelines this file keeps its own local
+   variable names but maps them onto the GLOBAL --sf-* design tokens, so the
+   whole storefront re-skins from one tokens file and dark mode is inherited
+   automatically (the --sf-* tokens flip under body.dark): no .dark block, no
+   hardcoded hex. The order fetch (array/object/direct), the error vs not-found
+   distinction + retry, the totals/legacy-field fallbacks and the payment status
+   mapping all live in JS and are untouched here.
+   ========================================================================== */
+
+.page {
+  /* ---- Local aliases mapped onto the global --sf-* tokens ---- */
+  --bg: var(--sf-color-bg);
+  --surface: var(--sf-color-surface);
+  --surface-2: var(--sf-color-surface-2);
+  --text-primary: var(--sf-color-text);
+  --text-secondary: var(--sf-color-text-secondary);
+  --text-muted: var(--sf-color-text-muted);
+  --border: var(--sf-color-border);
+  --border-strong: var(--sf-color-border-strong);
+  --accent: var(--sf-color-primary);
+  --accent-hover: var(--sf-color-primary-dark);
+  --accent-soft: var(--sf-color-primary-soft);
+  --accent-contrast: var(--sf-color-primary-contrast);
+  --success: var(--sf-color-success);
+  --success-bg: var(--sf-color-success-bg);
+  --warning: var(--sf-color-warning);
+  --warning-bg: var(--sf-color-warning-bg);
+  --info: var(--sf-color-info);
+  --info-bg: var(--sf-color-info-bg);
+  --danger: var(--sf-color-danger);
+  --danger-bg: var(--sf-color-danger-bg);
+  --discount: var(--sf-color-discount);
+
+  min-height: 100vh;
+  padding: var(--sf-space-12) 0 var(--sf-space-16);
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--sf-font-family);
 }
 
 .container {
-  max-width: 960px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--sf-space-6);
 }
 
-/* ===== Loading ===== */
-.loadingState {
+/* ==========================================================================
+   Success moment — a restrained brass medallion + serif "Thank you"
+   ========================================================================== */
+.success {
+  text-align: center;
+  margin-bottom: var(--sf-space-8);
+}
+
+.medallion {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  margin-bottom: var(--sf-space-5);
+  border-radius: var(--sf-radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.medallionCheck {
+  width: 38px;
+  height: 38px;
+}
+
+.eyebrow {
+  margin: 0 0 var(--sf-space-2);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+  color: var(--accent);
+}
+
+.title {
+  margin: 0 0 var(--sf-space-3);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-4xl);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-display);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--text-primary);
+}
+
+.subtitle {
+  max-width: 48ch;
+  margin: 0 auto;
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Receipt bar — order number (quiet copy) + placed date
+   ========================================================================== */
+.receiptBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-space-4) var(--sf-space-6);
+  padding: var(--sf-space-5) var(--sf-space-6);
+  margin-bottom: var(--sf-space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-lg);
+}
+
+.receiptOrder,
+.receiptPlaced {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  gap: 1.25rem;
-  color: #718096;
+  gap: var(--sf-space-1);
+  min-width: 0;
 }
 
-.dark .loadingState {
-  color: #a0aec0;
+.receiptPlaced {
+  align-items: flex-end;
+  text-align: right;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #667eea;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-.dark .spinner {
-  border-color: rgba(167, 139, 250, 0.2);
-  border-top-color: #a78bfa;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ===== Not Found ===== */
-.notFound {
-  text-align: center;
-  padding: 5rem 2rem;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.notFoundIcon {
-  color: #cbd5e0;
-  margin-bottom: 1.5rem;
-}
-
-.dark .notFoundIcon {
-  color: #4a5568;
-}
-
-.notFound h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.75rem;
-}
-
-.notFound p {
-  color: #718096;
-  margin: 0 0 2rem;
-  line-height: 1.6;
-}
-
-.dark .notFound p {
-  color: #a0aec0;
-}
-
-.notFoundActions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-/* ===== Success Section ===== */
-.successSection {
-  text-align: center;
-  padding: 2rem 0 1rem;
-}
-
-.checkCircle {
-  width: 96px;
-  height: 96px;
-  margin: 0 auto 1.5rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 32px rgba(72, 187, 120, 0.35);
-  position: relative;
-  transform: scale(0);
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.checkCircleActive {
-  transform: scale(1);
-}
-
-.checkSvg {
-  color: #ffffff;
-  stroke-dasharray: 30;
-  stroke-dashoffset: 30;
-  animation: drawCheck 0.5s 0.5s ease-out forwards;
-}
-
-@keyframes drawCheck {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* Pulse ring animation */
-.checkCircle::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 3px solid rgba(72, 187, 120, 0.4);
-  animation: pulseRing 1.5s 0.8s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes pulseRing {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-.successTitle {
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 0 0 0.5rem;
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.successSubtext {
-  color: #718096;
-  font-size: 1.05rem;
-  margin: 0;
-}
-
-.dark .successSubtext {
-  color: #a0aec0;
-}
-
-/* ===== Order Number Banner ===== */
-.orderNumberBanner {
-  text-align: center;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  color: #ffffff;
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-}
-
-.dark .orderNumberBanner {
-  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
-}
-
-.orderNumberLabel {
-  display: block;
-  font-size: 0.825rem;
-  opacity: 0.85;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
+.receiptLabel {
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
   text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-muted);
 }
 
-.orderNumberRow {
+.receiptNumberRow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  gap: var(--sf-space-2);
 }
 
-.orderNumberValue {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+.receiptNumber {
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-semibold);
+  letter-spacing: var(--sf-tracking-wide);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  word-break: break-all;
 }
 
-.btnCopyBanner {
+.receiptValue {
+  font-size: var(--sf-text-base);
+  font-weight: var(--sf-font-medium);
+  color: var(--text-primary);
+}
+
+/* Quiet copy affordance — a small ghost icon button (mirrors Order History). */
+.btnCopy {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: 0.825rem;
-  font-weight: 500;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--sf-radius-sm);
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s;
-  backdrop-filter: blur(4px);
+  transition: color var(--sf-transition-fast),
+    background var(--sf-transition-fast), border-color var(--sf-transition-fast);
 }
 
-.btnCopyBanner:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+.btnCopy:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
-.orderMeta {
-  font-size: 0.85rem;
-  opacity: 0.85;
+.btnCopy:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
 }
 
-/* ===== Delivery Banner ===== */
+.btnCopy.copied {
+  color: var(--success);
+}
+
+/* ==========================================================================
+   Delivery banner — a quiet hairline banner
+   ========================================================================== */
 .deliveryBanner {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.15rem 1.5rem;
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-  margin-bottom: 1.5rem;
-  border-left: 4px solid #48bb78;
-}
-
-.dark .deliveryBanner {
-  background: rgba(26, 31, 58, 0.8);
-  border-color: rgba(167, 139, 250, 0.12);
-  border-left-color: #48bb78;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  gap: var(--sf-space-4);
+  padding: var(--sf-space-4) var(--sf-space-5);
+  margin-bottom: var(--sf-space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-lg);
 }
 
 .deliveryIcon {
-  color: #48bb78;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
+  border-radius: var(--sf-radius-pill);
+  background: var(--surface-2);
+  color: var(--accent);
+}
+
+.deliveryDone .deliveryIcon {
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .deliveryText {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 2px;
+  min-width: 0;
 }
 
 .deliveryLabel {
-  font-size: 0.8rem;
-  color: #718096;
-  font-weight: 500;
-}
-
-.dark .deliveryLabel {
-  color: #a0aec0;
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-muted);
 }
 
 .deliveryDate {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1a202c;
+  font-size: var(--sf-text-md);
+  font-weight: var(--sf-font-medium);
+  color: var(--text-primary);
 }
 
-.dark .deliveryDate {
-  color: #f7fafc;
-}
-
-/* ===== Content Grid ===== */
-.contentGrid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-.mainColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.sideColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* ===== Cards ===== */
-.card {
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+/* ==========================================================================
+   Invoice / summary — clean hairline-ruled items + totals
+   ========================================================================== */
+.invoice {
+  margin-bottom: var(--sf-space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-lg);
   overflow: hidden;
 }
 
-.dark .card {
-  background: rgba(26, 31, 58, 0.8);
-  border-color: rgba(167, 139, 250, 0.12);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-}
-
-.cardHeader {
+.invoiceHead {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  padding: 1.15rem 1.25rem;
-  border-bottom: 1px solid #edf2f7;
+  gap: var(--sf-space-3);
+  padding: var(--sf-space-5) var(--sf-space-6);
+  border-bottom: 1px solid var(--border);
 }
 
-.dark .cardHeader {
-  border-bottom-color: rgba(167, 139, 250, 0.08);
-}
-
-.cardTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 700;
+.invoiceTitle {
   margin: 0;
-  color: #1a202c;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-medium);
+  color: var(--text-primary);
 }
 
-.dark .cardTitle {
-  color: #f7fafc;
+.invoiceCount {
+  flex-shrink: 0;
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-muted);
 }
 
-.cardTitle svg {
-  color: #667eea;
+.itemList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.dark .cardTitle svg {
-  color: #a78bfa;
-}
-
-.itemCount {
-  font-size: 0.8rem;
-  color: #718096;
-  background: #edf2f7;
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
-}
-
-.dark .itemCount {
-  color: #a78bfa;
-  background: rgba(167, 139, 250, 0.12);
-}
-
-.cardBody {
-  padding: 1.25rem;
-}
-
-/* ===== Items List ===== */
-.itemsList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.orderItem {
+.item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.85rem;
-  background: #f7fafc;
-  border-radius: 10px;
-  border: 1px solid #edf2f7;
+  gap: var(--sf-space-4);
+  padding: var(--sf-space-4) var(--sf-space-6);
 }
 
-.dark .orderItem {
-  background: rgba(10, 14, 39, 0.4);
-  border-color: rgba(167, 139, 250, 0.08);
+.item:not(:last-child) {
+  border-bottom: 1px solid var(--border);
 }
 
-.itemImage {
+.itemThumb {
   width: 64px;
   height: 64px;
-  border-radius: 10px;
-  overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-md);
+  background: var(--surface-2);
 }
 
-.dark .itemImage {
-  border-color: rgba(167, 139, 250, 0.12);
-}
-
-.itemImage img {
+.itemThumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .itemInfo {
@@ -422,409 +323,500 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 2px;
 }
 
 .itemName {
-  font-weight: 600;
-  font-size: 0.925rem;
-  color: #1a202c;
-}
-
-.dark .itemName {
-  color: #e2e8f0;
+  font-size: var(--sf-text-base);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-tight);
+  color: var(--text-primary);
 }
 
 .itemVariant {
-  font-size: 0.8rem;
-  color: #718096;
-}
-
-.dark .itemVariant {
-  color: #a0aec0;
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-muted);
 }
 
 .itemQty {
-  font-size: 0.775rem;
-  color: #a0aec0;
-}
-
-.dark .itemQty {
-  color: #718096;
+  font-size: var(--sf-text-sm);
+  color: var(--text-secondary);
 }
 
 .itemPrice {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #667eea;
   flex-shrink: 0;
+  font-size: var(--sf-text-base);
+  font-weight: var(--sf-font-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
-.dark .itemPrice {
-  color: #a78bfa;
-}
-
-/* ===== Totals ===== */
-.totalsSection {
-  border-top: 1px solid #edf2f7;
-  padding-top: 1rem;
+/* ---- Totals ---- */
+.totals {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--sf-space-2);
+  margin: 0;
+  padding: var(--sf-space-5) var(--sf-space-6);
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
 }
 
-.dark .totalsSection {
-  border-top-color: rgba(167, 139, 250, 0.1);
-}
-
-.totalsRow {
+.totalRow {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
-  color: #4a5568;
-  padding: 0.2rem 0;
-}
-
-.dark .totalsRow {
-  color: #cbd5e0;
-}
-
-.totalsRowFinal {
-  border-top: 1px solid #e2e8f0;
-  margin-top: 0.5rem;
-  padding-top: 0.75rem;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: #1a202c;
-}
-
-.dark .totalsRowFinal {
-  border-top-color: rgba(167, 139, 250, 0.15);
-  color: #f7fafc;
-}
-
-/* ===== Address Block ===== */
-.addressBlock {
-  line-height: 1.7;
-}
-
-.addressBlock p {
+  gap: var(--sf-space-4);
   margin: 0;
-  font-size: 0.925rem;
-  color: #4a5568;
+  font-size: var(--sf-text-sm);
+  color: var(--text-secondary);
 }
 
-.dark .addressBlock p {
-  color: #cbd5e0;
+.totalRow dt {
+  margin: 0;
+}
+
+.totalRow dd {
+  margin: 0;
+  font-weight: var(--sf-font-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Savings (discount, store credit, free shipping) in the discount green. */
+.totalDiscount dd {
+  color: var(--discount);
+}
+
+.totalGrand {
+  margin-top: var(--sf-space-2);
+  padding-top: var(--sf-space-3);
+  border-top: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.totalGrand dt {
+  align-self: center;
+  font-size: var(--sf-text-base);
+  font-weight: var(--sf-font-semibold);
+}
+
+.totalGrand dd {
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-2xl);
+  font-weight: var(--sf-font-semibold);
+}
+
+/* ==========================================================================
+   Detail grid — shipping address + payment, calm hairline cards
+   ========================================================================== */
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sf-space-5);
+  margin-bottom: var(--sf-space-8);
+}
+
+.detailCard {
+  padding: var(--sf-space-5) var(--sf-space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-lg);
+}
+
+.detailTitle {
+  margin: 0 0 var(--sf-space-4);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-muted);
+}
+
+.address {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1);
+  font-style: normal;
+}
+
+.address span {
+  font-size: var(--sf-text-sm);
+  line-height: var(--sf-leading-normal);
+  color: var(--text-secondary);
 }
 
 .addressName {
-  font-weight: 700;
-  color: #1a202c !important;
-  font-size: 1rem !important;
-}
-
-.dark .addressName {
-  color: #f7fafc !important;
+  font-size: var(--sf-text-base) !important;
+  font-weight: var(--sf-font-semibold);
+  color: var(--text-primary) !important;
 }
 
 .addressPhone {
-  margin-top: 0.5rem !important;
-  color: #718096 !important;
-  font-size: 0.85rem !important;
-}
-
-.dark .addressPhone {
-  color: #a0aec0 !important;
+  margin-top: var(--sf-space-2);
+  color: var(--text-muted) !important;
 }
 
 .textMuted {
-  color: #a0aec0;
-  font-size: 0.9rem;
   margin: 0;
+  font-size: var(--sf-text-sm);
+  color: var(--text-muted);
 }
 
-.dark .textMuted {
-  color: #718096;
-}
-
-/* ===== Payment ===== */
-.paymentBadge {
-  display: inline-block;
-  padding: 0.45rem 1rem;
-  background: #edf2f7;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #2d3748;
-  letter-spacing: 0.03em;
-  margin-bottom: 0.75rem;
-}
-
-.dark .paymentBadge {
-  background: rgba(167, 139, 250, 0.12);
-  color: #e2e8f0;
-}
-
-.paymentStatus {
+/* ---- Payment method + status ---- */
+.paymentMethod {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #48bb78;
-  font-weight: 600;
+  gap: var(--sf-space-3);
+  margin-bottom: var(--sf-space-4);
 }
 
-.paymentStatusDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #48bb78;
-  animation: pulse 2s infinite;
-}
-
-.paymentStatusPending {
-  color: #d69e2e;
-}
-
-.paymentStatusPending .paymentStatusDot {
-  background: #d69e2e;
-}
-
-.paymentStatusFailed {
-  color: #e53e3e;
-}
-
-.paymentStatusFailed .paymentStatusDot {
-  background: #e53e3e;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-/* ===== Action Buttons ===== */
-.actionsCard {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.btnTrack {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  width: 100%;
-  padding: 0.85rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btnTrack:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
-}
-
-.dark .btnTrack {
-  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-}
-
-.dark .btnTrack:hover {
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
-}
-
-.btnContinue {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  width: 100%;
-  padding: 0.85rem 1.5rem;
-  background: #ffffff;
-  color: #667eea;
-  border: 2px solid #667eea;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btnContinue:hover {
-  background: rgba(102, 126, 234, 0.06);
-}
-
-.dark .btnContinue {
-  background: transparent;
-  color: #a78bfa;
-  border-color: #a78bfa;
-}
-
-.dark .btnContinue:hover {
-  background: rgba(167, 139, 250, 0.08);
-}
-
-.btnInvoice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  width: 100%;
-  padding: 0.85rem 1.5rem;
-  background: #f7fafc;
-  color: #4a5568;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btnInvoice:hover {
-  background: #edf2f7;
-  border-color: #cbd5e0;
-}
-
-.dark .btnInvoice {
-  background: rgba(26, 31, 58, 0.6);
-  color: #a0aec0;
-  border-color: rgba(167, 139, 250, 0.15);
-}
-
-.dark .btnInvoice:hover {
-  background: rgba(167, 139, 250, 0.08);
-  border-color: rgba(167, 139, 250, 0.25);
-  color: #e2e8f0;
-}
-
-/* ===== Shared Buttons ===== */
-.btnPrimary {
+.paymentIcon {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--sf-radius-md);
+  background: var(--surface-2);
+  color: var(--accent);
+}
+
+.paymentName {
+  font-size: var(--sf-text-base);
+  font-weight: var(--sf-font-semibold);
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--text-primary);
+}
+
+/* Status indicator — calm warm-semantic pill (text is the a11y signal; the
+   leading dot is a non-colour-only cue). */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-2);
+  padding: var(--sf-space-1) var(--sf-space-3);
+  border-radius: var(--sf-radius-pill);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  line-height: 1.5;
+}
+
+.statusPill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--sf-radius-pill);
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.statusPaid {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.statusPending {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.statusFailed {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   Actions — brass Track, quiet Continue, quiet Download invoice
+   ========================================================================== */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-3);
+}
+
+.btnPrimary,
+.btnSecondary,
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-2);
+  min-height: var(--sf-tap-target);
+  padding: 0 var(--sf-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--sf-radius-md);
+  font-family: var(--sf-font-family);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color var(--sf-transition), background var(--sf-transition),
+    border-color var(--sf-transition), box-shadow var(--sf-transition);
+}
+
+.btnPrimary:focus-visible,
+.btnSecondary:focus-visible,
+.btnGhost:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* Track Order — solid brass */
+.btnPrimary {
+  padding: 0 var(--sf-space-8);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
 }
 
 .btnPrimary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: var(--sf-shadow-sm);
 }
 
-.dark .btnPrimary {
-  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-}
-
+/* Continue Shopping — hairline outline */
 .btnSecondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 2rem;
   background: transparent;
-  color: #667eea;
-  border: 1px solid #667eea;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  border-color: var(--border);
+  color: var(--text-primary);
 }
 
 .btnSecondary:hover {
-  background: rgba(102, 126, 234, 0.08);
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
-.dark .btnSecondary {
-  color: #a78bfa;
-  border-color: #a78bfa;
+/* Download Invoice — quiet ghost */
+.btnGhost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
 }
 
-.dark .btnSecondary:hover {
-  background: rgba(167, 139, 250, 0.1);
+.btnGhost:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
+/* ==========================================================================
+   Loading — calm centred spinner (shimmer/spin from the global primitive)
+   ========================================================================== */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: var(--sf-space-5);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.loadingState p {
+  margin: 0;
+  font-size: var(--sf-text-base);
+}
+
+/* ==========================================================================
+   States — distinct error vs not-found, each with a back/retry action
+   ========================================================================== */
+.statePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 52ch;
+  margin: var(--sf-space-10) auto 0;
+  padding: var(--sf-space-16) var(--sf-space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-lg);
+}
+
+.stateIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--sf-space-5);
+  border-radius: var(--sf-radius-pill);
+  background: var(--surface-2);
+  color: var(--text-muted);
+}
+
+.stateIconDanger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.stateTitle {
+  margin: 0 0 var(--sf-space-3);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-2xl);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-tight);
+  color: var(--text-primary);
+}
+
+.stateText {
+  margin: 0 0 var(--sf-space-6);
+  font-size: var(--sf-text-base);
+  line-height: var(--sf-leading-normal);
+  color: var(--text-secondary);
+}
+
+.stateActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-4);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 720px) {
   .page {
-    padding: 1rem 0 5rem;
+    padding: var(--sf-space-8) 0 var(--sf-space-16);
   }
 
   .container {
-    padding: 0 1rem;
+    padding: 0 var(--sf-space-4);
   }
 
-  .successTitle {
-    font-size: 1.5rem;
+  .title {
+    font-size: var(--sf-text-3xl);
   }
 
-  .checkCircle {
-    width: 76px;
-    height: 76px;
+  .receiptPlaced {
+    align-items: flex-start;
+    text-align: left;
   }
 
-  .checkSvg {
-    width: 44px;
-    height: 44px;
-  }
-
-  .orderNumberValue {
-    font-size: 1.15rem;
-    letter-spacing: 1px;
-  }
-
-  /* Touch-target sizing */
-  .btnCopyBanner {
-    padding: 0.6rem 0.95rem;
-    min-height: 40px;
-  }
-
-  .orderNumberRow {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .contentGrid {
+  .detailGrid {
     grid-template-columns: 1fr;
   }
 
-  .orderItem {
+  .actions {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
-  .itemImage {
+  .actions button {
     width: 100%;
-    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--sf-space-3);
+  }
+
+  .item {
+    flex-wrap: wrap;
+    padding: var(--sf-space-4) var(--sf-space-5);
   }
 
   .itemPrice {
-    align-self: flex-end;
+    margin-left: auto;
   }
 
-  .notFoundActions {
-    flex-direction: column;
-    align-items: center;
+  .invoiceHead,
+  .totals {
+    padding-left: var(--sf-space-5);
+    padding-right: var(--sf-space-5);
+  }
+}
+
+/* ==========================================================================
+   Success animation — gated behind motion preference. The default (reduced
+   motion / no support) shows a complete, static check with no ring; only when
+   motion is welcome do we draw the check and pulse a single calm ring. The
+   token transitions and the Framer entrances are handled elsewhere (tokens
+   zero out under reduced motion; entrances are gated in JS via useReducedMotion).
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .medallionCheck {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: ocDrawCheck 0.5s 0.35s var(--sf-ease-editorial) forwards;
   }
 
-  .deliveryBanner {
-    flex-direction: column;
-    text-align: center;
-    padding: 1.25rem;
+  .medallion::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--sf-radius-pill);
+    border: 1px solid var(--accent);
+    opacity: 0;
+    animation: ocPulseRing 1.6s 0.5s var(--sf-ease-editorial) forwards;
+  }
+}
+
+@keyframes ocDrawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ocPulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Print — "Download invoice" prints a clean invoice via window.print(). The
+   body flag (set only while this page is mounted) scopes the chrome-hiding
+   rules, so admin and other pages are never affected. The header already hides
+   itself in print; we additionally drop the footer, bottom nav, the page's own
+   actions and the copy button, and print the themed surfaces so the invoice
+   stays legible in either theme.
+   ========================================================================== */
+@media print {
+  :global(body.ocInvoicePrint) footer,
+  :global(body.ocInvoicePrint) nav {
+    display: none !important;
+  }
+
+  .page {
+    min-height: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .actions,
+  .btnCopy,
+  .medallion::after {
+    display: none !important;
+  }
+
+  .receiptBar,
+  .deliveryBanner,
+  .invoice,
+  .detailCard {
+    box-shadow: none;
+    break-inside: avoid;
   }
 }

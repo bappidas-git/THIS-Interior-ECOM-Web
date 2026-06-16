@@ -88,12 +88,12 @@ body.light .main-content {
 
 body.light .glass-effect {
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  border: 1px solid rgba(157, 110, 46, 0.2);
 }
 
 body.light .neon-glow {
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.3), 0 0 40px rgba(102, 126, 234, 0.2),
-    0 0 60px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 20px rgba(157, 110, 46, 0.3), 0 0 40px rgba(157, 110, 46, 0.2),
+    0 0 60px rgba(157, 110, 46, 0.1);
 }
 
 body.light .card-hover:hover {
@@ -184,8 +184,8 @@ body.admin-area.dark *::-webkit-scrollbar-thumb:hover {
 
 /* Neon glow effect */
 .neon-glow {
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.3),
-    0 0 60px rgba(168, 85, 247, 0.1);
+  box-shadow: 0 0 20px rgba(157, 110, 46, 0.5), 0 0 40px rgba(157, 110, 46, 0.3),
+    0 0 60px rgba(157, 110, 46, 0.1);
 }
 
 /* Custom scrollbar */
@@ -222,11 +222,11 @@ body.admin-area.dark *::-webkit-scrollbar-thumb:hover {
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 20px rgba(157, 110, 46, 0.5);
   }
   50% {
     opacity: 0.8;
-    box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
+    box-shadow: 0 0 40px rgba(157, 110, 46, 0.8);
   }
 }
 

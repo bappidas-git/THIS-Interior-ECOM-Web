@@ -5,7 +5,13 @@ import Swal from "sweetalert2";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../hooks/useAuth";
 import apiService from "../../services/api";
-import { formatCurrency, formatDate, normalizeOrderAddress } from "../../utils/helpers";
+import {
+  formatCurrency,
+  formatDate,
+  normalizeOrderAddress,
+  PLACEHOLDER_IMG,
+  onImageError,
+} from "../../utils/helpers";
 import { MOTION_EASE } from "../../utils/constants";
 import ReviewModal from "../../components/ReviewModal/ReviewModal";
 import styles from "./OrderHistory.module.css";
@@ -570,8 +576,10 @@ const OrderHistory = () => {
                         {visibleItems.map((item, i) => (
                           <div key={i} className={styles.thumbnail}>
                             <img
-                              src={item.image || "https://placehold.co/64x64?text=Item"}
+                              src={item.image || PLACEHOLDER_IMG}
                               alt={item.name || "Product"}
+                              loading="lazy"
+                              onError={onImageError}
                             />
                           </div>
                         ))}
@@ -740,8 +748,10 @@ const OrderHistory = () => {
                                   <div key={i} className={styles.detailItem}>
                                     <div className={styles.detailItemImg}>
                                       <img
-                                        src={item.image || "https://placehold.co/56x56?text=Item"}
+                                        src={item.image || PLACEHOLDER_IMG}
                                         alt={item.name || "Product"}
+                                        loading="lazy"
+                                        onError={onImageError}
                                       />
                                     </div>
                                     <div className={styles.detailItemInfo}>

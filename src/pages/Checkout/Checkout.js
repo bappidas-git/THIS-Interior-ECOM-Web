@@ -462,14 +462,14 @@ const Checkout = () => {
                         <input
                           type="text"
                           className={styles.couponInput}
-                          placeholder="Enter coupon code"
+                          placeholder="Enter coupon code" aria-label="Coupon code" aria-invalid={couponError ? "true" : undefined} aria-describedby={couponError ? "co-coupon-err" : undefined}
                           value={couponCode}
                           onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(""); }}
                         />
                         <button type="button" className={styles.couponApply} onClick={applyCoupon}>Apply</button>
                       </div>
                     )}
-                    {couponError && <p className={styles.fieldError}>{couponError}</p>}
+                    {couponError && <p id="co-coupon-err" className={styles.fieldError}>{couponError}</p>}
                   </div>
 
                   {!isAuthenticated && (
@@ -524,51 +524,51 @@ const Checkout = () => {
                     <div className={styles.addressForm}>
                       <div className={styles.formRow}>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>First name *</label>
-                          <input type="text" name="firstName" value={shippingAddress.firstName} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.firstName ? styles.inputError : ""}`} />
-                          {addressErrors.firstName && <span className={styles.fieldError}>{addressErrors.firstName}</span>}
+                          <label className={styles.label} htmlFor="co-firstName">First name *</label>
+                          <input id="co-firstName" type="text" name="firstName" value={shippingAddress.firstName} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.firstName ? styles.inputError : ""}`} aria-invalid={addressErrors.firstName ? "true" : undefined} aria-describedby={addressErrors.firstName ? "co-firstName-err" : undefined} />
+                          {addressErrors.firstName && <span id="co-firstName-err" className={styles.fieldError}>{addressErrors.firstName}</span>}
                         </div>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>Last name *</label>
-                          <input type="text" name="lastName" value={shippingAddress.lastName} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.lastName ? styles.inputError : ""}`} />
-                          {addressErrors.lastName && <span className={styles.fieldError}>{addressErrors.lastName}</span>}
+                          <label className={styles.label} htmlFor="co-lastName">Last name *</label>
+                          <input id="co-lastName" type="text" name="lastName" value={shippingAddress.lastName} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.lastName ? styles.inputError : ""}`} aria-invalid={addressErrors.lastName ? "true" : undefined} aria-describedby={addressErrors.lastName ? "co-lastName-err" : undefined} />
+                          {addressErrors.lastName && <span id="co-lastName-err" className={styles.fieldError}>{addressErrors.lastName}</span>}
                         </div>
                       </div>
                       <div className={styles.formGroup}>
-                        <label className={styles.label}>Phone *</label>
-                        <input type="tel" name="phone" value={shippingAddress.phone} onChange={handleAddressChange} placeholder="+91 9876543210" className={`${styles.input} ${addressErrors.phone ? styles.inputError : ""}`} />
-                        {addressErrors.phone && <span className={styles.fieldError}>{addressErrors.phone}</span>}
+                        <label className={styles.label} htmlFor="co-phone">Phone *</label>
+                        <input id="co-phone" type="tel" name="phone" value={shippingAddress.phone} onChange={handleAddressChange} placeholder="+91 9876543210" className={`${styles.input} ${addressErrors.phone ? styles.inputError : ""}`} aria-invalid={addressErrors.phone ? "true" : undefined} aria-describedby={addressErrors.phone ? "co-phone-err" : undefined} />
+                        {addressErrors.phone && <span id="co-phone-err" className={styles.fieldError}>{addressErrors.phone}</span>}
                       </div>
                       <div className={styles.formGroup}>
-                        <label className={styles.label}>Address line 1 *</label>
-                        <input type="text" name="addressLine1" value={shippingAddress.addressLine1} onChange={handleAddressChange} placeholder="House / Flat No., Building, Street" className={`${styles.input} ${addressErrors.addressLine1 ? styles.inputError : ""}`} />
-                        {addressErrors.addressLine1 && <span className={styles.fieldError}>{addressErrors.addressLine1}</span>}
+                        <label className={styles.label} htmlFor="co-address1">Address line 1 *</label>
+                        <input id="co-address1" type="text" name="addressLine1" value={shippingAddress.addressLine1} onChange={handleAddressChange} placeholder="House / Flat No., Building, Street" className={`${styles.input} ${addressErrors.addressLine1 ? styles.inputError : ""}`} aria-invalid={addressErrors.addressLine1 ? "true" : undefined} aria-describedby={addressErrors.addressLine1 ? "co-address1-err" : undefined} />
+                        {addressErrors.addressLine1 && <span id="co-address1-err" className={styles.fieldError}>{addressErrors.addressLine1}</span>}
                       </div>
                       <div className={styles.formGroup}>
-                        <label className={styles.label}>Address line 2</label>
-                        <input type="text" name="addressLine2" value={shippingAddress.addressLine2} onChange={handleAddressChange} placeholder="Landmark, Area (optional)" className={styles.input} />
+                        <label className={styles.label} htmlFor="co-address2">Address line 2</label>
+                        <input id="co-address2" type="text" name="addressLine2" value={shippingAddress.addressLine2} onChange={handleAddressChange} placeholder="Landmark, Area (optional)" className={styles.input} />
                       </div>
                       <div className={styles.formRow}>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>City *</label>
-                          <input type="text" name="city" value={shippingAddress.city} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.city ? styles.inputError : ""}`} />
-                          {addressErrors.city && <span className={styles.fieldError}>{addressErrors.city}</span>}
+                          <label className={styles.label} htmlFor="co-city">City *</label>
+                          <input id="co-city" type="text" name="city" value={shippingAddress.city} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.city ? styles.inputError : ""}`} aria-invalid={addressErrors.city ? "true" : undefined} aria-describedby={addressErrors.city ? "co-city-err" : undefined} />
+                          {addressErrors.city && <span id="co-city-err" className={styles.fieldError}>{addressErrors.city}</span>}
                         </div>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>State *</label>
-                          <input type="text" name="state" value={shippingAddress.state} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.state ? styles.inputError : ""}`} />
-                          {addressErrors.state && <span className={styles.fieldError}>{addressErrors.state}</span>}
+                          <label className={styles.label} htmlFor="co-state">State *</label>
+                          <input id="co-state" type="text" name="state" value={shippingAddress.state} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.state ? styles.inputError : ""}`} aria-invalid={addressErrors.state ? "true" : undefined} aria-describedby={addressErrors.state ? "co-state-err" : undefined} />
+                          {addressErrors.state && <span id="co-state-err" className={styles.fieldError}>{addressErrors.state}</span>}
                         </div>
                       </div>
                       <div className={styles.formRow}>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>Postal code *</label>
-                          <input type="text" name="postalCode" value={shippingAddress.postalCode} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.postalCode ? styles.inputError : ""}`} />
-                          {addressErrors.postalCode && <span className={styles.fieldError}>{addressErrors.postalCode}</span>}
+                          <label className={styles.label} htmlFor="co-postal">Postal code *</label>
+                          <input id="co-postal" type="text" name="postalCode" value={shippingAddress.postalCode} onChange={handleAddressChange} className={`${styles.input} ${addressErrors.postalCode ? styles.inputError : ""}`} aria-invalid={addressErrors.postalCode ? "true" : undefined} aria-describedby={addressErrors.postalCode ? "co-postal-err" : undefined} />
+                          {addressErrors.postalCode && <span id="co-postal-err" className={styles.fieldError}>{addressErrors.postalCode}</span>}
                         </div>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>Country</label>
-                          <input type="text" value={shippingAddress.country} readOnly className={`${styles.input} ${styles.readOnly}`} />
+                          <label className={styles.label} htmlFor="co-country">Country</label>
+                          <input id="co-country" type="text" name="country" value={shippingAddress.country} readOnly className={`${styles.input} ${styles.readOnly}`} />
                         </div>
                       </div>
                     </div>
@@ -637,10 +637,11 @@ const Checkout = () => {
                       {applyStoreCredit && (
                         <div className={styles.storeCreditApply}>
                           <div className={styles.storeCreditAmountRow}>
-                            <label className={styles.label}>Amount to apply</label>
+                            <label className={styles.label} htmlFor="co-credit-amount">Amount to apply</label>
                             <div className={styles.storeCreditInputWrap}>
                               <span className={styles.storeCreditCurrency}>₹</span>
                               <input
+                                id="co-credit-amount"
                                 type="number"
                                 min="0"
                                 max={maxApplicableCredit}
@@ -699,28 +700,28 @@ const Checkout = () => {
                     {paymentMethod === "card" && (
                       <div className={styles.paymentForm}>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>Card number</label>
-                          <input type="text" className={styles.input} placeholder="1234 5678 9012 3456" maxLength={19} />
+                          <label className={styles.label} htmlFor="co-card">Card number</label>
+                          <input id="co-card" type="text" className={styles.input} placeholder="1234 5678 9012 3456" maxLength={19} />
                         </div>
                         <div className={styles.formRow}>
-                          <div className={styles.formGroup}><label className={styles.label}>Expiry</label><input type="text" className={styles.input} placeholder="MM/YY" maxLength={5} /></div>
-                          <div className={styles.formGroup}><label className={styles.label}>CVV</label><input type="password" className={styles.input} placeholder="•••" maxLength={4} /></div>
+                          <div className={styles.formGroup}><label className={styles.label} htmlFor="co-expiry">Expiry</label><input id="co-expiry" type="text" className={styles.input} placeholder="MM/YY" maxLength={5} /></div>
+                          <div className={styles.formGroup}><label className={styles.label} htmlFor="co-cvv">CVV</label><input id="co-cvv" type="password" className={styles.input} placeholder="•••" maxLength={4} /></div>
                         </div>
-                        <div className={styles.formGroup}><label className={styles.label}>Name on card</label><input type="text" className={styles.input} placeholder="Full name" /></div>
+                        <div className={styles.formGroup}><label className={styles.label} htmlFor="co-cardname">Name on card</label><input id="co-cardname" type="text" className={styles.input} placeholder="Full name" /></div>
                       </div>
                     )}
 
                     {paymentMethod === "upi" && (
                       <div className={styles.paymentForm}>
-                        <div className={styles.formGroup}><label className={styles.label}>UPI ID</label><input type="text" className={styles.input} placeholder="name@upi" /></div>
+                        <div className={styles.formGroup}><label className={styles.label} htmlFor="co-upi">UPI ID</label><input id="co-upi" type="text" className={styles.input} placeholder="name@upi" /></div>
                       </div>
                     )}
 
                     {paymentMethod === "net_banking" && (
                       <div className={styles.paymentForm}>
                         <div className={styles.formGroup}>
-                          <label className={styles.label}>Select bank</label>
-                          <select className={styles.input}>
+                          <label className={styles.label} htmlFor="co-bank">Select bank</label>
+                          <select id="co-bank" className={styles.input}>
                             <option>State Bank of India</option>
                             <option>HDFC Bank</option>
                             <option>ICICI Bank</option>

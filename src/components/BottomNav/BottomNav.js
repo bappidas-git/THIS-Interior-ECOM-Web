@@ -90,7 +90,7 @@ const BottomNav = () => {
                 key={item.key}
                 className={`${styles.navItem} ${isActive ? styles.active : ""}`}
                 onClick={() => handleNavClick(item)}
-                aria-label={item.label}
+                aria-label={item.key === "wishlist" && wishlistCount > 0 ? `${item.label} (${wishlistCount} saved)` : item.label}
                 aria-current={isActive ? "page" : undefined}
               >
                 <span className={styles.iconWrap}>

@@ -43,6 +43,7 @@ import { categoryParam } from "../../utils/categories";
 import { APP_NAME, MOTION_EASE } from "../../utils/constants";
 import { LOGO_WHITE, BRAND } from "../../theme/brand";
 import { onImageError } from "../../utils/helpers";
+import useFocusTrap from "../../hooks/useFocusTrap";
 import styles from "./SidebarMenu.module.css";
 
 // Categories are admin-managed, so we map a name to a representative glyph by
@@ -95,6 +96,9 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
     [dealsEnabled]
   );
   const panelRef = useRef(null);
+
+  // Trap Tab focus within the menu while open (focus is moved into it on open).
+  useFocusTrap(panelRef, open);
 
   const [categories, setCategories] = useState([]);
   const [categoriesExpanded, setCategoriesExpanded] = useState(false);

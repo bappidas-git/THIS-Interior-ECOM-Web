@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Swal from "sweetalert2";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../hooks/useAuth";
@@ -40,6 +40,9 @@ const FILTER_OPTIONS = ["All", "Processing", "Shipped", "Delivered", "Cancelled"
 const ORDERS_PER_PAGE = 5;
 const RETURN_WINDOW_DAYS = 7; // per the 7-day return policy (see /refund-policy)
 
+// Calm editorial easing, shared by the gated Framer transitions below.
+const EASE = [0.22, 1, 0.36, 1];
+
 // Orders carry paymentStatus / fulfillmentStatus / shippingStatus (the shape
 // checkout writes and Admin manages) — collapse those into the single display
 // status this page badges and filters by. A legacy `status` field is only
@@ -67,6 +70,9 @@ const OrderHistory = () => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
   const { user, isAuthenticated, isLoading: authLoading, openAuthModal } = useAuth();
+  // Gate the Framer entrances/collapses for reduced-motion users (the token
+  // transitions already zero out via storefront-tokens.css).
+  const prefersReducedMotion = useReducedMotion();
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +113,7 @@ const OrderHistory = () => {
       setOrders(sorted);
       setMyReviews(Array.isArray(reviews) ? reviews : []);
     } catch (err) {
-      // Keep "No Orders Yet" honest: a failed fetch renders the error state,
+      // Keep "No orders yet" honest: a failed fetch renders the error state,
       // never the empty state.
       console.error("Failed to fetch orders:", err);
       setOrders([]);
@@ -260,37 +266,89 @@ const OrderHistory = () => {
     if (totalPages > 0 && currentPage > totalPages) setCurrentPage(totalPages);
   }, [currentPage, totalPages]);
 
+  // ---- Calm, reduced-motion-safe Framer presets ----
+  const headerMotion = prefersReducedMotion
+    ? { initial: false, animate: { opacity: 1, y: 0 } }
+    : { initial: { opacity: 0, y: -8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, ease: EASE } };
+
+  const toolbarMotion = prefersReducedMotion
+    ? { initial: false, animate: { opacity: 1, y: 0 } }
+    : { initial: { opacity: 0, y: -6 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay: 0.05, ease: EASE } };
+
+  const stateMotion = prefersReducedMotion
+    ? { initial: false, animate: { opacity: 1 } }
+    : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.35, ease: EASE } };
+
+  const cardMotion = (index) =>
+    prefersReducedMotion
+      ? { initial: false, animate: { opacity: 1, y: 0 }, exit: { opacity: 0 }, transition: { duration: 0 } }
+      : {
+          initial: { opacity: 0, y: 16 },
+          animate: { opacity: 1, y: 0 },
+          exit: { opacity: 0, y: -12 },
+          transition: { duration: 0.4, delay: index * 0.05, ease: EASE },
+        };
+
+  const collapseMotion = prefersReducedMotion
+    ? { initial: false, animate: { height: "auto", opacity: 1 }, exit: { height: 0, opacity: 0 }, transition: { duration: 0 } }
+    : {
+        initial: { height: 0, opacity: 0 },
+        animate: { height: "auto", opacity: 1 },
+        exit: { height: 0, opacity: 0 },
+        transition: { duration: 0.3, ease: EASE },
+      };
+
+  // Loading skeletons — calm shimmer in the order-card silhouette.
+  const renderSkeletons = () => (
+    <div className={styles.skeletonList} role="status" aria-label="Loading your orders">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className={styles.skeletonCard} aria-hidden="true">
+          <div className={styles.skeletonHeader}>
+            <div className={styles.skeletonHeadLines}>
+              <span className={`sf-skeleton ${styles.skLineLg}`} />
+              <span className={`sf-skeleton ${styles.skLineSm}`} />
+            </div>
+            <span className={`sf-skeleton ${styles.skBadge}`} />
+          </div>
+          <div className={styles.skThumbs}>
+            <span className={`sf-skeleton ${styles.skThumb}`} />
+            <span className={`sf-skeleton ${styles.skThumb}`} />
+            <span className={`sf-skeleton ${styles.skThumb}`} />
+            <span className={`sf-skeleton ${styles.skTotal}`} />
+          </div>
+          <div className={styles.skActions}>
+            <span className={`sf-skeleton ${styles.skBtn}`} />
+            <span className={`sf-skeleton ${styles.skBtn}`} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   // Not authenticated - show login prompt (only once the session restore has
   // settled, so a reload while logged in doesn't flash this screen)
   if (!authLoading && !isAuthenticated) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.container}>
-          <motion.div
-            className={styles.loginPrompt}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className={styles.loginIcon}>
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <motion.div className={styles.loginPanel} {...stateMotion}>
+            <span className={styles.loginIcon}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
                 <polyline points="10 17 15 12 10 7" />
                 <line x1="15" y1="12" x2="3" y2="12" />
               </svg>
-            </div>
-            <h2 className={styles.loginTitle}>Sign In Required</h2>
-            <p className={styles.loginSubtext}>
-              Please sign in to view your order history. Your orders are linked to your account.
+            </span>
+            <h2 className={styles.stateTitle}>Sign in to view your orders</h2>
+            <p className={styles.stateText}>
+              Your orders are linked to your account. Sign in to track shipments,
+              manage returns, and review the pieces you've kept.
             </p>
-            <div className={styles.loginActions}>
-              <button
-                className={styles.btnPrimary}
-                onClick={() => openAuthModal("login")}
-              >
+            <div className={styles.stateActions}>
+              <button className={styles.btnPrimary} onClick={() => openAuthModal("login")}>
                 Log In
               </button>
-              <Link to="/" className={styles.linkSecondary}>
+              <Link to="/" className={styles.linkQuiet}>
                 Back to Home
               </Link>
             </div>
@@ -301,64 +359,69 @@ const OrderHistory = () => {
   }
 
   return (
-    <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+    <div className={styles.page}>
       <div className={styles.container}>
         {/* Page Header */}
-        <motion.div
-          className={styles.pageHeader}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className={styles.headerLeft}>
+        <motion.header className={styles.pageHeader} {...headerMotion}>
+          <div className={styles.headerText}>
             <h1 className={styles.pageTitle}>My Orders</h1>
+            <p className={styles.pageSubtitle}>
+              Track shipments, manage returns, and review the pieces you've kept.
+            </p>
+          </div>
+          <div className={styles.headerMeta}>
             {!loading && !fetchError && (
               <span className={styles.orderCount}>
                 {filteredOrders.length} order{filteredOrders.length !== 1 ? "s" : ""}
               </span>
             )}
+            <button
+              className={styles.btnRefresh}
+              onClick={fetchOrders}
+              disabled={loading}
+              aria-label="Refresh orders"
+              title="Refresh orders"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={loading ? styles.spinning : ""}>
+                <polyline points="23 4 23 10 17 10" />
+                <polyline points="1 20 1 14 7 14" />
+                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+              </svg>
+            </button>
           </div>
-          <button className={styles.btnRefresh} onClick={fetchOrders} disabled={loading}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={loading ? styles.spinning : ""}>
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
-            </svg>
-          </button>
-        </motion.div>
+        </motion.header>
 
-        {/* Search & Filter Bar */}
-        <motion.div
-          className={styles.filterBar}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        {/* Search & Filter */}
+        <motion.div className={styles.toolbar} {...toolbarMotion}>
           <div className={styles.searchWrapper}>
-            <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
               type="text"
               className={styles.searchInput}
-              placeholder="Search by order number..."
+              placeholder="Search by order number…"
+              aria-label="Search orders by number"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             {searchQuery && (
-              <button className={styles.clearSearch} onClick={() => setSearchQuery("")}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className={styles.clearSearch} onClick={() => setSearchQuery("")} aria-label="Clear search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             )}
           </div>
-          <div className={styles.filterTabs}>
+          <div className={styles.filterTabs} role="group" aria-label="Filter orders by status">
             {FILTER_OPTIONS.map((filter) => (
               <button
                 key={filter}
+                type="button"
                 className={`${styles.filterTab} ${activeFilter === filter ? styles.filterTabActive : ""}`}
+                aria-pressed={activeFilter === filter}
                 onClick={() => setActiveFilter(filter)}
               >
                 {filter}
@@ -367,83 +430,79 @@ const OrderHistory = () => {
           </div>
         </motion.div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className={styles.loadingState}>
-            <div className={styles.spinner} />
-            <p>Loading your orders...</p>
-          </div>
-        )}
+        {/* Loading State — calm skeletons */}
+        {loading && renderSkeletons()}
 
-        {/* Error State — fetch failed; never masquerade as "No Orders Yet" */}
+        {/* Error State — fetch failed; never masquerade as "No orders yet" */}
         {!loading && fetchError && (
-          <motion.div
-            className={styles.errorState}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            <div className={styles.errorIcon}>
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+          <motion.div className={styles.statePanel} {...stateMotion}>
+            <span className={`${styles.stateIcon} ${styles.stateIconDanger}`}>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
-            </div>
-            <h3 className={styles.emptyTitle}>Couldn't Load Your Orders</h3>
-            <p className={styles.emptySubtext}>
+            </span>
+            <h3 className={styles.stateTitle}>Couldn't load your orders</h3>
+            <p className={styles.stateText}>
               Something went wrong while fetching your orders. Please check your
               connection and try again.
             </p>
-            <button className={styles.btnPrimary} onClick={fetchOrders}>
-              Try Again
-            </button>
+            <div className={styles.stateActions}>
+              <button className={styles.btnPrimary} onClick={fetchOrders}>
+                Try Again
+              </button>
+            </div>
           </motion.div>
         )}
 
-        {/* Empty State */}
+        {/* Empty State — no orders at all */}
         {!loading && !fetchError && filteredOrders.length === 0 && orders.length === 0 && (
-          <motion.div
-            className={styles.emptyState}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            <div className={styles.emptyIcon}>
-              <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+          <motion.div className={styles.statePanel} {...stateMotion}>
+            <span className={styles.stateIcon}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 01-8 0" />
               </svg>
-            </div>
-            <h3 className={styles.emptyTitle}>No Orders Yet</h3>
-            <p className={styles.emptySubtext}>
-              You haven't placed any orders yet. Explore our products and start shopping!
+            </span>
+            <h3 className={styles.stateTitle}>No orders yet</h3>
+            <p className={styles.stateText}>
+              You haven't placed any orders yet. Explore the collection and
+              find something you'll love.
             </p>
-            <button className={styles.btnPrimary} onClick={() => navigate("/")}>
-              Start Shopping
-            </button>
+            <div className={styles.stateActions}>
+              <button className={styles.btnPrimary} onClick={() => navigate("/")}>
+                Explore the Collection
+              </button>
+            </div>
           </motion.div>
         )}
 
         {/* No filter results */}
-        {!loading && filteredOrders.length === 0 && orders.length > 0 && (
-          <motion.div
-            className={styles.emptyState}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <h3 className={styles.emptyTitle}>No matching orders</h3>
-            <p className={styles.emptySubtext}>
+        {!loading && !fetchError && filteredOrders.length === 0 && orders.length > 0 && (
+          <motion.div className={styles.statePanel} {...stateMotion}>
+            <span className={styles.stateIcon}>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <h3 className={styles.stateTitle}>No matching orders</h3>
+            <p className={styles.stateText}>
               Try adjusting your search or filter criteria.
             </p>
-            <button
-              className={styles.btnSecondary}
-              onClick={() => {
-                setSearchQuery("");
-                setActiveFilter("All");
-              }}
-            >
-              Clear Filters
-            </button>
+            <div className={styles.stateActions}>
+              <button
+                className={styles.btnSecondary}
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveFilter("All");
+                }}
+              >
+                Clear Filters
+              </button>
+            </div>
           </motion.div>
         )}
 
@@ -456,36 +515,40 @@ const OrderHistory = () => {
                 const orderItems = order.items || [];
                 const visibleItems = orderItems.slice(0, 3);
                 const remainingCount = orderItems.length - 3;
-                const isExpanded = expandedOrder === (order.id || order.orderNumber);
-                const showTracking = trackingVisible === (order.id || order.orderNumber);
+                const orderKey = order.id || order.orderNumber;
+                const isExpanded = expandedOrder === orderKey;
+                const showTracking = trackingVisible === orderKey;
+                const copyValue = order.orderNumber || order.id;
+                const trackingPanelId = `tracking-panel-${orderKey}`;
+                const detailsPanelId = `details-panel-${orderKey}`;
 
                 return (
-                  <motion.div
-                    key={order.id || order.orderNumber}
+                  <motion.article
+                    key={orderKey}
                     className={styles.orderCard}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.05 }}
+                    aria-label={`Order ${order.orderNumber || `#${order.id}`}`}
+                    {...cardMotion(index)}
                   >
-                    {/* Order Card Header */}
+                    {/* Card Header */}
                     <div className={styles.cardHeader}>
                       <div className={styles.cardHeaderLeft}>
                         <div className={styles.orderNumberRow}>
+                          <span className={styles.orderNumberLabel}>Order</span>
                           <span className={styles.orderNumber}>
                             {order.orderNumber || `#${order.id}`}
                           </span>
                           <button
-                            className={styles.btnCopy}
-                            onClick={() => handleCopy(order.orderNumber || order.id)}
+                            className={`${styles.btnCopy} ${copiedId === copyValue ? styles.copied : ""}`}
+                            onClick={() => handleCopy(copyValue)}
+                            aria-label={copiedId === copyValue ? "Order number copied" : "Copy order number"}
                             title="Copy order number"
                           >
-                            {copiedId === (order.orderNumber || order.id) ? (
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            {copiedId === copyValue ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="20 6 9 17 4 12" />
                               </svg>
                             ) : (
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                                 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
                               </svg>
@@ -493,7 +556,7 @@ const OrderHistory = () => {
                           </button>
                         </div>
                         <span className={styles.orderDate}>
-                          {formatDate(order.createdAt)}
+                          Placed {formatDate(order.createdAt)}
                         </span>
                       </div>
                       <div className={styles.cardHeaderRight}>
@@ -503,7 +566,7 @@ const OrderHistory = () => {
                       </div>
                     </div>
 
-                    {/* Product Thumbnails */}
+                    {/* Thumbnails + total */}
                     <div className={styles.cardBody}>
                       <div className={styles.thumbnailRow}>
                         {visibleItems.map((item, i) => (
@@ -515,9 +578,7 @@ const OrderHistory = () => {
                           </div>
                         ))}
                         {remainingCount > 0 && (
-                          <div className={styles.thumbnailMore}>
-                            +{remainingCount} more
-                          </div>
+                          <div className={styles.thumbnailMore}>+{remainingCount} more</div>
                         )}
                         <div className={styles.orderTotal}>
                           <span className={styles.totalLabel}>Total</span>
@@ -528,17 +589,15 @@ const OrderHistory = () => {
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Actions */}
                     <div className={styles.cardActions}>
                       <button
-                        className={styles.btnOutline}
-                        onClick={() =>
-                          setTrackingVisible(
-                            showTracking ? null : order.id || order.orderNumber
-                          )
-                        }
+                        className={styles.actionBtnPrimary}
+                        onClick={() => setTrackingVisible(showTracking ? null : orderKey)}
+                        aria-expanded={showTracking}
+                        aria-controls={trackingPanelId}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="1" y="3" width="15" height="13" rx="2" ry="2" />
                           <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
                           <circle cx="5.5" cy="18.5" r="2.5" />
@@ -547,14 +606,12 @@ const OrderHistory = () => {
                         Track Order
                       </button>
                       <button
-                        className={styles.btnOutline}
-                        onClick={() =>
-                          setExpandedOrder(
-                            isExpanded ? null : order.id || order.orderNumber
-                          )
-                        }
+                        className={styles.actionBtnGhost}
+                        onClick={() => setExpandedOrder(isExpanded ? null : orderKey)}
+                        aria-expanded={isExpanded}
+                        aria-controls={detailsPanelId}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                           <circle cx="12" cy="12" r="3" />
                         </svg>
@@ -562,7 +619,7 @@ const OrderHistory = () => {
                       </button>
                       {isReturnEligible(order) && (
                         <button
-                          className={styles.btnOutlineWarning}
+                          className={styles.actionBtnWarn}
                           onClick={() => navigate("/support")}
                         >
                           Return / Exchange
@@ -570,14 +627,14 @@ const OrderHistory = () => {
                       )}
                       {isCancellable(order) && (
                         <button
-                          className={styles.btnOutlineDanger}
+                          className={styles.actionBtnDanger}
                           onClick={() => handleCancelOrder(order)}
                           disabled={cancellingId !== null}
                         >
                           {cancellingId === order.id ? (
                             <>
                               <span className={styles.btnSpinner} />
-                              Cancelling...
+                              Cancelling…
                             </>
                           ) : (
                             "Cancel Order"
@@ -586,33 +643,35 @@ const OrderHistory = () => {
                       )}
                     </div>
 
-                    {/* Tracking Info */}
-                    <AnimatePresence>
+                    {/* Tracking (collapsible) */}
+                    <AnimatePresence initial={false}>
                       {showTracking && (
                         <motion.div
                           className={styles.trackingSection}
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
+                          id={trackingPanelId}
+                          role="region"
+                          aria-label="Tracking details"
+                          {...collapseMotion}
                         >
                           <div className={styles.trackingInner}>
                             <div className={styles.trackingRow}>
-                              <span className={styles.trackingLabel}>Tracking Number</span>
+                              <span className={styles.trackingLabel}>Tracking number</span>
                               <span className={styles.trackingValue}>
                                 {order.trackingNumber || "Not yet available"}
                               </span>
                               {order.trackingNumber && (
                                 <button
-                                  className={styles.btnCopy}
+                                  className={`${styles.btnCopy} ${copiedId === order.trackingNumber ? styles.copied : ""}`}
                                   onClick={() => handleCopy(order.trackingNumber)}
+                                  aria-label={copiedId === order.trackingNumber ? "Tracking number copied" : "Copy tracking number"}
+                                  title="Copy tracking number"
                                 >
                                   {copiedId === order.trackingNumber ? (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                       <polyline points="20 6 9 17 4 12" />
                                     </svg>
                                   ) : (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                                       <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
                                     </svg>
@@ -622,20 +681,20 @@ const OrderHistory = () => {
                             </div>
                             {order.trackingUrl && (
                               <div className={styles.trackingRow}>
-                                <span className={styles.trackingLabel}>Track Shipment</span>
+                                <span className={styles.trackingLabel}>Track shipment</span>
                                 <a
                                   href={order.trackingUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className={styles.trackingLink}
                                 >
-                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                     <rect x="1" y="3" width="15" height="13" rx="2" ry="2" />
                                     <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
                                     <circle cx="5.5" cy="18.5" r="2.5" />
                                     <circle cx="18.5" cy="18.5" r="2.5" />
                                   </svg>
-                                  Open carrier tracking page
+                                  Open carrier page
                                 </a>
                               </div>
                             )}
@@ -648,7 +707,7 @@ const OrderHistory = () => {
                             {order.refundStatus && (
                               <div className={styles.trackingRow}>
                                 <span className={styles.trackingLabel}>Refund</span>
-                                <span className={styles.trackingValue} style={{ fontFamily: "inherit" }}>
+                                <span className={styles.trackingNote}>
                                   {order.refundStatus === "completed"
                                     ? `Refunded${order.refundedAmount ? ` ${formatCurrency(order.refundedAmount)}` : ""} to your ${(order.refundMethod || "original payment").replace(/_/g, " ")}`
                                     : order.refundStatus === "processing"
@@ -664,19 +723,19 @@ const OrderHistory = () => {
                       )}
                     </AnimatePresence>
 
-                    {/* Expanded Details */}
-                    <AnimatePresence>
+                    {/* Details (collapsible) */}
+                    <AnimatePresence initial={false}>
                       {isExpanded && (
                         <motion.div
                           className={styles.expandedSection}
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
+                          id={detailsPanelId}
+                          role="region"
+                          aria-label="Order details"
+                          {...collapseMotion}
                         >
                           <div className={styles.expandedInner}>
-                            {/* Full Items List */}
-                            <div className={styles.detailBlock}>
+                            {/* Items */}
+                            <div className={`${styles.detailBlock} ${styles.detailBlockFull}`}>
                               <h4 className={styles.detailBlockTitle}>Items Ordered</h4>
                               <div className={styles.detailItemsList}>
                                 {orderItems.map((item, i) => (
@@ -711,7 +770,7 @@ const OrderHistory = () => {
                                               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                                 <polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9" />
                                               </svg>
-                                              {existing ? "Edit Review" : "Rate & Review"}
+                                              {existing ? "Edit Review" : "Write a Review"}
                                             </button>
                                           </div>
                                         );
@@ -748,7 +807,7 @@ const OrderHistory = () => {
                               </div>
                             </div>
 
-                            {/* Payment Method */}
+                            {/* Payment */}
                             <div className={styles.detailBlock}>
                               <h4 className={styles.detailBlockTitle}>Payment</h4>
                               <div className={styles.detailContent}>
@@ -762,7 +821,7 @@ const OrderHistory = () => {
                             </div>
 
                             {/* Order Summary */}
-                            <div className={styles.detailBlock}>
+                            <div className={`${styles.detailBlock} ${styles.detailBlockFull}`}>
                               <h4 className={styles.detailBlockTitle}>Order Summary</h4>
                               <div className={styles.summaryTable}>
                                 <div className={styles.summaryRow}>
@@ -797,7 +856,7 @@ const OrderHistory = () => {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </motion.article>
                 );
               })}
             </AnimatePresence>
@@ -806,13 +865,13 @@ const OrderHistory = () => {
 
         {/* Pagination */}
         {!loading && totalPages > 1 && (
-          <div className={styles.pagination}>
+          <nav className={styles.pagination} aria-label="Orders pagination">
             <button
               className={styles.pageBtn}
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
               Previous
@@ -822,6 +881,7 @@ const OrderHistory = () => {
                 <button
                   key={page}
                   className={`${styles.pageNumber} ${currentPage === page ? styles.pageNumberActive : ""}`}
+                  aria-current={currentPage === page ? "page" : undefined}
                   onClick={() => setCurrentPage(page)}
                 >
                   {page}
@@ -834,11 +894,11 @@ const OrderHistory = () => {
               onClick={() => setCurrentPage((p) => p + 1)}
             >
               Next
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-          </div>
+          </nav>
         )}
       </div>
 

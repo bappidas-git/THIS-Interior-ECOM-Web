@@ -52,13 +52,19 @@ body:not(.admin-area) ::selection {
   color: var(--sf-color-text);
 }
 
-/* Base default for bare links; styled components (CSS Modules) override via
-   their higher specificity, so this only dresses otherwise-unstyled anchors. */
-body:not(.admin-area) a {
+/* Base default for bare links. Wrapped in :where() so the whole selector carries
+   ZERO specificity — any utility/primitive class (.sf-btn--primary, the hero
+   .ctaGhost, .navLink …) or CSS-Module class that declares its own colour wins,
+   so this only dresses otherwise-unstyled anchors.
+   Without :where(), `body:not(.admin-area) a` scores (0,1,2) and out-ranked
+   single-class link colours like .sf-btn--primary / .navLink (0,1,0), painting
+   EVERY storefront <a> brass — which made the hero's brass primary CTA invisible
+   (brass text on a brass fill) and its ghost link faint over the dark media. */
+:where(body:not(.admin-area) a) {
   color: var(--sf-color-primary);
   text-decoration: none;
 }
-body:not(.admin-area) a:hover {
+:where(body:not(.admin-area) a:hover) {
   text-decoration: underline;
   text-underline-offset: 2px;
 }

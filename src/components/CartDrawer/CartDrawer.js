@@ -9,14 +9,18 @@ import {
   PLACEHOLDER_IMG,
   onImageError,
 } from "../../utils/helpers";
-import { FREE_SHIPPING_THRESHOLD } from "../../utils/constants";
+import {
+  FREE_SHIPPING_THRESHOLD,
+  DEFAULT_CURRENCY,
+} from "../../utils/constants";
 import { resolveTrustBadgeDetail } from "../../theme/tokens";
 import styles from "./CartDrawer.module.css";
 
-// Shipping shown while below the free threshold. Mirrors the Standard method's
-// flatRate in db.json; the free-shipping cutoff itself comes from the shared
-// FREE_SHIPPING_THRESHOLD constant (same source as Header + Checkout).
-const FLAT_SHIPPING = 99;
+// Flat shipping shown while below the free threshold, in AED. Mirrors the
+// Standard method's flatRate in db.json (set in 26); the free-shipping cutoff
+// itself comes from the shared FREE_SHIPPING_THRESHOLD constant (same source as
+// Header + Checkout).
+const FLAT_SHIPPING = 25;
 
 const CartDrawer = ({ open, onClose }) => {
   const navigate = useNavigate();
@@ -32,9 +36,10 @@ const CartDrawer = ({ open, onClose }) => {
   const cart = cartItems || [];
   const cartCount = getCartItemCount ? getCartItemCount() : 0;
   const cartTotal = getCartTotal ? getCartTotal() : 0;
-  // Format money in the line currency (defaults INR today; the AED switch later
-  // flows through automatically because every line carries its own currency).
-  const currency = cart[0]?.currency || "INR";
+  // Format money in the line currency. Every cart line carries its own currency
+  // (stamped by buildCartItem / normalizeCartItem → DEFAULT_CURRENCY = AED), and
+  // the fallback covers an empty cart so the free-shipping line still formats.
+  const currency = cart[0]?.currency || DEFAULT_CURRENCY.code;
 
   const shippingCost = cartTotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING;
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);

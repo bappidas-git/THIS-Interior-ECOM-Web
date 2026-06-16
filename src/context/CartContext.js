@@ -9,6 +9,7 @@ import React, {
 import { useAuth } from "./AuthContext";
 import apiService from "../services/api";
 import Swal from "sweetalert2";
+import { DEFAULT_CURRENCY } from "../utils/constants";
 
 const CartContext = createContext();
 
@@ -49,7 +50,7 @@ const normalizeCartItem = (raw = {}) => {
     image: raw.image || raw.product?.images?.[0] || raw.product?.image || "",
     price: Number(raw.price) || 0,
     comparePrice: Number(raw.comparePrice) || 0,
-    currency: raw.currency || "INR",
+    currency: raw.currency || DEFAULT_CURRENCY.code,
     quantity: Math.max(1, parseInt(raw.quantity, 10) || 1),
     // Only carried when known; gates the stock cap (otherwise unenforced).
     ...(stock !== null && !Number.isNaN(stock) ? { stock } : {}),

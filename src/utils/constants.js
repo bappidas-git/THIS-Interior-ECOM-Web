@@ -1,7 +1,9 @@
-// App Info (override via .env)
-export const APP_NAME = process.env.REACT_APP_NAME || "My Store";
-export const APP_TAGLINE = "Quality products, great prices";
-export const APP_DESCRIPTION = "Shop with confidence – fast delivery, secure payments, easy returns";
+// App Info (override via .env — keep the env pattern so each deployment can
+// rename without a code change; the default is the brand wordmark).
+export const APP_NAME = process.env.REACT_APP_NAME || "THIS Interiors";
+export const APP_TAGLINE = "Crafting homes with a soul";
+export const APP_DESCRIPTION =
+  "From Dubai's interior-design studio — a curated boutique of vases, candles, wall art, mirrors and lamps, chosen to bring beauty to every corner.";
 
 // Routes
 export const ROUTES = {
@@ -90,39 +92,50 @@ export const RETURN_REASONS = [
   { value: "other", label: "Other" },
 ];
 
-// Currencies
+// Currencies. AED is the brand (Dubai) currency and the default; the others
+// stay supported so `formatCurrency` keeps working for any code. AED's symbol
+// is the Latin "AED" — it matches what Intl renders in the en-AE locale and is
+// the most broadly readable; swap to "د.إ" if a fully localised glyph is wanted.
 export const CURRENCIES = {
+  AED: { symbol: "AED", code: "AED", name: "UAE Dirham" },
   INR: { symbol: "₹", code: "INR", name: "Indian Rupee" },
   USD: { symbol: "$", code: "USD", name: "US Dollar" },
   EUR: { symbol: "€", code: "EUR", name: "Euro" },
   GBP: { symbol: "£", code: "GBP", name: "British Pound" },
 };
-export const DEFAULT_CURRENCY = CURRENCIES.INR;
+// Single source of truth for the storefront currency. `formatCurrency`,
+// `buildCartItem` and the storefront components all default to this, so the
+// whole store renders one currency coherently (mirrored by `settings.store
+// .currency = "AED"` on the data side in 26).
+export const DEFAULT_CURRENCY = CURRENCIES.AED;
 
 // Shipping
-// Single source of truth for the free-shipping threshold. Mirrors the
-// Standard shipping method's `freeAbove` value in db.json (₹999) and is
-// shared by the Header banner and the CartDrawer progress bar.
-export const FREE_SHIPPING_THRESHOLD = 999;
+// Single source of truth for the free-shipping threshold, re-based for AED.
+// Mirrors the Standard shipping method's `freeAbove` value in db.json (set to
+// AED 200 in 26) and is shared by the Header banner and the CartDrawer progress
+// bar.
+export const FREE_SHIPPING_THRESHOLD = 200;
 
 // Social links (sensible defaults — update per project). The Footer renders an
 // icon only for entries with a non-empty URL, so blanking one here hides it
 // instead of leaving a dead link.
 export const SOCIAL_LINKS = {
-  FACEBOOK: "https://facebook.com/mystore",
-  TWITTER: "https://twitter.com/mystore",
-  INSTAGRAM: "https://instagram.com/mystore",
-  YOUTUBE: "https://youtube.com/@mystore",
-  WHATSAPP: "",
+  FACEBOOK: "https://facebook.com/thisinteriors",
+  // Décor lives on Instagram; Twitter/YouTube are left blank so the Footer
+  // hides them rather than linking to an empty handle.
+  TWITTER: "",
+  INSTAGRAM: "https://instagram.com/thisinteriors",
+  YOUTUBE: "",
+  WHATSAPP: "https://wa.me/971555538800",
 };
 
-// Store contact (sensible defaults — update per project). Single source so the
-// Header top bar, Footer, Help Center and Support page all stay in sync.
-export const SUPPORT_EMAIL = "support@mystore.com";
-export const SUPPORT_PHONE = "+91 1800 102 5555";
+// Store contact — Dubai studio identity. Single source so the Header top bar,
+// Footer, Help Center and Support page all stay in sync.
+export const SUPPORT_EMAIL = "hello@thisinteriors.com";
+export const SUPPORT_PHONE = "+971 4 553 8800";
 export const SUPPORT_ADDRESS =
-  "123 Commerce Street, Andheri East, Mumbai, Maharashtra 400069";
-export const SUPPORT_HOURS = "Mon – Sat: 9:00 AM – 8:00 PM IST";
+  "Building 6, Dubai Design District (d3), Dubai, United Arab Emirates";
+export const SUPPORT_HOURS = "Mon – Sat: 10:00 AM – 8:00 PM (GST)";
 
 // Date the legal/policy pages were last reviewed. Single source so the Privacy,
 // Terms, Cookie and Refund pages never show contradictory "last updated" dates.
@@ -132,33 +145,39 @@ export const POLICY_LAST_UPDATED = "June 1, 2026";
 export const FAQ_ITEMS = [
   {
     id: 1,
-    question: "How long does delivery take?",
+    question: "How long will my order take to arrive?",
     answer:
-      "Standard delivery takes 5-7 business days. Express delivery is available in 2-3 business days. Same-day delivery is available in select cities.",
+      "Across the UAE, standard delivery arrives within 2–4 working days, with next-day delivery available in Dubai and Abu Dhabi. Larger pieces — mirrors, lamps and framed art — are hand-packed with extra care, so they may take a little longer to reach you flawlessly.",
   },
   {
     id: 2,
     question: "What is your return policy?",
     answer:
-      "We offer a 7-day hassle-free return policy. If you're not satisfied with your purchase, you can request a return within 7 days of delivery. Refunds are processed within 5-7 business days.",
+      "If a piece doesn't feel right at home, you may return it within 14 days of delivery in its original, undamaged condition and packaging. We'll arrange collection and process your refund within 5–7 working days.",
   },
   {
     id: 3,
-    question: "Is payment secure?",
+    question: "Are your pieces authentic?",
     answer:
-      "Yes, all payments are processed through industry-standard SSL encryption. We support UPI, credit/debit cards, net banking, and Cash on Delivery.",
+      "Every piece is chosen by our studio and sourced directly from the maker or their authorised partner. What you see is what arrives — genuine materials and considered craftsmanship, never mass-produced for the sake of it.",
   },
   {
     id: 4,
-    question: "Do you offer Cash on Delivery?",
+    question: "How should I care for my pieces?",
     answer:
-      "Yes, Cash on Delivery is available on orders up to ₹50,000 in most pin codes across India.",
+      "Each order arrives with simple care notes. As a rule: dust ceramics and glass with a soft, dry cloth, keep candles away from draughts, and shield natural materials such as wood and rattan from direct sun. Reach out any time for piece-specific guidance.",
   },
   {
     id: 5,
-    question: "How do I track my order?",
+    question: "Which payment methods do you accept, and is checkout secure?",
     answer:
-      "Once your order is shipped, you'll receive an email with a tracking number. You can track your order from the 'My Orders' section in your account.",
+      "We accept all major cards and cash on delivery across the UAE, with prices shown in AED. Every payment is protected by industry-standard encryption, so your details stay private.",
+  },
+  {
+    id: 6,
+    question: "Can you help me style a room?",
+    answer:
+      "Yes. Behind the boutique is a full interior-design studio. Share your space and we'll suggest pieces that work beautifully together — just reach out to our team and we'll help you compose it.",
   },
 ];
 
@@ -166,27 +185,31 @@ export const FAQ_ITEMS = [
 export const WHY_CHOOSE_US = [
   {
     id: 1,
-    title: "Fast Delivery",
-    description: "Same-day and express delivery options available across India",
-    icon: "mdi:truck-fast",
+    title: "Curated by Our Studio",
+    description:
+      "Every piece is hand-selected by our Dubai studio — chosen with a gallery eye for form, material and light.",
+    icon: "mdi:diamond-stone",
   },
   {
     id: 2,
-    title: "Secure Payments",
-    description: "256-bit SSL encryption protects every transaction",
-    icon: "mdi:shield-check",
+    title: "Delivered With Care",
+    description:
+      "Hand-packed and delivered across the UAE, so each piece arrives exactly as it was meant to.",
+    icon: "mdi:truck-fast",
   },
   {
     id: 3,
-    title: "Easy Returns",
-    description: "7-day hassle-free returns with full refund guarantee",
+    title: "Fourteen-Day Returns",
+    description:
+      "Live with a piece for two weeks. If it isn't right, we'll arrange collection and refund.",
     icon: "mdi:backup-restore",
   },
   {
     id: 4,
-    title: "24/7 Support",
-    description: "Our support team is always here to help you",
-    icon: "mdi:headset",
+    title: "Studio Support",
+    description:
+      "Styling guidance and care advice from our team — long after your order arrives.",
+    icon: "mdi:hand-heart-outline",
   },
 ];
 
@@ -235,8 +258,8 @@ export const BREAKPOINTS = {
 
 // Trust badges
 export const TRUST_BADGES = [
-  "100% Secure Payment",
-  "Easy 7-Day Returns",
-  "24/7 Support",
-  "Best Price Guarantee",
+  "Curated by Our Dubai Studio",
+  "14-Day Easy Returns",
+  "Secure Checkout · AED",
+  "Delivered Across the UAE",
 ];

@@ -1,5 +1,6 @@
 import React from "react";
 import { formatCurrency } from "../../utils/helpers";
+import { DEFAULT_CURRENCY } from "../../utils/constants";
 import styles from "./PriceBlock.module.css";
 
 // =============================================================================
@@ -14,15 +15,15 @@ import styles from "./PriceBlock.module.css";
 // Props:
 //   price        number   current/selling price (required)
 //   comparePrice number   original price (optional)
-//   currency     string   ISO code (default "INR")
+//   currency     string   ISO code (default: brand currency / AED)
 //   size         "sm"|"md"|"lg"  visual scale (default "lg" for the PDP)
-//   showSavings  boolean  show "You save ₹X" line (default true on lg)
+//   showSavings  boolean  show "You save <amount>" line (default true on lg)
 //   taxNote      string   optional transparency note, e.g. "Inclusive of all taxes"
 // =============================================================================
 const PriceBlock = ({
   price = 0,
   comparePrice = 0,
-  currency = "INR",
+  currency = DEFAULT_CURRENCY.code,
   size = "lg",
   showSavings,
   taxNote,

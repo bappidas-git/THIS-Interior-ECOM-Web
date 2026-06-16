@@ -1,3 +1,5 @@
+import { DEFAULT_CURRENCY } from "./constants";
+
 // Inline SVG placeholder (no network) used when an image is missing or its URL
 // fails to load, so image-bearing cards always degrade gracefully.
 export const PLACEHOLDER_IMG =
@@ -10,8 +12,14 @@ export const onImageError = (e) => {
   e.currentTarget.src = PLACEHOLDER_IMG;
 };
 
-export const formatCurrency = (amount, currency = "INR") => {
-  const locale = currency === "INR" ? "en-IN" : "en-US";
+// Format a numeric amount as currency. Defaults to the brand currency (AED) but
+// still handles any supported code — the arithmetic is currency-agnostic, only
+// the symbol/locale change. Locale is picked per currency so numerals, grouping
+// and symbol placement read natively: AED → en-AE, INR → en-IN (lakh grouping,
+// ₹), everything else → en-US.
+export const formatCurrency = (amount, currency = DEFAULT_CURRENCY.code) => {
+  const locale =
+    currency === "AED" ? "en-AE" : currency === "INR" ? "en-IN" : "en-US";
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency,
@@ -89,7 +97,7 @@ export const buildCartItem = (product) => {
     image: product.images?.[0] || product.image || "",
     price: variant ? parseFloat(variant.price) || sellingPrice : sellingPrice,
     comparePrice: product.comparePrice || 0,
-    currency: "INR",
+    currency: DEFAULT_CURRENCY.code,
     ...(stock != null && stock !== "" ? { stock: Number(stock) } : {}),
   };
 };

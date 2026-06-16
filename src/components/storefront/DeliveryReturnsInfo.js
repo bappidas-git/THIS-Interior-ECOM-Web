@@ -1,6 +1,7 @@
 import React from "react";
 import { formatCurrency } from "../../utils/helpers";
 import { STOREFRONT_CONFIG } from "../../theme/tokens";
+import { DEFAULT_CURRENCY } from "../../utils/constants";
 import styles from "./DeliveryReturnsInfo.module.css";
 
 // =============================================================================
@@ -29,7 +30,7 @@ const DeliveryReturnsInfo = ({
   shipping = [],
   settings,
   returnsWindowDays = STOREFRONT_CONFIG.returnsWindowDays,
-  currency = "INR",
+  currency = DEFAULT_CURRENCY.code,
 }) => {
   const methods = (Array.isArray(shipping) ? shipping : []).filter(
     (m) => m && m.isActive !== false

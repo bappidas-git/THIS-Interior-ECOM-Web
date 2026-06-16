@@ -1,42 +1,320 @@
-.container { max-width: 900px; margin: 0 auto; padding: 24px 16px 80px; min-height: calc(100vh - 200px); }
-.dark { color: #e2e8f0; }
-.breadcrumb { display: flex; gap: 8px; align-items: center; margin-bottom: 24px; font-size: 0.875rem; color: #64748b; }
-.breadcrumb a { color: #667eea; text-decoration: none; }
-/* Touch-target sizing: grow the breadcrumb hit area without moving the row */
-@media (max-width: 768px) {
-  .breadcrumb a { display: inline-block; padding: 10px 2px; margin: -10px 0; }
+/* ==========================================================================
+   About Us — the editorial brand story (THIS Interiors)
+   --------------------------------------------------------------------------
+   A calm, gallery-grade page: an airy hero in the brand voice, a quiet
+   hairline stats band, a warm long-form story with a serif pull-quote, the
+   "Our promise" cards as restrained hairline tiles, and a calm full-bleed
+   charcoal closing CTA. Fully token-driven — dark mode is inherited from the
+   --sf-* tokens (no .dark block, no hardcoded hex). The charcoal CTA uses the
+   always-dark surface tokens, so it stays charcoal in either theme.
+   ========================================================================== */
+
+.page {
+  background: var(--sf-color-bg);
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-family);
 }
-.dark .breadcrumb { color: #94a3b8; }
-.hero { text-align: center; margin-bottom: 48px; padding: 48px 24px; border-radius: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
-.heroEyebrow { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 16px; border-radius: 999px; background: rgba(255, 255, 255, 0.18); margin-bottom: 16px; }
-.hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
-.hero p { font-size: 1.15rem; opacity: 0.9; max-width: 500px; margin: 0 auto; }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 48px; }
-@media (max-width: 640px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-.statCard { text-align: center; padding: 24px 16px; border-radius: 12px; background: #fff; border: 1px solid #e2e8f0; }
-.dark .statCard { background: #1e293b; border-color: #334155; }
-.statNumber { display: block; font-size: 2rem; font-weight: 800; color: #667eea; }
-.statLabel { font-size: 0.85rem; color: #64748b; }
-.dark .statLabel { color: #94a3b8; }
-.story { margin-bottom: 48px; }
-.story h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; }
-.story p { color: #475569; line-height: 1.7; margin-bottom: 12px; }
-.dark .story p { color: #94a3b8; }
-.values { margin-bottom: 48px; }
-.values h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; }
-.valuesGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-@media (max-width: 640px) { .valuesGrid { grid-template-columns: 1fr; } }
-.valueCard { padding: 24px; border-radius: 12px; background: #fff; border: 1px solid #e2e8f0; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
-.valueCard:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(102, 126, 234, 0.12); border-color: #c7d2fe; }
-.dark .valueCard { background: #1e293b; border-color: #334155; }
-.dark .valueCard:hover { border-color: #6d28d9; box-shadow: 0 10px 24px rgba(168, 85, 247, 0.18); }
-.valueIcon { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; margin-bottom: 14px; font-size: 1.6rem; color: #667eea; background: rgba(102, 126, 234, 0.1); }
-.dark .valueIcon { color: #c4b5fd; background: rgba(168, 85, 247, 0.15); }
-.valueCard h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
-.valueCard p { font-size: 0.9rem; color: #64748b; line-height: 1.5; }
-.dark .valueCard p { color: #94a3b8; }
-.ctaBanner { text-align: center; padding: 40px 24px; border-radius: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
-.ctaBanner h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
-.ctaBanner p { opacity: 0.9; margin-bottom: 20px; }
-.ctaBtn { display: inline-block; padding: 12px 32px; border-radius: 10px; background: #fff; color: #667eea; font-weight: 600; text-decoration: none; transition: all 0.3s; }
-.ctaBtn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+.shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: var(--sf-space-6) var(--sf-space-6) var(--sf-space-16);
+}
+
+.crumb {
+  margin-bottom: var(--sf-space-8);
+}
+
+/* ---- Hero ---------------------------------------------------------------- */
+.hero {
+  max-width: 40ch;
+  margin: 0 auto var(--sf-space-16);
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 var(--sf-space-4);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+  color: var(--sf-color-primary);
+}
+
+.heroTitle {
+  margin: 0 0 var(--sf-space-5);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-5xl);
+  font-weight: var(--sf-font-light);
+  line-height: var(--sf-leading-display);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--sf-color-text);
+}
+
+.heroTitle em {
+  font-style: italic;
+  font-weight: var(--sf-font-medium);
+}
+
+.heroLede {
+  margin: 0;
+  font-size: var(--sf-text-lg);
+  line-height: var(--sf-leading-relaxed);
+  color: var(--sf-color-text-secondary);
+}
+
+/* ---- Quiet stats band — hairline-ruled row ------------------------------ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: var(--sf-space-16);
+  border-top: 1px solid var(--sf-color-border);
+  border-bottom: 1px solid var(--sf-color-border);
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-2);
+  align-items: center;
+  text-align: center;
+  padding: var(--sf-space-8) var(--sf-space-4);
+}
+
+.statCard + .statCard {
+  border-left: 1px solid var(--sf-color-border);
+}
+
+.statNumber {
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-3xl);
+  font-weight: var(--sf-font-medium);
+  line-height: 1;
+  color: var(--sf-color-text);
+}
+
+.statLabel {
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--sf-color-text-muted);
+}
+
+/* ---- Story — warm long-form prose --------------------------------------- */
+.kicker {
+  margin: 0 0 var(--sf-space-3);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+  color: var(--sf-color-primary);
+}
+
+.story {
+  max-width: 64ch;
+  margin: 0 auto var(--sf-space-16);
+}
+
+.prose p {
+  margin: 0 0 var(--sf-space-5);
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
+  color: var(--sf-color-text-secondary);
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.pullQuote {
+  margin: var(--sf-space-10) 0 0;
+  padding: 0 0 0 var(--sf-space-6);
+  border-left: 2px solid var(--sf-color-primary);
+  font-family: var(--sf-font-display);
+  font-style: italic;
+  font-size: var(--sf-text-2xl);
+  font-weight: var(--sf-font-light);
+  line-height: var(--sf-leading-tight);
+  color: var(--sf-color-text);
+}
+
+/* ---- Our promise — restrained hairline cards ---------------------------- */
+.promise {
+  margin-bottom: var(--sf-space-8);
+}
+
+.sectionHead {
+  text-align: center;
+  margin-bottom: var(--sf-space-8);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-3xl);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-tight);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--sf-color-text);
+}
+
+.promiseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sf-space-4);
+}
+
+.promiseCard {
+  padding: var(--sf-space-8);
+  background: var(--sf-color-surface);
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-lg);
+  transition: border-color var(--sf-transition), box-shadow var(--sf-transition),
+    transform var(--sf-transition);
+}
+
+.promiseCard:hover {
+  border-color: var(--sf-color-border-strong);
+  box-shadow: var(--sf-shadow-sm);
+  transform: translateY(-2px);
+}
+
+.promiseIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--sf-space-5);
+  border-radius: var(--sf-radius-pill);
+  font-size: 1.5rem;
+  color: var(--sf-color-primary);
+  background: var(--sf-color-primary-soft);
+}
+
+.promiseCard h3 {
+  margin: 0 0 var(--sf-space-2);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-medium);
+  color: var(--sf-color-text);
+}
+
+.promiseCard p {
+  margin: 0;
+  font-size: var(--sf-text-base);
+  line-height: var(--sf-leading-normal);
+  color: var(--sf-color-text-secondary);
+}
+
+/* ---- Closing CTA — calm full-bleed charcoal band ------------------------
+   Uses the always-dark *surface* token (not -bg) so the band stays a distinct
+   tone from the page in dark mode too, where --sf-color-bg collapses to the
+   same charcoal as --sf-color-dark-bg. */
+.cta {
+  background: var(--sf-color-dark-surface);
+  color: var(--sf-color-dark-text);
+}
+
+.ctaInner {
+  max-width: 48ch;
+  margin: 0 auto;
+  padding: var(--sf-space-16) var(--sf-space-6);
+  text-align: center;
+}
+
+.ctaEyebrow {
+  margin: 0 0 var(--sf-space-4);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+  color: var(--sf-color-dark-accent);
+}
+
+.ctaTitle {
+  margin: 0 0 var(--sf-space-4);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-4xl);
+  font-weight: var(--sf-font-light);
+  line-height: var(--sf-leading-display);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--sf-color-dark-text);
+}
+
+.ctaText {
+  margin: 0 0 var(--sf-space-8);
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
+  color: var(--sf-color-dark-text-secondary);
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--sf-tap-target);
+  padding: 0 var(--sf-space-10);
+  border: 1px solid var(--sf-color-dark-accent);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-color-dark-accent);
+  color: var(--sf-color-dark-accent-contrast);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  text-decoration: none;
+  transition: background var(--sf-transition), border-color var(--sf-transition),
+    box-shadow var(--sf-transition);
+}
+
+.ctaBtn:hover {
+  background: transparent;
+  color: var(--sf-color-dark-accent);
+  box-shadow: var(--sf-shadow-sm);
+}
+
+.ctaBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+}
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: var(--sf-text-4xl);
+  }
+
+  .promiseGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .shell {
+    padding: var(--sf-space-5) var(--sf-space-4) var(--sf-space-12);
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Re-rule the 2x2 grid: left border only on the right column, a top
+     hairline on the bottom row. */
+  .statCard:nth-child(odd) {
+    border-left: none;
+  }
+
+  .statCard:nth-child(n + 3) {
+    border-top: 1px solid var(--sf-color-border);
+  }
+
+  .heroLede {
+    font-size: var(--sf-text-md);
+  }
+
+  .pullQuote {
+    font-size: var(--sf-text-xl);
+  }
+}

@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { motion, useReducedMotion } from "framer-motion";
+import { Icon } from "@iconify/react";
 import { useAuth } from "../../context/AuthContext";
 import apiService from "../../services/api";
-import { SUPPORT_EMAIL, SUPPORT_PHONE } from "../../utils/constants";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  SUPPORT_ADDRESS,
+  SUPPORT_HOURS,
+} from "../../utils/constants";
 import { isEmailValid, isValidPhone } from "../../utils/helpers";
 import styles from "./Support.module.css";
 
 const Support = () => {
-  const { isDarkMode } = useTheme();
   const { user } = useAuth();
+  const reduce = useReducedMotion();
   const [formData, setFormData] = useState({
     name: "", email: "", phone: "", orderNumber: "",
     category: "general", subject: "", message: "",
@@ -73,72 +79,168 @@ const Support = () => {
     }
   };
 
+  const fieldProps = (name) => ({
+    id: name,
+    name,
+    value: formData[name],
+    onChange: handleChange,
+    "aria-invalid": errors[name] ? "true" : undefined,
+    "aria-describedby": errors[name] ? `${name}-error` : undefined,
+  });
+
   if (isSubmitted) {
     return (
-      <div className={`${styles.container} ${isDarkMode ? styles.dark : ""}`}>
-        <motion.div className={styles.successCard} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <div className={styles.successIcon}>&#10003;</div>
-          <h2>Message Sent!</h2>
-          <p>Thank you for reaching out. We'll respond within 24 hours.</p>
-          <button className={styles.primaryBtn} onClick={() => setIsSubmitted(false)}>Send Another</button>
-        </motion.div>
+      <div className={styles.page}>
+        <div className={styles.shell}>
+          <motion.div
+            className={styles.successCard}
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            animate={reduce ? false : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className={styles.successMedallion} aria-hidden="true">
+              <Icon icon="mdi:check" />
+            </span>
+            <p className={styles.eyebrow}>Thank you</p>
+            <h2 className={styles.successTitle}>Your message is on its way</h2>
+            <p className={styles.successText}>
+              We've received your note and will reply within 24 hours. We look
+              forward to helping.
+            </p>
+            <div className={styles.successActions}>
+              <button className={styles.btnSecondary} onClick={() => setIsSubmitted(false)}>
+                Send another
+              </button>
+              <Link to="/" className={styles.btnGhost}>Back to home</Link>
+            </div>
+          </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={`${styles.container} ${isDarkMode ? styles.dark : ""}`}>
-      <div className={styles.breadcrumb}><Link to="/">Home</Link> <span>/</span> <span>Support</span></div>
-      <motion.div className={styles.header} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-        <h1>Contact Support</h1>
-        <p>We're here to help with any questions or concerns.</p>
-      </motion.div>
-      <div className={styles.content}>
-        <motion.div className={styles.contactInfo} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-          <div className={styles.infoCard}><div className={styles.infoIcon}>&#9993;</div><h3>Email Us</h3><p>{SUPPORT_EMAIL}</p><span>Response within 24 hrs</span></div>
-          <div className={styles.infoCard}><div className={styles.infoIcon}>&#9742;</div><h3>Call Us</h3><p>{SUPPORT_PHONE}</p><span>Mon-Sat, 9am-8pm IST</span></div>
-          <div className={styles.infoCard}><div className={styles.infoIcon}>&#128172;</div><h3>Live Chat</h3><p>Chat with our team</p><span>Available 24/7</span></div>
-          <div className={styles.quickLinks}><h3>Quick Links</h3><Link to="/help">FAQs</Link><Link to="/orders">Track Order</Link><Link to="/refund">Refund Policy</Link></div>
-        </motion.div>
-        <motion.form className={styles.form} onSubmit={handleSubmit} initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-          <h2>Send a Message</h2>
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label>Full Name *</label>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Your name" className={errors.name ? styles.inputError : ""} />
-              {errors.name && <span className={styles.error}>{errors.name}</span>}
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <div className={styles.crumb}>
+          <Breadcrumb items={[{ label: "Support" }]} />
+        </div>
+
+        <motion.header
+          className={styles.header}
+          initial={reduce ? false : { opacity: 0, y: 18 }}
+          animate={reduce ? false : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className={styles.eyebrow}>We're here to help</p>
+          <h1 className={styles.title}>Contact support</h1>
+          <p className={styles.lede}>
+            Questions about an order, a piece, or your account? Send us a note and
+            we'll get back to you with care.
+          </p>
+        </motion.header>
+
+        <div className={styles.content}>
+          <motion.aside
+            className={styles.sidebar}
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className={styles.infoCard}>
+              <span className={styles.infoIcon} aria-hidden="true"><Icon icon="mdi:email-outline" /></span>
+              <div className={styles.infoText}>
+                <h3>Email us</h3>
+                <a href={`mailto:${SUPPORT_EMAIL}`} className={styles.infoLink}>{SUPPORT_EMAIL}</a>
+                <span className={styles.infoMeta}>We reply within 24 hours</span>
+              </div>
             </div>
-            <div className={styles.formGroup}>
-              <label>Email *</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="your@email.com" className={errors.email ? styles.inputError : ""} />
-              {errors.email && <span className={styles.error}>{errors.email}</span>}
+            <div className={styles.infoCard}>
+              <span className={styles.infoIcon} aria-hidden="true"><Icon icon="mdi:phone-outline" /></span>
+              <div className={styles.infoText}>
+                <h3>Call us</h3>
+                <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, "")}`} className={styles.infoLink}>{SUPPORT_PHONE}</a>
+                <span className={styles.infoMeta}>{SUPPORT_HOURS}</span>
+              </div>
             </div>
-          </div>
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label>Phone</label>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+91 9876543210" className={errors.phone ? styles.inputError : ""} />
-              {errors.phone && <span className={styles.error}>{errors.phone}</span>}
+            <div className={styles.infoCard}>
+              <span className={styles.infoIcon} aria-hidden="true"><Icon icon="mdi:map-marker-outline" /></span>
+              <div className={styles.infoText}>
+                <h3>Visit us</h3>
+                <span className={styles.infoMeta}>{SUPPORT_ADDRESS}</span>
+              </div>
             </div>
-            <div className={styles.formGroup}><label>Order Number</label><input type="text" name="orderNumber" value={formData.orderNumber} onChange={handleChange} placeholder="ORD-XXXXXX" /></div>
-          </div>
-          <div className={styles.formGroup}>
-            <label>Category</label>
-            <select name="category" value={formData.category} onChange={handleChange}>{categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}</select>
-          </div>
-          <div className={styles.formGroup}>
-            <label>Subject *</label>
-            <input type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="Brief description" className={errors.subject ? styles.inputError : ""} />
-            {errors.subject && <span className={styles.error}>{errors.subject}</span>}
-          </div>
-          <div className={styles.formGroup}>
-            <label>Message *</label>
-            <textarea name="message" value={formData.message} onChange={handleChange} placeholder="Describe your issue..." rows={5} className={errors.message ? styles.inputError : ""} />
-            {errors.message && <span className={styles.error}>{errors.message}</span>}
-          </div>
-          {errors.submit && <div className={styles.submitError}>{errors.submit}</div>}
-          <button type="submit" className={styles.primaryBtn} disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send Message"}</button>
-        </motion.form>
+            <div className={styles.quickLinks}>
+              <h3>Quick links</h3>
+              <Link to="/help">Help Center &amp; FAQs</Link>
+              <Link to="/orders">Track an order</Link>
+              <Link to="/refund">Return &amp; refund policy</Link>
+            </div>
+          </motion.aside>
+
+          <motion.form
+            className={styles.form}
+            onSubmit={handleSubmit}
+            noValidate
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          >
+            <h2 className={styles.formTitle}>Send a message</h2>
+
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label className="sf-label" htmlFor="name">Full name *</label>
+                <input type="text" className="sf-input" placeholder="Your name" {...fieldProps("name")} />
+                {errors.name && <span className={styles.error} id="name-error">{errors.name}</span>}
+              </div>
+              <div className={styles.formGroup}>
+                <label className="sf-label" htmlFor="email">Email *</label>
+                <input type="email" className="sf-input" placeholder="you@email.com" {...fieldProps("email")} />
+                {errors.email && <span className={styles.error} id="email-error">{errors.email}</span>}
+              </div>
+            </div>
+
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label className="sf-label" htmlFor="phone">Phone</label>
+                <input type="tel" className="sf-input" placeholder="+91 98765 43210" {...fieldProps("phone")} />
+                {errors.phone && <span className={styles.error} id="phone-error">{errors.phone}</span>}
+              </div>
+              <div className={styles.formGroup}>
+                <label className="sf-label" htmlFor="orderNumber">Order number</label>
+                <input type="text" className="sf-input" placeholder="ORD-XXXXXX" {...fieldProps("orderNumber")} />
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className="sf-label" htmlFor="category">Category</label>
+              <select className="sf-select" {...fieldProps("category")}>
+                {categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className="sf-label" htmlFor="subject">Subject *</label>
+              <input type="text" className="sf-input" placeholder="Brief description" {...fieldProps("subject")} />
+              {errors.subject && <span className={styles.error} id="subject-error">{errors.subject}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className="sf-label" htmlFor="message">Message *</label>
+              <textarea className="sf-textarea" rows={6} placeholder="Tell us how we can help…" {...fieldProps("message")} />
+              {errors.message && <span className={styles.error} id="message-error">{errors.message}</span>}
+            </div>
+
+            {errors.submit && <div className={styles.submitError} role="alert">{errors.submit}</div>}
+
+            <button type="submit" className="sf-btn sf-btn--primary sf-btn--block sf-btn--uppercase" disabled={isSubmitting}>
+              {isSubmitting ? "Sending…" : "Send message"}
+            </button>
+          </motion.form>
+        </div>
       </div>
     </div>
   );

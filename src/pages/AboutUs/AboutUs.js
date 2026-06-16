@@ -1,66 +1,128 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import { useTheme } from "../../context/ThemeContext";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { APP_NAME, APP_TAGLINE, WHY_CHOOSE_US } from "../../utils/constants";
 import styles from "./AboutUs.module.css";
 
 const AboutUs = () => {
-  const { isDarkMode } = useTheme();
+  const reduce = useReducedMotion();
 
+  // Subtle, reduced-motion-safe entrances. The hero plays on mount; sections
+  // below the fold rise gently as they scroll into view.
+  const heroRise = reduce
+    ? {}
+    : {
+        initial: { opacity: 0, y: 18 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+      };
+  const rise = (delay = 0) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 18 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.2 },
+          transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay },
+        };
+
+  // Illustrative milestones — page-local brand copy, not live data.
   const stats = [
-    { number: "50K+", label: "Happy Customers" },
-    { number: "10K+", label: "Products" },
-    { number: "500+", label: "Brands" },
-    { number: "99.9%", label: "Uptime" },
+    { number: "50K+", label: "Homes styled" },
+    { number: "10K+", label: "Pieces curated" },
+    { number: "500+", label: "Artisan partners" },
+    { number: "24/7", label: "Concierge care" },
   ];
 
   return (
-    <div className={`${styles.container} ${isDarkMode ? styles.dark : ""}`}>
-      <div className={styles.breadcrumb}><Link to="/">Home</Link> <span>/</span> <span>About Us</span></div>
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <div className={styles.crumb}>
+          <Breadcrumb items={[{ label: "About Us" }]} />
+        </div>
 
-      <motion.section className={styles.hero} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-        <span className={styles.heroEyebrow}>{APP_TAGLINE}</span>
-        <h1>About {APP_NAME}</h1>
-        <p>We're building the future of online shopping — one great experience at a time.</p>
-      </motion.section>
+        <motion.header className={styles.hero} {...heroRise}>
+          <p className={styles.eyebrow}>{APP_TAGLINE}</p>
+          <h1 className={styles.heroTitle}>
+            The story of <em>{APP_NAME}</em>
+          </h1>
+          <p className={styles.heroLede}>
+            We believe the spaces we live in should feel considered, calm and
+            unmistakably our own — and that finding the pieces to make them so
+            should feel just as effortless.
+          </p>
+        </motion.header>
 
-      <motion.section className={styles.stats} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-        {stats.map((stat, i) => (
-          <div key={i} className={styles.statCard}>
-            <span className={styles.statNumber}>{stat.number}</span>
-            <span className={styles.statLabel}>{stat.label}</span>
-          </div>
-        ))}
-      </motion.section>
-
-      <motion.section className={styles.story} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-        <h2>Our Story</h2>
-        <p>{APP_NAME} was founded with a simple mission: make quality products accessible to everyone. We believe shopping should be effortless, enjoyable, and trustworthy.</p>
-        <p>From a small startup to a trusted e-commerce destination, we've grown by putting our customers first. Every product is carefully curated, every order handled with care, and every customer interaction valued.</p>
-      </motion.section>
-
-      <motion.section className={styles.values} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-        <h2>Why Choose Us</h2>
-        <div className={styles.valuesGrid}>
-          {WHY_CHOOSE_US.map((item) => (
-            <div key={item.id} className={styles.valueCard}>
-              <span className={styles.valueIcon} aria-hidden="true">
-                <Icon icon={item.icon} />
-              </span>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
+        <motion.section
+          className={styles.stats}
+          aria-label="By the numbers"
+          {...rise()}
+        >
+          {stats.map((stat, i) => (
+            <div key={i} className={styles.statCard}>
+              <span className={styles.statNumber}>{stat.number}</span>
+              <span className={styles.statLabel}>{stat.label}</span>
             </div>
           ))}
+        </motion.section>
+
+        <motion.section className={styles.story} {...rise()}>
+          <p className={styles.kicker}>Our story</p>
+          <div className={styles.prose}>
+            <p>
+              {APP_NAME} began as a small interior-design studio with a simple
+              belief: that a well-made room is quietly transformative. Over time
+              that studio grew into a curated boutique for the home — a place to
+              find pieces chosen with the same care a designer brings to a space.
+            </p>
+            <p>
+              We work closely with makers and ateliers who share our love of
+              material and restraint — natural textures, honest craftsmanship and
+              the kind of quiet detail that rewards a second look. Every piece is
+              selected by hand, photographed with care, and sent to you ready to
+              live with for years to come.
+            </p>
+          </div>
+          <blockquote className={styles.pullQuote}>
+            Good design is never loud. It is the warmth you feel when everything
+            is exactly where it belongs.
+          </blockquote>
+        </motion.section>
+
+        <motion.section className={styles.promise} {...rise()}>
+          <header className={styles.sectionHead}>
+            <p className={styles.kicker}>Our promise</p>
+            <h2 className={styles.sectionTitle}>Why choose {APP_NAME}</h2>
+          </header>
+          <div className={styles.promiseGrid}>
+            {WHY_CHOOSE_US.map((item) => (
+              <div key={item.id} className={styles.promiseCard}>
+                <span className={styles.promiseIcon} aria-hidden="true">
+                  <Icon icon={item.icon} />
+                </span>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+      </div>
+
+      <motion.section className={styles.cta} {...rise()}>
+        <div className={styles.ctaInner}>
+          <p className={styles.ctaEyebrow}>Make it yours</p>
+          <h2 className={styles.ctaTitle}>Bring it home</h2>
+          <p className={styles.ctaText}>
+            Explore a collection chosen for the way you want to live — calm,
+            considered and made to last.
+          </p>
+          <Link to="/products" className={styles.ctaBtn}>
+            Explore the collection
+          </Link>
         </div>
       </motion.section>
-
-      <div className={styles.ctaBanner}>
-        <h3>Ready to start shopping?</h3>
-        <p>Discover amazing products at great prices.</p>
-        <Link to="/products" className={styles.ctaBtn}>Explore Products</Link>
-      </div>
     </div>
   );
 };

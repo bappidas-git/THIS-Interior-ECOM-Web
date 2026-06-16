@@ -1077,101 +1077,126 @@ const Profile = () => {
     );
   };
 
-  const renderWalletSection = () => (
-    <motion.div key="wallet" {...sectionMotion}>
-      <div className={styles.sectionHeader}>
-        <div>
-          <h2 className={styles.sectionTitle}>Store Credit</h2>
-          <p className={styles.sectionSubtitle}>
-            Your wallet balance and transaction history
-          </p>
-        </div>
-      </div>
+  const renderWalletSection = () => {
+    // Link a transaction's order to its confirmation page, consistent with how
+    // the app routes orders elsewhere (/order-confirmation/:orderNumber resolves
+    // via orders.getByOrderNumber). Null when the row has no order attached.
+    const orderPath = (t) => (t.orderNumber ? `/order-confirmation/${t.orderNumber}` : null);
 
-      <div className={styles.walletBalanceCard}>
-        <div className={styles.walletBalanceIcon}>
-          <TabIcon icon="wallet" />
-        </div>
-        <div>
-          <span className={styles.walletBalanceLabel}>Available Balance</span>
-          <span className={styles.walletBalanceValue}>{formatCurrency(walletBalance)}</span>
-        </div>
-        <p className={styles.walletBalanceHint}>
-          Apply your store credit at checkout toward any order.
-        </p>
-      </div>
-
-      <h3 className={styles.walletHistoryTitle}>Transaction History</h3>
-
-      {walletLoading ? (
-        <div className={styles.walletLoading}>
-          <div className={styles.spinner} />
-          <p>Loading your transactions…</p>
-        </div>
-      ) : walletTx.length === 0 ? (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>
-            <TabIcon icon="wallet" />
+    return (
+      <motion.div key="wallet" {...sectionMotion}>
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 className={styles.sectionTitle}>Store Credit</h2>
+            <p className={styles.sectionSubtitle}>
+              Your available balance and credit activity
+            </p>
           </div>
-          <p className={styles.emptyText}>No store-credit transactions yet</p>
-          <p className={styles.emptySubtext}>
-            Refunds issued to store credit, and credit you spend at checkout, will appear here.
-          </p>
         </div>
-      ) : (
-        <div className={styles.walletTxList}>
-          {walletTx.map((t) => {
-            const isCredit = t.type === "credit";
-            return (
-              <div key={t.id} className={styles.walletTxRow}>
-                <div
-                  className={`${styles.walletTxBadge} ${
-                    isCredit ? styles.walletTxBadgeCredit : styles.walletTxBadgeDebit
-                  }`}
-                  aria-hidden
-                >
-                  {isCredit ? "+" : "−"}
-                </div>
+
+        {/* Balance card — a serene panel: the available balance (summed from the
+            ledger) as a large serif figure, with one quiet line on how credit is
+            earned and used. Brass is reserved for the small wallet mark. */}
+        <div className={styles.walletBalanceCard}>
+          <div className={styles.walletBalanceMain}>
+            <span className={styles.walletBalanceLabel}>Available store credit</span>
+            <span className={styles.walletBalanceValue}>{formatCurrency(walletBalance)}</span>
+            <p className={styles.walletBalanceNote}>
+              Earned from refunds — apply it at checkout toward any order.
+            </p>
+          </div>
+          <span className={styles.walletBalanceMark} aria-hidden="true">
+            <TabIcon icon="wallet" />
+          </span>
+        </div>
+
+        <h3 className={styles.walletHistoryTitle}>Activity</h3>
+
+        {walletLoading ? (
+          /* Brand skeletons — calm shimmer in the ledger silhouette. */
+          <div className={styles.walletLedger} aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className={styles.walletTxRow}>
                 <div className={styles.walletTxBody}>
-                  <span className={styles.walletTxReason}>
-                    {t.reason || (isCredit ? "Store credit added" : "Store credit used")}
-                  </span>
-                  <span className={styles.walletTxMeta}>
-                    {formatDate(t.createdAt, "medium")}
-                    {t.orderNumber && (
-                      <>
-                        {" · "}
-                        <button
-                          type="button"
-                          className={styles.walletTxLink}
-                          onClick={() => navigate("/orders")}
-                        >
-                          {t.orderNumber}
-                        </button>
-                      </>
-                    )}
-                  </span>
+                  <span className={`sf-skeleton sf-skeleton--text ${styles.skReason}`} />
+                  <span className={`sf-skeleton sf-skeleton--text ${styles.skMeta}`} />
                 </div>
-                <div className={styles.walletTxAmountWrap}>
+                <span className={`sf-skeleton sf-skeleton--text ${styles.skAmount}`} />
+              </div>
+            ))}
+          </div>
+        ) : walletTx.length === 0 ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>
+              <TabIcon icon="wallet" />
+            </div>
+            <p className={styles.emptyText}>No store-credit activity yet</p>
+            <p className={styles.emptySubtext}>
+              Refunds issued to store credit, and credit you apply at checkout, will appear here.
+            </p>
+          </div>
+        ) : (
+          <div className={styles.walletLedger}>
+            {walletTx.map((t) => {
+              const isCredit = t.type === "credit";
+              const path = orderPath(t);
+              return (
+                <div key={t.id} className={styles.walletTxRow}>
                   <span
-                    className={isCredit ? styles.walletTxAmountCredit : styles.walletTxAmountDebit}
+                    className={`${styles.walletTxMark} ${
+                      isCredit ? styles.walletTxMarkCredit : styles.walletTxMarkDebit
+                    }`}
+                    aria-hidden="true"
                   >
                     {isCredit ? "+" : "−"}
-                    {formatCurrency(t.amount)}
                   </span>
-                  {t.balanceAfter != null && (
-                    <span className={styles.walletTxBalance}>
-                      Bal: {formatCurrency(t.balanceAfter)}
+                  <div className={styles.walletTxBody}>
+                    <span className={styles.walletTxReason}>
+                      {t.reason || (isCredit ? "Store credit added" : "Store credit applied")}
                     </span>
-                  )}
+                    <span className={styles.walletTxMeta}>
+                      <span>{formatDate(t.createdAt, "medium")}</span>
+                      {t.orderNumber && (
+                        <>
+                          <span className={styles.walletTxSep} aria-hidden="true">·</span>
+                          {path ? (
+                            <button
+                              type="button"
+                              className={styles.walletTxLink}
+                              onClick={() => navigate(path)}
+                            >
+                              {t.orderNumber}
+                            </button>
+                          ) : (
+                            <span>{t.orderNumber}</span>
+                          )}
+                        </>
+                      )}
+                    </span>
+                  </div>
+                  <div className={styles.walletTxAmountWrap}>
+                    <span
+                      className={`${styles.walletTxAmount} ${
+                        isCredit ? styles.walletTxAmountCredit : styles.walletTxAmountDebit
+                      }`}
+                    >
+                      {isCredit ? "+" : "−"}
+                      {formatCurrency(t.amount)}
+                    </span>
+                    {t.balanceAfter != null && (
+                      <span className={styles.walletTxBalance}>
+                        Balance {formatCurrency(t.balanceAfter)}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </motion.div>
-  );
+              );
+            })}
+          </div>
+        )}
+      </motion.div>
+    );
+  };
 
   const renderActiveSection = () => {
     switch (activeTab) {

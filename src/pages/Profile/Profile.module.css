@@ -1202,132 +1202,129 @@
 }
 
 /* ==========================================================================
-   Store Credit / wallet tab (Prompt 20 refines the internals) — tokenized
-   here so it stays consistent with the shell.
+   Store Credit / wallet tab — a serene balance card + a calm, hairline-ruled
+   ledger (Prompt 20). Read-only: the balance is summed from the ledger in the
+   API, so nothing is mutated here. Fully tokenized, so dark mode + reduced
+   motion follow the shell. Brass is reserved for the balance mark + order links.
    ========================================================================== */
+
+/* ---- Balance card — quiet surface, large serif figure ---- */
 .walletBalanceCard {
-  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: var(--sf-space-4);
-  padding: var(--sf-space-6);
-  margin-bottom: var(--sf-space-6);
-  background: var(--sf-gradient-primary);
-  color: var(--sf-color-primary-contrast);
+  padding: var(--sf-space-6) var(--sf-space-6) var(--sf-space-5);
+  margin-bottom: var(--sf-space-8);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--sf-radius-lg);
-  box-shadow: var(--sf-shadow-sm);
 }
 
-.walletBalanceIcon {
-  flex-shrink: 0;
+.walletBalanceMain {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: var(--sf-radius-md);
+  flex-direction: column;
+  min-width: 0;
 }
 
 .walletBalanceLabel {
-  display: block;
   font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
   text-transform: uppercase;
   letter-spacing: var(--sf-tracking-wide);
-  opacity: 0.9;
-}
-
-.walletBalanceValue {
-  display: block;
-  margin-top: 2px;
-  font-family: var(--sf-font-display);
-  font-size: var(--sf-text-3xl);
-  font-weight: var(--sf-font-semibold);
-  line-height: 1.2;
-}
-
-.walletBalanceHint {
-  margin: 0 0 0 auto;
-  max-width: 180px;
-  font-size: var(--sf-text-xs);
-  text-align: right;
-  opacity: 0.9;
-}
-
-.walletHistoryTitle {
-  margin: 0 0 var(--sf-space-4);
-  font-family: var(--sf-font-display);
-  font-size: var(--sf-text-lg);
-  font-weight: var(--sf-font-medium);
-  color: var(--text-primary);
-}
-
-.walletLoading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--sf-space-3);
-  padding: var(--sf-space-10) 0;
   color: var(--text-muted);
 }
 
-.spinner {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  animation: walletSpin 0.8s linear infinite;
+.walletBalanceValue {
+  margin-top: var(--sf-space-2);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-4xl);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-tight);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--text-primary);
 }
 
-@keyframes walletSpin {
-  to {
-    transform: rotate(360deg);
-  }
+.walletBalanceNote {
+  margin: var(--sf-space-3) 0 0;
+  max-width: 34ch;
+  font-size: var(--sf-text-sm);
+  line-height: var(--sf-leading-normal);
+  color: var(--text-secondary);
 }
 
-.walletTxList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sf-space-2);
+/* The single sparing touch of brass on the card. */
+.walletBalanceMark {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--sf-radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---- Ledger heading ---- */
+.walletHistoryTitle {
+  margin: 0 0 var(--sf-space-4);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-xl);
+  font-weight: var(--sf-font-medium);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--text-primary);
+}
+
+/* ---- Ledger — a framed list with hairline row rules ---- */
+.walletLedger {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--sf-radius-lg);
+  overflow: hidden;
 }
 
 .walletTxRow {
   display: flex;
   align-items: center;
-  gap: var(--sf-space-3);
-  padding: var(--sf-space-3) var(--sf-space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--sf-radius-md);
+  gap: var(--sf-space-4);
+  padding: var(--sf-space-4) var(--sf-space-5);
+  border-top: 1px solid var(--border);
 }
 
-.walletTxBadge {
+.walletTxRow:first-child {
+  border-top: none;
+}
+
+/* Restrained credit/debit marker — credit wears a soft warm-green tint; debit
+   stays neutral sand (no loud red). The +/- shape is a non-colour cue. */
+.walletTxMark {
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--sf-radius-pill);
-  font-size: var(--sf-text-lg);
-  font-weight: var(--sf-font-bold);
+  font-size: var(--sf-text-md);
+  font-weight: var(--sf-font-semibold);
+  line-height: 1;
 }
 
-.walletTxBadgeCredit {
+.walletTxMarkCredit {
   background: var(--sf-color-success-bg);
   color: var(--success);
 }
 
-.walletTxBadgeDebit {
-  background: var(--sf-color-danger-bg);
-  color: var(--danger);
+.walletTxMarkDebit {
+  background: var(--surface-2);
+  color: var(--text-secondary);
 }
 
 .walletTxBody {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
   flex: 1;
 }
@@ -1339,8 +1336,16 @@
 }
 
 .walletTxMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sf-space-2);
   font-size: var(--sf-text-xs);
   color: var(--text-muted);
+}
+
+.walletTxSep {
+  color: var(--border-strong);
 }
 
 .walletTxLink {
@@ -1351,7 +1356,21 @@
   font-family: var(--sf-font-family);
   font-size: var(--sf-text-xs);
   font-weight: var(--sf-font-semibold);
+  letter-spacing: var(--sf-tracking-wide);
   cursor: pointer;
+  transition: color var(--sf-transition-fast);
+}
+
+.walletTxLink:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.walletTxLink:focus-visible {
+  outline: none;
+  box-shadow: var(--sf-shadow-focus);
+  border-radius: var(--sf-radius-sm);
 }
 
 .walletTxAmountWrap {
@@ -1360,23 +1379,44 @@
   align-items: flex-end;
   gap: 2px;
   flex-shrink: 0;
+  text-align: right;
+}
+
+/* Signed amount — credit in the warm success token; debit kept muted/neutral
+   (restrained, never a loud red). The leading +/- is the non-colour signal. */
+.walletTxAmount {
+  font-size: var(--sf-text-md);
+  font-weight: var(--sf-font-semibold);
+  font-variant-numeric: tabular-nums;
 }
 
 .walletTxAmountCredit {
-  font-size: var(--sf-text-sm);
-  font-weight: var(--sf-font-bold);
   color: var(--success);
 }
 
 .walletTxAmountDebit {
-  font-size: var(--sf-text-sm);
-  font-weight: var(--sf-font-bold);
-  color: var(--danger);
+  color: var(--text-secondary);
 }
 
 .walletTxBalance {
   font-size: var(--sf-text-xs);
   color: var(--text-muted);
+}
+
+/* ---- Ledger skeletons — widths only; shimmer comes from global sf-skeleton ---- */
+.skReason {
+  width: 58%;
+  height: 0.95rem;
+}
+
+.skMeta {
+  width: 38%;
+  height: 0.8rem;
+}
+
+.skAmount {
+  width: 84px;
+  height: 1rem;
 }
 
 /* ==========================================================================
@@ -1457,29 +1497,24 @@
 }
 
 @media (max-width: 600px) {
-  .walletBalanceCard {
-    flex-wrap: wrap;
-    gap: var(--sf-space-3);
-  }
-
-  .walletBalanceHint {
-    margin: 0;
-    max-width: none;
-    text-align: left;
-    flex-basis: 100%;
-  }
-
   .walletBalanceValue {
-    font-size: var(--sf-text-2xl);
+    font-size: var(--sf-text-3xl);
+  }
+
+  .walletBalanceMark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .walletTxRow {
+    gap: var(--sf-space-3);
+    padding: var(--sf-space-4);
   }
 }
 
 /* ==========================================================================
-   Reduced motion — token transitions already zero out via storefront-tokens;
-   slow the wallet spinner and the Framer-driven panels are gated in JS.
+   Reduced motion — nothing page-specific to disable here: the token transitions
+   zero out via storefront-tokens, the wallet's loading shimmer is the global
+   sf-skeleton primitive (already collapsed under reduced motion in
+   storefront-primitives), and the Framer-driven panels are gated in JS.
    ========================================================================== */
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation-duration: 1.6s;
-  }
-}

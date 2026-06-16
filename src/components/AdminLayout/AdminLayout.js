@@ -36,7 +36,7 @@ import useAdminBodyClass from "../../hooks/useAdminBodyClass";
 import apiService from "../../services/api";
 import Swal from "sweetalert2";
 
-const LOGO = "https://placehold.co/160x40/4f46e5/ffffff?text=LOGO";
+const LOGO = "https://res.cloudinary.com/dn9gyaiik/image/upload/v1781508520/THIS-LOGO_fazfcq.png";
 
 const drawerWidth = 260;
 

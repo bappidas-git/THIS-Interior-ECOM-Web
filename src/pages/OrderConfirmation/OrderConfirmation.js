@@ -9,10 +9,8 @@ import {
   onImageError,
   PLACEHOLDER_IMG,
 } from "../../utils/helpers";
+import { enterProps } from "../../components/motion";
 import styles from "./OrderConfirmation.module.css";
-
-// Calm editorial easing, shared by the gated Framer entrances below.
-const EASE = [0.22, 1, 0.36, 1];
 
 const OrderConfirmation = () => {
   const { orderNumber } = useParams();
@@ -83,15 +81,8 @@ const OrderConfirmation = () => {
   // Print-to-PDF the invoice (see the @media print block + the body flag above).
   const handleDownloadInvoice = () => window.print();
 
-  // Calm, reduced-motion-safe entrance preset.
-  const reveal = (delay = 0) =>
-    prefersReducedMotion
-      ? { initial: false, animate: { opacity: 1, y: 0 } }
-      : {
-          initial: { opacity: 0, y: 14 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.45, delay, ease: EASE },
-        };
+  // Calm, reduced-motion-safe entrance preset from the shared motion vocabulary.
+  const reveal = (delay = 0) => enterProps(prefersReducedMotion, delay);
 
   // Loading state
   if (loading) {

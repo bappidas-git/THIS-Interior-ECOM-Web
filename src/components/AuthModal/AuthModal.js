@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { isEmailValid } from "../../utils/helpers";
+import { MOTION_EASE } from "../../utils/constants";
 import styles from "./AuthModal.module.css";
 
 /* ------------------------------------------------------------------ */
@@ -420,7 +421,7 @@ const AuthModal = ({ open, onClose, defaultTab = "login" }) => {
       }
     : {
         enter: (dir) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
-        center: { x: 0, opacity: 1, transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } },
+        center: { x: 0, opacity: 1, transition: { duration: 0.32, ease: MOTION_EASE } },
         exit: (dir) => ({ x: dir > 0 ? -48 : 48, opacity: 0, transition: { duration: 0.2 } }),
       };
 

@@ -213,37 +213,91 @@ export const WHY_CHOOSE_US = [
   },
 ];
 
-// Framer Motion animation variants
+// =============================================================================
+// MOTION — one shared vocabulary for the whole storefront
+// =============================================================================
+// Brand motion is subtle, slow and elegant: gentle fades/reveals, soft hover
+// lifts, refined easing — always reduced-motion safe. These tokens are the
+// SINGLE source the JS (framer-motion) layer reads, and they mirror the CSS
+// layer's --sf-ease-editorial / --sf-transition* tokens (storefront-tokens.css)
+// so the two never drift. The reusable <Reveal> wrapper plus the
+// revealProps()/enterProps() helpers in src/components/motion consume these, and
+// every storefront surface animates through that one path for a unified feel.
+
+// Editorial easing — identical to --sf-ease-editorial in storefront-tokens.css.
+export const MOTION_EASE = [0.22, 1, 0.36, 1];
+
+// Durations (seconds). Calm by design — never snappy or bouncy.
+export const MOTION_DURATION = {
+  fast: 0.3,
+  base: 0.45,
+  slow: 0.6,
+  slower: 0.8,
+};
+
+// Scroll-reveal defaults: fire once, a little before the element is fully in
+// view, and rise a small, calm distance (px).
+export const MOTION_VIEWPORT = { once: true, amount: 0.18 };
+export const MOTION_RISE = 24;
+
+// Default slide/sheet spring for drawers & sheets (smooth, no overshoot bounce).
+export const MOTION_SPRING = { type: "spring", damping: 34, stiffness: 300 };
+
+// Framer Motion animation variants — tuned slow & elegant against the MOTION_*
+// tokens above: a small translate, a soft scale, the editorial easing. Spread
+// onto a motion element (e.g. {...ANIMATION_VARIANTS.slideUp}); reduced motion is
+// honoured by the shared helpers/guards in src/components/motion that consume
+// the same vocabulary.
 export const ANIMATION_VARIANTS = {
   fadeIn: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     exit: { opacity: 0 },
+    transition: { duration: MOTION_DURATION.base, ease: MOTION_EASE },
   },
   slideUp: {
-    initial: { y: 50, opacity: 0 },
+    initial: { y: MOTION_RISE, opacity: 0 },
     animate: { y: 0, opacity: 1 },
-    exit: { y: -50, opacity: 0 },
+    exit: { y: -MOTION_RISE, opacity: 0 },
+    transition: { duration: MOTION_DURATION.slow, ease: MOTION_EASE },
   },
   slideDown: {
-    initial: { y: -50, opacity: 0 },
+    initial: { y: -MOTION_RISE, opacity: 0 },
     animate: { y: 0, opacity: 1 },
-    exit: { y: 50, opacity: 0 },
+    exit: { y: MOTION_RISE, opacity: 0 },
+    transition: { duration: MOTION_DURATION.slow, ease: MOTION_EASE },
   },
   slideLeft: {
-    initial: { x: 50, opacity: 0 },
+    initial: { x: MOTION_RISE, opacity: 0 },
     animate: { x: 0, opacity: 1 },
-    exit: { x: -50, opacity: 0 },
+    exit: { x: -MOTION_RISE, opacity: 0 },
+    transition: { duration: MOTION_DURATION.slow, ease: MOTION_EASE },
   },
   slideRight: {
-    initial: { x: -50, opacity: 0 },
+    initial: { x: -MOTION_RISE, opacity: 0 },
     animate: { x: 0, opacity: 1 },
-    exit: { x: 50, opacity: 0 },
+    exit: { x: MOTION_RISE, opacity: 0 },
+    transition: { duration: MOTION_DURATION.slow, ease: MOTION_EASE },
   },
   scale: {
-    initial: { scale: 0.8, opacity: 0 },
+    initial: { scale: 0.96, opacity: 0 },
     animate: { scale: 1, opacity: 1 },
-    exit: { scale: 0.8, opacity: 0 },
+    exit: { scale: 0.96, opacity: 0 },
+    transition: { duration: MOTION_DURATION.base, ease: MOTION_EASE },
+  },
+  // Scroll-reveal states (pair with whileInView) + a subtle stagger container for
+  // groups of cards/items. Named states so a parent can orchestrate children.
+  reveal: {
+    hidden: { opacity: 0, y: MOTION_RISE },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: MOTION_DURATION.slow, ease: MOTION_EASE },
+    },
+  },
+  staggerContainer: {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.08, delayChildren: 0.04 } },
   },
 };
 

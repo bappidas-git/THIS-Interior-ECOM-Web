@@ -342,6 +342,22 @@ body.admin-area.dark *::-webkit-scrollbar-thumb:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* Reduced motion — calm the legacy decorative utility animations above. These
+   infinite loops aren't used by the storefront today, but this guard ensures
+   they can never run against a user's stated preference (the storefront's own
+   reveals/parallax are gated in JS, and the spinner/skeleton self-handle). */
+@media (prefers-reduced-motion: reduce) {
+  .floating,
+  .pulse-glow,
+  .gradient-animation {
+    animation: none;
+  }
+  .hover-scale:hover,
+  .card-hover:hover {
+    transform: none;
+  }
+}
+
 /* =====================================================================
    SweetAlert2 theming
    Swal renders directly under <body>, outside both MUI ThemeProviders,

@@ -19,6 +19,7 @@ import {
   onImageError,
 } from "../../utils/helpers";
 import { LOGO_WHITE, BRAND } from "../../theme/brand";
+import { revealProps } from "../../components/motion";
 import styles from "./Home.module.css";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -26,8 +27,6 @@ import styles from "./Home.module.css";
 // Must match the key written by ProductDetails.js so viewing a product
 // populates this list end-to-end.
 const RECENTLY_VIEWED_KEY = "recentlyViewed";
-
-const EASE = [0.22, 1, 0.36, 1];
 
 // Brand-appropriate lifestyle imagery for the editorial bands. These are free
 // stock placeholders (Unsplash) — NOT THIS Interiors' copyrighted project
@@ -168,17 +167,9 @@ const tileImage = (cat, i) =>
     ? cat.image
     : LIFESTYLE.rooms[i % LIFESTYLE.rooms.length];
 
-// Slow fade/lift reveal props — collapses to a static render under
-// prefers-reduced-motion (matches the hero's motion contract).
-const reveal = (reduce, delay = 0) =>
-  reduce
-    ? {}
-    : {
-        initial: { opacity: 0, y: 24 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: "-60px" },
-        transition: { duration: 0.7, ease: EASE, delay },
-      };
+// Slow fade/lift reveal props from the shared motion vocabulary — collapses to a
+// static render under prefers-reduced-motion (matches the hero's motion contract).
+const reveal = (reduce, delay = 0) => revealProps(reduce, delay);
 
 // Shape the testimonial set from REAL, approved reviews only. Testimonials are
 // genuine recommendations (4★+) that carry a written quote; the complete,

@@ -21,6 +21,7 @@ import {
   onImageError,
   PLACEHOLDER_IMG,
 } from "../../utils/helpers";
+import { Reveal } from "../../components/motion";
 import styles from "./Products.module.css";
 
 // ---------------------------------------------------------------------------
@@ -1007,7 +1008,7 @@ const Products = () => {
     if (fetchError) {
       // Fetch failed — never masquerade as "No products found".
       return (
-        <div className={styles.stateBox}>
+        <Reveal className={styles.stateBox}>
           <div className={styles.errorIcon}>
             <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10" />
@@ -1023,7 +1024,7 @@ const Products = () => {
           <button className={styles.stateBtn} onClick={fetchCatalog} type="button">
             Try Again
           </button>
-        </div>
+        </Reveal>
       );
     }
 
@@ -1048,7 +1049,7 @@ const Products = () => {
     }
 
     return (
-      <div className={styles.stateBox}>
+      <Reveal className={styles.stateBox}>
         <EmptyIllustration />
         <h3 className={styles.stateTitle}>No products match</h3>
         <p className={styles.stateText}>
@@ -1067,7 +1068,7 @@ const Products = () => {
             Clear all filters
           </button>
         )}
-      </div>
+      </Reveal>
     );
   };
 

@@ -7,6 +7,7 @@ import { useOrder } from "../../context/OrderContext";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import apiService from "../../services/api";
 import { formatCurrency, onImageError, PLACEHOLDER_IMG } from "../../utils/helpers";
+import { MOTION_EASE } from "../../utils/constants";
 import styles from "./Checkout.module.css";
 
 const STEPS = ["Cart", "Shipping", "Payment", "Review"];
@@ -367,7 +368,7 @@ const Checkout = () => {
     initial: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 },
     animate: { opacity: 1, y: 0 },
     exit: reduceMotion ? { opacity: 0 } : { opacity: 0, y: -12 },
-    transition: { duration: reduceMotion ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: reduceMotion ? 0 : 0.4, ease: MOTION_EASE },
   };
 
   return (

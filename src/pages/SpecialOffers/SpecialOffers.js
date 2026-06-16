@@ -16,6 +16,7 @@ import {
   PLACEHOLDER_IMG,
 } from "../../utils/helpers";
 import { resolveCountdownTarget, diffToParts } from "../../utils/dealsConfig";
+import { MOTION_EASE } from "../../utils/constants";
 import styles from "./SpecialOffers.module.css";
 
 // ── Coupon display helpers ───────────────────────────────────────────────────
@@ -49,9 +50,6 @@ const pickByIds = (items, ids) => {
 };
 
 const pad = (n) => String(n).padStart(2, "0");
-
-// Slow editorial easing, matched to the design tokens' --sf-ease-editorial.
-const EASE = [0.22, 1, 0.36, 1];
 
 // ── Countdown Hook (admin-configured) ────────────────────────────────────────
 // Targets the admin's window (fixed end date, or end-of-day when none) and
@@ -390,7 +388,7 @@ const SpecialOffers = () => {
             className={styles.stateBox}
             initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: EASE }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: MOTION_EASE }}
           >
             <span className={styles.stateMark}>
               <PauseMark />
@@ -423,7 +421,7 @@ const SpecialOffers = () => {
           className={styles.heroInner}
           initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.6, ease: EASE }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.6, ease: MOTION_EASE }}
         >
           {config.hero?.tag && <span className={styles.heroTag}>{config.hero.tag}</span>}
           <h1 className={styles.heroTitle}>
@@ -545,7 +543,7 @@ const SpecialOffers = () => {
                     transition={{
                       duration: prefersReducedMotion ? 0 : 0.5,
                       delay: prefersReducedMotion ? 0 : idx * 0.08,
-                      ease: EASE,
+                      ease: MOTION_EASE,
                     }}
                   >
                     <div className={styles.dealMedia}>
@@ -614,7 +612,7 @@ const SpecialOffers = () => {
               className={styles.productsGrid}
               initial={prefersReducedMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: EASE }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: MOTION_EASE }}
             >
               {filteredProducts.map((product) => (
                 <ProductCard

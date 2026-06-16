@@ -40,7 +40,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useDealsConfig } from "../../context/DealsConfigContext";
 import apiService from "../../services/api";
 import { categoryParam } from "../../utils/categories";
-import { APP_NAME } from "../../utils/constants";
+import { APP_NAME, MOTION_EASE } from "../../utils/constants";
 import { LOGO_WHITE, BRAND } from "../../theme/brand";
 import { onImageError } from "../../utils/helpers";
 import styles from "./SidebarMenu.module.css";
@@ -260,7 +260,7 @@ const SidebarMenu = ({ open, onClose, onOpenAuth }) => {
           animate: {
             opacity: 1,
             x: 0,
-            transition: { delay: 0.12 + i * 0.03, duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+            transition: { delay: 0.12 + i * 0.03, duration: 0.3, ease: MOTION_EASE },
           },
         };
 

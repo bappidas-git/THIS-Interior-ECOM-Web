@@ -9,7 +9,7 @@ import { useWishlist } from "../../context/WishlistContext";
 import apiService from "../../services/api";
 import { categoryParam } from "../../utils/categories";
 import { STOREFRONT_CONFIG } from "../../theme/tokens";
-import { DEFAULT_CURRENCY } from "../../utils/constants";
+import { DEFAULT_CURRENCY, MOTION_EASE } from "../../utils/constants";
 import {
   ProductGallery,
   SocialProof,
@@ -482,7 +482,7 @@ const ProductDetails = () => {
     : {
         initial: { opacity: 0, y: 12 },
         animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+        transition: { duration: 0.45, ease: MOTION_EASE },
       };
 
   // Spec table — build only the rows that have real values, so sparse products

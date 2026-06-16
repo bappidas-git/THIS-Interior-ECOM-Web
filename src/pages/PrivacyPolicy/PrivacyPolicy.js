@@ -3,19 +3,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { APP_NAME, SUPPORT_EMAIL, POLICY_LAST_UPDATED } from "../../utils/constants";
+import { revealProps, enterProps } from "../../components/motion";
 import styles from "./PrivacyPolicy.module.css";
 
 const PrivacyPolicy = () => {
   const reduce = useReducedMotion();
-  const rise = (delay = 0) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 16 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, amount: 0.3 },
-          transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay },
-        };
+  const rise = (delay = 0) => revealProps(reduce, delay);
 
   const sections = [
     { title: "Information We Collect", content: `When you use ${APP_NAME}, we may collect personal information such as your name, email address, phone number, shipping address, and payment details. We also collect browsing data, device information, and cookies to improve your shopping experience.` },
@@ -35,12 +28,7 @@ const PrivacyPolicy = () => {
           <Breadcrumb items={[{ label: "Privacy Policy" }]} />
         </div>
 
-        <motion.header
-          className={styles.head}
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          animate={reduce ? false : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.header className={styles.head} {...enterProps(reduce)}>
           <p className={styles.eyebrow}>Legal</p>
           <h1 className={styles.title}>Privacy Policy</h1>
           <p className={styles.updated}>

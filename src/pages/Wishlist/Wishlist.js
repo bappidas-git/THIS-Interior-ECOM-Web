@@ -13,6 +13,7 @@ import {
   onImageError,
   PLACEHOLDER_IMG,
 } from "../../utils/helpers";
+import { MOTION_EASE } from "../../utils/constants";
 import styles from "./Wishlist.module.css";
 
 const SORT_OPTIONS = [
@@ -283,7 +284,7 @@ const Wishlist = () => {
                       ? { duration: 0 }
                       : {
                           duration: 0.4,
-                          ease: [0.22, 1, 0.36, 1],
+                          ease: MOTION_EASE,
                           delay: Math.min(index * 0.04, 0.28),
                         }
                   }

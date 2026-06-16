@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import useFocusTrap from "../../hooks/useFocusTrap";
 import styles from "./BottomDrawer.module.css";
 
 // Generic slide-up sheet for mobile surfaces (filters, pickers, sort menus).
@@ -7,6 +8,9 @@ import styles from "./BottomDrawer.module.css";
 const BottomDrawer = ({ open, onClose, title, children }) => {
   const reduceMotion = useReducedMotion();
   const panelRef = useRef(null);
+
+  // Trap Tab focus within the sheet while open (focus is moved in on open below).
+  useFocusTrap(panelRef, open);
 
   // Lock body scroll while the sheet is open.
   useEffect(() => {

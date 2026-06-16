@@ -98,7 +98,7 @@ const Support = () => {
               <Icon icon="mdi:check" />
             </span>
             <p className={styles.eyebrow}>Thank you</p>
-            <h2 className={styles.successTitle}>Your message is on its way</h2>
+            <h1 className={styles.successTitle}>Your message is on its way</h1>
             <p className={styles.successText}>
               We've received your note and will reply within 24 hours. We look
               forward to helping.

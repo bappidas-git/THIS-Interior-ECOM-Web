@@ -58,7 +58,7 @@
 
 .rowEta {
   font-size: var(--sf-text-xs);
-  color: var(--sf-color-text-muted);
+  color: var(--sf-color-text-secondary);
 }
 
 .rowCost {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useCart } from "../../hooks/useCart";
@@ -15,6 +15,7 @@ import {
   MOTION_EASE,
 } from "../../utils/constants";
 import { resolveTrustBadgeDetail } from "../../theme/tokens";
+import useFocusTrap from "../../hooks/useFocusTrap";
 import styles from "./CartDrawer.module.css";
 
 // Flat shipping shown while below the free threshold, in AED. Mirrors the
@@ -26,6 +27,24 @@ const FLAT_SHIPPING = 25;
 const CartDrawer = ({ open, onClose }) => {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const panelRef = useRef(null);
+
+  // Trap Tab focus within the drawer while it's open.
+  useFocusTrap(panelRef, open);
+
+  // Move focus into the drawer on open and restore it to the trigger on close,
+  // so keyboard users land in the cart and return to where they were.
+  useEffect(() => {
+    if (!open) return undefined;
+    const previouslyFocused = document.activeElement;
+    const raf = requestAnimationFrame(() => panelRef.current?.focus());
+    return () => {
+      cancelAnimationFrame(raf);
+      if (previouslyFocused && typeof previouslyFocused.focus === "function") {
+        previouslyFocused.focus();
+      }
+    };
+  }, [open]);
   const {
     cartItems,
     updateQuantity,
@@ -106,10 +125,12 @@ const CartDrawer = ({ open, onClose }) => {
 
           {/* Drawer panel */}
           <motion.aside
+            ref={panelRef}
             className={styles.drawer}
             role="dialog"
             aria-modal="true"
             aria-labelledby="cart-drawer-title"
+            tabIndex={-1}
             initial={panelInitial}
             animate={panelAnimate}
             exit={panelExit}

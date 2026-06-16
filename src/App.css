@@ -65,6 +65,18 @@ body.dark .main-content {
   background-color: var(--sf-color-bg);
 }
 
+/* <main> is the "Skip to content" target: tabIndex={-1} lets it take focus
+   programmatically when the skip link is used. It isn't a control and spans the
+   viewport, so we don't paint the full-width brass focus ring around it — the
+   scroll into view plus the next Tab landing on the first in-content control is
+   the cue. Higher-specificity than the global :focus-visible rule in index.css
+   so it overrides cleanly (scoped to the storefront, never the admin). */
+body:not(.admin-area) .main-content:focus,
+body:not(.admin-area) .main-content:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Light Theme Explicit Styles */
 body.light .App {
   background-color: var(--sf-color-bg);

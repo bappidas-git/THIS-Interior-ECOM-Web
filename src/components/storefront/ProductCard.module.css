@@ -102,8 +102,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: var(--sf-tap-target);
+  height: var(--sf-tap-target);
   border: 1px solid var(--sf-color-border);
   border-radius: var(--sf-radius-pill);
   background: var(--sf-color-surface);

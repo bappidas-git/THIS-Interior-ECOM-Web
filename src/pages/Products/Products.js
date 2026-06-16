@@ -1082,6 +1082,12 @@ const Products = () => {
         <Breadcrumb items={breadcrumbItems} />
       </div>
 
+      <h1 id="products-heading" className="sf-sr-only">
+        {selectedCategories.length === 1
+          ? getCategoryName(selectedCategories[0])
+          : "All products"}
+      </h1>
+
       <div className={styles.layout}>
         {/* ===== Desktop filter sidebar ===== */}
         <aside className={styles.sidebar}>
@@ -1097,7 +1103,7 @@ const Products = () => {
         </aside>
 
         {/* ===== Main content ===== */}
-        <main className={styles.main} ref={mainRef}>
+        <section className={styles.main} ref={mainRef} aria-labelledby="products-heading">
           {/* Sort + view bar */}
           <div className={styles.toolbar}>
             <div className={styles.toolbarLeft}>
@@ -1268,7 +1274,7 @@ const Products = () => {
               </span>
             </div>
           )}
-        </main>
+        </section>
       </div>
 
       {/* ===== Mobile filter sheet (tokenized BottomDrawer) ===== */}

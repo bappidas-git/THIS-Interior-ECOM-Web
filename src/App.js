@@ -100,8 +100,11 @@ function App() {
                       element={
                         <DealsConfigProvider>
                         <div className="App">
+                          <a href="#main-content" className="sf-skip-link">
+                            Skip to content
+                          </a>
                           <Header />
-                          <main className="main-content">
+                          <main className="main-content" id="main-content" tabIndex={-1}>
                             <AnimatePresence mode="wait">
                               <Routes>
                                 <Route path="/" element={<Home />} />

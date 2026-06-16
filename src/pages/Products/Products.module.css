@@ -484,8 +484,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 36px;
+  width: var(--sf-tap-target);
+  height: var(--sf-tap-target);
   background: var(--surface);
   border: none;
   cursor: pointer;
@@ -968,6 +968,7 @@
 }
 
 .perPageSelect {
+  min-height: var(--sf-tap-target);
   padding: var(--sf-space-1) var(--sf-space-2);
   border: 1px solid var(--border);
   border-radius: var(--sf-radius-md);
@@ -993,8 +994,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--sf-space-1);
-  min-width: 38px;
-  height: 38px;
+  min-width: var(--sf-tap-target);
+  height: var(--sf-tap-target);
   padding: 0 var(--sf-space-3);
   background: none;
   border: 1px solid transparent;

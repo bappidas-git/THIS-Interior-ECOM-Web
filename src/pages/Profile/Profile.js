@@ -1319,9 +1319,9 @@ const Profile = () => {
           </motion.aside>
 
           {/* Main content */}
-          <main className={styles.mainContent}>
+          <section className={styles.mainContent} aria-label="Account content">
             <AnimatePresence mode="wait">{renderActiveSection()}</AnimatePresence>
-          </main>
+          </section>
         </div>
       </div>
     </div>

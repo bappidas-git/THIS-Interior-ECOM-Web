@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { onImageError, PLACEHOLDER_IMG } from "../../utils/helpers";
 import { MOTION_EASE } from "../../utils/constants";
+import useFocusTrap from "../../hooks/useFocusTrap";
 import styles from "./ReviewModal.module.css";
 
 // Interactive 1–5 star picker with hover preview. Brass fill (via the
 // --sf-color-star token); the hover lift is disabled under reduced motion.
-const StarInput = ({ value, onChange }) => {
+const StarInput = ({ value, onChange, labelId }) => {
   const [hover, setHover] = useState(0);
   return (
-    <div className={styles.starInput} role="radiogroup" aria-label="Star rating">
+    <div className={styles.starInput} role="radiogroup" aria-labelledby={labelId} aria-required="true">
       {[1, 2, 3, 4, 5].map((s) => {
         const active = (hover || value) >= s;
         return (
@@ -50,6 +51,9 @@ const ReviewModal = ({ open, onClose, product, existing, onSubmit, isDarkMode })
   const [error, setError] = useState("");
   const prefersReducedMotion = useReducedMotion();
   const modalRef = useRef(null);
+
+  // Trap Tab focus inside the dialog (focus is moved into it on open, below).
+  useFocusTrap(modalRef, open);
 
   useEffect(() => {
     if (open) {
@@ -144,7 +148,7 @@ const ReviewModal = ({ open, onClose, product, existing, onSubmit, isDarkMode })
           <label className={styles.label} id="review-rating-label">
             Your rating <span aria-hidden="true">*</span>
           </label>
-          <StarInput value={rating} onChange={setRating} />
+          <StarInput value={rating} onChange={setRating} labelId="review-rating-label" />
 
           <label className={styles.label} htmlFor="review-title">
             Title

@@ -9,6 +9,7 @@ import { useWishlist } from "../../context/WishlistContext";
 import apiService from "../../services/api";
 import { categoryParam } from "../../utils/categories";
 import { STOREFRONT_CONFIG } from "../../theme/tokens";
+import { DEFAULT_CURRENCY } from "../../utils/constants";
 import {
   ProductGallery,
   SocialProof,
@@ -363,7 +364,7 @@ const ProductDetails = () => {
         image: product.images?.[0] || product.image || "",
         price: effectivePrice,
         comparePrice: product.comparePrice || 0,
-        currency: "INR",
+        currency: DEFAULT_CURRENCY.code,
         ...(effectiveStock != null && effectiveStock !== ""
           ? { stock: Number(effectiveStock) }
           : {}),
@@ -557,7 +558,7 @@ const ProductDetails = () => {
             <PriceBlock
               price={currentPrice}
               comparePrice={comparePrice}
-              currency="INR"
+              currency={DEFAULT_CURRENCY.code}
               size="lg"
               taxNote={
                 settings?.store?.taxIncluded === false
@@ -585,7 +586,7 @@ const ProductDetails = () => {
                 value={selectedVariant}
                 onChange={setSelectedVariant}
                 productStock={product.stock}
-                currency="INR"
+                currency={DEFAULT_CURRENCY.code}
               />
             )}
 
@@ -654,7 +655,7 @@ const ProductDetails = () => {
             <TrustBadges settings={settings} shipping={shipping} variant="grid" />
 
             {/* Transparent delivery, COD & returns — REAL data, shown upfront */}
-            <DeliveryReturnsInfo shipping={shipping} settings={settings} currency="INR" />
+            <DeliveryReturnsInfo shipping={shipping} settings={settings} currency={DEFAULT_CURRENCY.code} />
           </div>
         </div>
 
@@ -744,7 +745,7 @@ const ProductDetails = () => {
           anchor={product}
           companions={bundle}
           onAddToCart={addToCart}
-          currency="INR"
+          currency={DEFAULT_CURRENCY.code}
         />
 
         <RelatedProducts
@@ -761,7 +762,7 @@ const ProductDetails = () => {
         anchorRef={buyBoxRef}
         price={currentPrice}
         comparePrice={comparePrice}
-        currency="INR"
+        currency={DEFAULT_CURRENCY.code}
         image={product.images?.[0] || product.image}
         name={selectedVariant?.name || product.name}
         disabled={isOutOfStock}

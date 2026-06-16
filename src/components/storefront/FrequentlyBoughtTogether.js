@@ -10,6 +10,7 @@ import {
   PLACEHOLDER_IMG,
   onImageError,
 } from "../../utils/helpers";
+import { DEFAULT_CURRENCY } from "../../utils/constants";
 import styles from "./FrequentlyBoughtTogether.module.css";
 
 // =============================================================================
@@ -30,7 +31,7 @@ const FrequentlyBoughtTogether = ({
   anchor,
   companions = [],
   onAddToCart,
-  currency = "INR",
+  currency = DEFAULT_CURRENCY.code,
 }) => {
   const prefersReducedMotion = useReducedMotion();
   const items = useMemo(

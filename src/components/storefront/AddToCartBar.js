@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { formatCurrency } from "../../utils/helpers";
 import { PLACEHOLDER_IMG, onImageError } from "../../utils/helpers";
+import { DEFAULT_CURRENCY } from "../../utils/constants";
 import styles from "./AddToCartBar.module.css";
 
 // =============================================================================
@@ -27,7 +28,7 @@ const AddToCartBar = ({
   anchorRef,
   price = 0,
   comparePrice = 0,
-  currency = "INR",
+  currency = DEFAULT_CURRENCY.code,
   image,
   name,
   disabled = false,

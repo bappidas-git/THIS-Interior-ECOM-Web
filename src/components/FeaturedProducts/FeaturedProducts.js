@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import ProductCard from "../storefront/ProductCard";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../context/WishlistContext";
+import { revealProps } from "../motion";
 import styles from "./FeaturedProducts.module.css";
 
 // =============================================================================
@@ -48,12 +50,13 @@ const FeaturedProducts = ({
 }) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const reduce = useReducedMotion();
 
   // Honest empty state: once loaded, render nothing when there's no real data.
   if (!loading && (!products || products.length === 0)) return null;
 
   return (
-    <section className={styles.section}>
+    <motion.section className={styles.section} {...revealProps(reduce)}>
       <div className={styles.inner}>
         <div className={styles.header}>
           <div className={styles.heading}>
@@ -98,7 +101,7 @@ const FeaturedProducts = ({
               ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

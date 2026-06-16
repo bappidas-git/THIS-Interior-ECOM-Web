@@ -8,7 +8,7 @@ import {
 } from "framer-motion";
 import apiService from "../../services/api";
 import { onImageError, formatCurrency } from "../../utils/helpers";
-import { FREE_SHIPPING_THRESHOLD } from "../../utils/constants";
+import { FREE_SHIPPING_THRESHOLD, MOTION_EASE } from "../../utils/constants";
 import { STOREFRONT_CONFIG } from "../../theme/tokens";
 import styles from "./HeroSection.module.css";
 
@@ -128,8 +128,6 @@ const heroFromBanner = (banner) => {
   return next;
 };
 
-const EASE = [0.22, 1, 0.36, 1];
-
 const HeroSection = () => {
   const reduceMotion = useReducedMotion();
   const stageRef = useRef(null);
@@ -185,7 +183,7 @@ const HeroSection = () => {
     ? { hidden: { opacity: 1, y: 0 }, visible: { opacity: 1, y: 0 } }
     : {
         hidden: { opacity: 0, y: 26 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE } },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: MOTION_EASE } },
       };
 
   return (
@@ -197,7 +195,7 @@ const HeroSection = () => {
           style={reduceMotion ? undefined : { y: mediaY }}
           initial={{ scale: reduceMotion ? 1 : 1.08 }}
           animate={{ scale: 1 }}
-          transition={{ duration: reduceMotion ? 0 : 1.6, ease: EASE }}
+          transition={{ duration: reduceMotion ? 0 : 1.6, ease: MOTION_EASE }}
         >
           {showVideo ? (
             <video

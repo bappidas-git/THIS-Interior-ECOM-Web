@@ -11,6 +11,7 @@ import {
   onImageError,
 } from "../../utils/helpers";
 import { DEFAULT_CURRENCY } from "../../utils/constants";
+import { revealProps } from "../motion";
 import styles from "./FrequentlyBoughtTogether.module.css";
 
 // =============================================================================
@@ -76,10 +77,7 @@ const FrequentlyBoughtTogether = ({
     <motion.section
       className={styles.section}
       aria-label="Frequently bought together"
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      {...revealProps(prefersReducedMotion)}
     >
       <h2 className={styles.title}>Frequently bought together</h2>
       <div className={styles.layout}>

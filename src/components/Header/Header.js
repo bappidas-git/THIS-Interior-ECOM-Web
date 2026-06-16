@@ -14,7 +14,7 @@ import { useWishlist } from "../../context/WishlistContext";
 import { useDealsConfig } from "../../context/DealsConfigContext";
 import apiService from "../../services/api";
 import { categoryParam, getMainMenuCategories } from "../../utils/categories";
-import { SUPPORT_PHONE, FREE_SHIPPING_THRESHOLD } from "../../utils/constants";
+import { SUPPORT_PHONE, FREE_SHIPPING_THRESHOLD, MOTION_EASE } from "../../utils/constants";
 import { formatCurrency, onImageError } from "../../utils/helpers";
 import { LOGO_LIGHT, LOGO_WHITE, BRAND } from "../../theme/brand";
 import CartDrawer from "../CartDrawer/CartDrawer";
@@ -301,7 +301,7 @@ const Header = () => {
         initial: { opacity: 0, y: 6 },
         animate: { opacity: 1, y: 0 },
         exit: { opacity: 0, y: 4 },
-        transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
+        transition: { duration: 0.32, ease: MOTION_EASE },
       };
 
   // The structured flyout for one collection: grouped section columns (serif

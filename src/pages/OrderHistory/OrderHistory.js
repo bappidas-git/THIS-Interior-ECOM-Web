@@ -6,6 +6,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../hooks/useAuth";
 import apiService from "../../services/api";
 import { formatCurrency, formatDate, normalizeOrderAddress } from "../../utils/helpers";
+import { MOTION_EASE } from "../../utils/constants";
 import ReviewModal from "../../components/ReviewModal/ReviewModal";
 import styles from "./OrderHistory.module.css";
 
@@ -39,9 +40,6 @@ const STATUS_CONFIG = {
 const FILTER_OPTIONS = ["All", "Processing", "Shipped", "Delivered", "Cancelled"];
 const ORDERS_PER_PAGE = 5;
 const RETURN_WINDOW_DAYS = 7; // per the 7-day return policy (see /refund-policy)
-
-// Calm editorial easing, shared by the gated Framer transitions below.
-const EASE = [0.22, 1, 0.36, 1];
 
 // Orders carry paymentStatus / fulfillmentStatus / shippingStatus (the shape
 // checkout writes and Admin manages) — collapse those into the single display
@@ -269,15 +267,15 @@ const OrderHistory = () => {
   // ---- Calm, reduced-motion-safe Framer presets ----
   const headerMotion = prefersReducedMotion
     ? { initial: false, animate: { opacity: 1, y: 0 } }
-    : { initial: { opacity: 0, y: -8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, ease: EASE } };
+    : { initial: { opacity: 0, y: -8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, ease: MOTION_EASE } };
 
   const toolbarMotion = prefersReducedMotion
     ? { initial: false, animate: { opacity: 1, y: 0 } }
-    : { initial: { opacity: 0, y: -6 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay: 0.05, ease: EASE } };
+    : { initial: { opacity: 0, y: -6 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3, delay: 0.05, ease: MOTION_EASE } };
 
   const stateMotion = prefersReducedMotion
     ? { initial: false, animate: { opacity: 1 } }
-    : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.35, ease: EASE } };
+    : { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.35, ease: MOTION_EASE } };
 
   const cardMotion = (index) =>
     prefersReducedMotion
@@ -286,7 +284,7 @@ const OrderHistory = () => {
           initial: { opacity: 0, y: 16 },
           animate: { opacity: 1, y: 0 },
           exit: { opacity: 0, y: -12 },
-          transition: { duration: 0.4, delay: index * 0.05, ease: EASE },
+          transition: { duration: 0.4, delay: index * 0.05, ease: MOTION_EASE },
         };
 
   const collapseMotion = prefersReducedMotion
@@ -295,7 +293,7 @@ const OrderHistory = () => {
         initial: { height: 0, opacity: 0 },
         animate: { height: "auto", opacity: 1 },
         exit: { height: 0, opacity: 0 },
-        transition: { duration: 0.3, ease: EASE },
+        transition: { duration: 0.3, ease: MOTION_EASE },
       };
 
   // Loading skeletons — calm shimmer in the order-card silhouette.

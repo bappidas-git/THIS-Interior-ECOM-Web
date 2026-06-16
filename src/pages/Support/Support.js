@@ -12,6 +12,7 @@ import {
   SUPPORT_HOURS,
 } from "../../utils/constants";
 import { isEmailValid, isValidPhone } from "../../utils/helpers";
+import { revealProps, enterProps } from "../../components/motion";
 import styles from "./Support.module.css";
 
 const Support = () => {
@@ -92,12 +93,7 @@ const Support = () => {
     return (
       <div className={styles.page}>
         <div className={styles.shell}>
-          <motion.div
-            className={styles.successCard}
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            animate={reduce ? false : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <motion.div className={styles.successCard} {...enterProps(reduce)}>
             <span className={styles.successMedallion} aria-hidden="true">
               <Icon icon="mdi:check" />
             </span>
@@ -126,12 +122,7 @@ const Support = () => {
           <Breadcrumb items={[{ label: "Support" }]} />
         </div>
 
-        <motion.header
-          className={styles.header}
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          animate={reduce ? false : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.header className={styles.header} {...enterProps(reduce)}>
           <p className={styles.eyebrow}>We're here to help</p>
           <h1 className={styles.title}>Contact support</h1>
           <p className={styles.lede}>
@@ -141,13 +132,7 @@ const Support = () => {
         </motion.header>
 
         <div className={styles.content}>
-          <motion.aside
-            className={styles.sidebar}
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <motion.aside className={styles.sidebar} {...revealProps(reduce)}>
             <div className={styles.infoCard}>
               <span className={styles.infoIcon} aria-hidden="true"><Icon icon="mdi:email-outline" /></span>
               <div className={styles.infoText}>
@@ -183,10 +168,7 @@ const Support = () => {
             className={styles.form}
             onSubmit={handleSubmit}
             noValidate
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            {...revealProps(reduce, 0.1)}
           >
             <h2 className={styles.formTitle}>Send a message</h2>
 

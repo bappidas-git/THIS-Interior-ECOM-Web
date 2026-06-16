@@ -12,6 +12,7 @@ import {
 import {
   FREE_SHIPPING_THRESHOLD,
   DEFAULT_CURRENCY,
+  MOTION_EASE,
 } from "../../utils/constants";
 import { resolveTrustBadgeDetail } from "../../theme/tokens";
 import styles from "./CartDrawer.module.css";
@@ -267,7 +268,7 @@ const CartDrawer = ({ open, onClose }) => {
                         }
                         transition={{
                           duration: reduceMotion ? 0 : 0.28,
-                          ease: [0.22, 1, 0.36, 1],
+                          ease: MOTION_EASE,
                         }}
                       >
                         <button

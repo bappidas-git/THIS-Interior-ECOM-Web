@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import ProductCard from "./ProductCard";
+import { revealProps } from "../motion";
 import styles from "./RelatedProducts.module.css";
 
 // =============================================================================
@@ -32,10 +33,7 @@ const RelatedProducts = ({
     <motion.section
       className={styles.section}
       aria-label={title}
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      {...revealProps(prefersReducedMotion)}
     >
       <h2 className={styles.title}>{title}</h2>
       <div className={styles.scroller}>

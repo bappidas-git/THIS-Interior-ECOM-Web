@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { useAuth } from "../../hooks/useAuth";
 import apiService from "../../services/api";
 import { formatDate, formatCurrency, getInitials, generateId, isValidPhone } from "../../utils/helpers";
+import { MOTION_EASE } from "../../utils/constants";
 import styles from "./Profile.module.css";
 
 const TABS = [
@@ -543,7 +544,7 @@ const Profile = () => {
         initial: { opacity: 0, y: 8 },
         animate: { opacity: 1, y: 0 },
         exit: { opacity: 0, y: -8 },
-        transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+        transition: { duration: 0.3, ease: MOTION_EASE },
       };
 
   // ---- Render sections ----

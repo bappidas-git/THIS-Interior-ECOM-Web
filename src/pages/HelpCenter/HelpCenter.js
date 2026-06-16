@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { FAQ_ITEMS, SUPPORT_EMAIL, SUPPORT_PHONE, SUPPORT_HOURS } from "../../utils/constants";
+import { revealProps, enterProps } from "../../components/motion";
 import styles from "./HelpCenter.module.css";
 
 const HelpCenter = () => {
@@ -11,15 +12,7 @@ const HelpCenter = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const rise = (delay = 0) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 18 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, amount: 0.2 },
-          transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay },
-        };
+  const rise = (delay = 0) => revealProps(reduce, delay);
 
   const helpTopics = [
     { icon: "mdi:truck-outline", title: "Orders & Shipping", desc: "Track orders, delivery times, shipping info", link: "/orders" },
@@ -45,12 +38,7 @@ const HelpCenter = () => {
           <Breadcrumb items={[{ label: "Help Center" }]} />
         </div>
 
-        <motion.header
-          className={styles.header}
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          animate={reduce ? false : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.header className={styles.header} {...enterProps(reduce)}>
           <p className={styles.eyebrow}>How can we help?</p>
           <h1 className={styles.title}>Help Center</h1>
           <p className={styles.lede}>

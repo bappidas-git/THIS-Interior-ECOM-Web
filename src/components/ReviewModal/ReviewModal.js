@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { onImageError, PLACEHOLDER_IMG } from "../../utils/helpers";
+import { MOTION_EASE } from "../../utils/constants";
 import styles from "./ReviewModal.module.css";
 
 // Interactive 1–5 star picker with hover preview. Brass fill (via the
@@ -111,7 +112,7 @@ const ReviewModal = ({ open, onClose, product, existing, onSubmit, isDarkMode })
           className={styles.modal}
           tabIndex={-1}
           {...modalMotion}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: MOTION_EASE }}
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"

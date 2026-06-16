@@ -3,19 +3,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { APP_NAME, SUPPORT_EMAIL, POLICY_LAST_UPDATED } from "../../utils/constants";
+import { revealProps, enterProps } from "../../components/motion";
 import styles from "./TermsOfService.module.css";
 
 const TermsOfService = () => {
   const reduce = useReducedMotion();
-  const rise = (delay = 0) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 16 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, amount: 0.3 },
-          transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay },
-        };
+  const rise = (delay = 0) => revealProps(reduce, delay);
 
   const sections = [
     { title: "Acceptance of Terms", content: `By accessing or using ${APP_NAME}, you agree to be bound by these Terms of Service. If you do not agree, please do not use our platform.` },
@@ -36,12 +29,7 @@ const TermsOfService = () => {
           <Breadcrumb items={[{ label: "Terms of Service" }]} />
         </div>
 
-        <motion.header
-          className={styles.head}
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          animate={reduce ? false : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.header className={styles.head} {...enterProps(reduce)}>
           <p className={styles.eyebrow}>Legal</p>
           <h1 className={styles.title}>Terms of Service</h1>
           <p className={styles.updated}>

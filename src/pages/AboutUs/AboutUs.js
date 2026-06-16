@@ -4,29 +4,16 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { APP_NAME, APP_TAGLINE, WHY_CHOOSE_US } from "../../utils/constants";
+import { revealProps, enterProps } from "../../components/motion";
 import styles from "./AboutUs.module.css";
 
 const AboutUs = () => {
   const reduce = useReducedMotion();
 
-  // Subtle, reduced-motion-safe entrances. The hero plays on mount; sections
-  // below the fold rise gently as they scroll into view.
-  const heroRise = reduce
-    ? {}
-    : {
-        initial: { opacity: 0, y: 18 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-      };
-  const rise = (delay = 0) =>
-    reduce
-      ? {}
-      : {
-          initial: { opacity: 0, y: 18 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, amount: 0.2 },
-          transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay },
-        };
+  // Subtle, reduced-motion-safe entrances, all from the shared motion vocabulary.
+  // The hero plays on mount; sections below the fold rise gently into view.
+  const heroRise = enterProps(reduce);
+  const rise = (delay = 0) => revealProps(reduce, delay);
 
   // Illustrative milestones — page-local brand copy, not live data.
   const stats = [

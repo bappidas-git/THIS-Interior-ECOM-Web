@@ -1,12 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { motion, useReducedMotion } from "framer-motion";
+import { Icon } from "@iconify/react";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { APP_NAME, SUPPORT_EMAIL, POLICY_LAST_UPDATED } from "../../utils/constants";
 import styles from "./PrivacyPolicy.module.css";
 
 const PrivacyPolicy = () => {
-  const { isDarkMode } = useTheme();
+  const reduce = useReducedMotion();
+  const rise = (delay = 0) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 16 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.3 },
+          transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay },
+        };
 
   const sections = [
     { title: "Information We Collect", content: `When you use ${APP_NAME}, we may collect personal information such as your name, email address, phone number, shipping address, and payment details. We also collect browsing data, device information, and cookies to improve your shopping experience.` },
@@ -20,23 +29,55 @@ const PrivacyPolicy = () => {
   ];
 
   return (
-    <div className={`${styles.container} ${isDarkMode ? styles.dark : ""}`}>
-      <div className={styles.breadcrumb}><Link to="/">Home</Link> <span>/</span> <span>Privacy Policy</span></div>
-      <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-        <h1 className={styles.title}>Privacy Policy</h1>
-        <p className={styles.subtitle}>Last updated: {POLICY_LAST_UPDATED}</p>
-        <p className={styles.intro}>At {APP_NAME}, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information.</p>
-      </motion.div>
-      <div className={styles.sections}>
-        {sections.map((section, i) => (
-          <motion.div key={i} className={styles.section} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.05 }}>
-            <h2>{i + 1}. {section.title}</h2>
-            <p>{section.content}</p>
-          </motion.div>
-        ))}
-      </div>
-      <div className={styles.contact}>
-        <p>Questions? Contact us at <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p>
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <div className={styles.crumb}>
+          <Breadcrumb items={[{ label: "Privacy Policy" }]} />
+        </div>
+
+        <motion.header
+          className={styles.head}
+          initial={reduce ? false : { opacity: 0, y: 18 }}
+          animate={reduce ? false : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className={styles.eyebrow}>Legal</p>
+          <h1 className={styles.title}>Privacy Policy</h1>
+          <p className={styles.updated}>
+            <Icon icon="mdi:calendar-blank-outline" aria-hidden="true" />
+            Last updated {POLICY_LAST_UPDATED}
+          </p>
+          <p className={styles.intro}>
+            At {APP_NAME}, we take your privacy seriously. This policy describes how
+            we collect, use, and protect your personal information.
+          </p>
+        </motion.header>
+
+        <div className={styles.sections}>
+          {sections.map((section, i) => (
+            <motion.section
+              key={i}
+              id={`section-${i + 1}`}
+              className={styles.section}
+              {...rise()}
+            >
+              <div className={styles.sectionHead}>
+                <span className={styles.sectionNum} aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h2 className={styles.sectionTitle}>{section.title}</h2>
+              </div>
+              <p className={styles.sectionBody}>{section.content}</p>
+            </motion.section>
+          ))}
+        </div>
+
+        <div className={styles.contact}>
+          <p>
+            Questions about this policy? Email{" "}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,33 +1,264 @@
-.container { max-width: 800px; margin: 0 auto; padding: 24px 16px 80px; min-height: calc(100vh - 200px); }
-.dark { color: #e2e8f0; }
-.breadcrumb { display: flex; gap: 8px; align-items: center; margin-bottom: 24px; font-size: 0.875rem; color: #64748b; }
-.breadcrumb a { color: #667eea; text-decoration: none; }
-/* Touch-target sizing: grow the breadcrumb hit area without moving the row */
-@media (max-width: 768px) {
-  .breadcrumb a { display: inline-block; padding: 10px 2px; margin: -10px 0; }
+/* ==========================================================================
+   Cookie Policy — editorial legal document + hairline types table
+   --------------------------------------------------------------------------
+   Shares the legal-document language (quiet "last updated", numbered/anchored
+   hairline sections) and adds a clean, hairline-ruled cookie-types table that
+   collapses into stacked, labelled cards on small screens. Fully token-driven;
+   dark mode is inherited from the --sf-* tokens (no .dark block, no hex).
+   ========================================================================== */
+
+.page {
+  background: var(--sf-color-bg);
+  color: var(--sf-color-text);
+  font-family: var(--sf-font-family);
 }
-.dark .breadcrumb { color: #94a3b8; }
-.title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
-.subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 16px; }
-.dark .subtitle { color: #94a3b8; }
-.intro { color: #475569; line-height: 1.6; margin-bottom: 32px; }
-.dark .intro { color: #94a3b8; }
-.section { padding: 24px; border-radius: 12px; background: #fff; border: 1px solid #e2e8f0; margin-bottom: 20px; }
-.dark .section { background: #1e293b; border-color: #334155; }
-.section h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; }
-.section p { color: #475569; line-height: 1.7; font-size: 0.95rem; }
-.dark .section p { color: #94a3b8; }
-.table { border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; margin-top: 12px; }
-.dark .table { border-color: #475569; }
-.tableHeader { display: grid; grid-template-columns: 100px 1fr 100px 80px; padding: 12px 16px; background: #f1f5f9; font-weight: 600; font-size: 0.85rem; gap: 12px; }
-.dark .tableHeader { background: #0f172a; }
-.tableRow { display: grid; grid-template-columns: 100px 1fr 100px 80px; padding: 12px 16px; border-top: 1px solid #e2e8f0; font-size: 0.9rem; gap: 12px; color: #475569; }
-.dark .tableRow { border-color: #334155; color: #94a3b8; }
-.cookieType { font-weight: 500; }
+
+.shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--sf-space-6) var(--sf-space-6) var(--sf-space-16);
+}
+
+.crumb {
+  margin-bottom: var(--sf-space-8);
+}
+
+/* ---- Document head ------------------------------------------------------ */
+.head {
+  margin-bottom: var(--sf-space-12);
+}
+
+.eyebrow {
+  margin: 0 0 var(--sf-space-3);
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wider);
+  color: var(--sf-color-primary);
+}
+
+.title {
+  margin: 0 0 var(--sf-space-4);
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-4xl);
+  font-weight: var(--sf-font-light);
+  line-height: var(--sf-leading-display);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--sf-color-text);
+}
+
+.updated {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-2);
+  margin: 0 0 var(--sf-space-6);
+  font-size: var(--sf-text-sm);
+  color: var(--sf-color-text-muted);
+}
+
+.intro {
+  margin: 0;
+  max-width: 64ch;
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
+  color: var(--sf-color-text-secondary);
+}
+
+/* ---- Numbered, anchored sections --------------------------------------- */
+.sections {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  padding: var(--sf-space-8) 0;
+  border-top: 1px solid var(--sf-color-border);
+  scroll-margin-top: var(--sf-space-16);
+}
+
+.section:last-child {
+  border-bottom: 1px solid var(--sf-color-border);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sf-space-4);
+  margin-bottom: var(--sf-space-4);
+}
+
+.sectionNum {
+  flex-shrink: 0;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-lg);
+  font-weight: var(--sf-font-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--sf-color-primary);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--sf-font-display);
+  font-size: var(--sf-text-2xl);
+  font-weight: var(--sf-font-medium);
+  line-height: var(--sf-leading-tight);
+  letter-spacing: var(--sf-tracking-tight);
+  color: var(--sf-color-text);
+}
+
+.sectionBody {
+  margin: 0;
+  max-width: 68ch;
+  padding-left: calc(var(--sf-text-lg) + var(--sf-space-4));
+  font-size: var(--sf-text-md);
+  line-height: var(--sf-leading-relaxed);
+  color: var(--sf-color-text-secondary);
+}
+
+/* ---- Hairline types table ---------------------------------------------- */
+.tableWrap {
+  border: 1px solid var(--sf-color-border);
+  border-radius: var(--sf-radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--sf-text-sm);
+}
+
+.table th {
+  padding: var(--sf-space-3) var(--sf-space-4);
+  background: var(--sf-color-surface-2);
+  text-align: left;
+  font-size: var(--sf-text-xs);
+  font-weight: var(--sf-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--sf-tracking-wide);
+  color: var(--sf-color-text-muted);
+  border-bottom: 1px solid var(--sf-color-border);
+}
+
+.table td {
+  padding: var(--sf-space-4);
+  vertical-align: top;
+  line-height: var(--sf-leading-normal);
+  color: var(--sf-color-text-secondary);
+  border-bottom: 1px solid var(--sf-color-border);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cookieType {
+  font-weight: var(--sf-font-semibold);
+  color: var(--sf-color-text);
+}
+
+.required {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1);
+  font-weight: var(--sf-font-medium);
+  color: var(--sf-color-text);
+  white-space: nowrap;
+}
+
+.required svg {
+  color: var(--sf-color-primary);
+}
+
+.optional {
+  color: var(--sf-color-text-muted);
+}
+
+/* ---- Footer note ------------------------------------------------------- */
+.contact {
+  margin-top: var(--sf-space-10);
+  text-align: center;
+  font-size: var(--sf-text-base);
+  color: var(--sf-color-text-secondary);
+}
+
+.contact a {
+  color: var(--sf-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.contact a:hover {
+  color: var(--sf-color-primary-dark);
+}
+
+/* ---- Responsive -------------------------------------------------------- */
+@media (max-width: 600px) {
+  .shell {
+    padding: var(--sf-space-5) var(--sf-space-4) var(--sf-space-12);
+  }
+
+  .title {
+    font-size: var(--sf-text-3xl);
+  }
+
+  .sectionBody {
+    padding-left: 0;
+  }
+}
+
+/* Stack the table into labelled cards on small screens. */
 @media (max-width: 640px) {
-  .tableHeader, .tableRow { grid-template-columns: 1fr; gap: 4px; }
-  .tableHeader span:not(:first-child), .tableRow span:not(:first-child) { padding-left: 12px; font-size: 0.85rem; }
+  .tableWrap {
+    border: none;
+    border-radius: 0;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: var(--sf-space-4);
+    padding: var(--sf-space-4) var(--sf-space-5);
+    border: 1px solid var(--sf-color-border);
+    border-radius: var(--sf-radius-lg);
+  }
+
+  .table td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sf-space-4);
+    padding: var(--sf-space-1) 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    text-align: left;
+    font-size: var(--sf-text-xs);
+    font-weight: var(--sf-font-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--sf-tracking-wide);
+    color: var(--sf-color-text-muted);
+  }
 }
-.contact { text-align: center; padding: 24px; color: #64748b; }
-.dark .contact { color: #94a3b8; }
-.contact a { color: #667eea; text-decoration: none; }

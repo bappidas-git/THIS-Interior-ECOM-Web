@@ -1,12 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { motion, useReducedMotion } from "framer-motion";
+import { Icon } from "@iconify/react";
+import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { APP_NAME, SUPPORT_EMAIL, POLICY_LAST_UPDATED } from "../../utils/constants";
 import styles from "./CookiePolicy.module.css";
 
 const CookiePolicy = () => {
-  const { isDarkMode } = useTheme();
+  const reduce = useReducedMotion();
+  const rise = (delay = 0) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 16 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.2 },
+          transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], delay },
+        };
 
   const cookieTypes = [
     { type: "Essential", purpose: "Required for basic site functionality (cart, login, security)", duration: "Session / 1 year", required: true },
@@ -16,42 +25,100 @@ const CookiePolicy = () => {
   ];
 
   return (
-    <div className={`${styles.container} ${isDarkMode ? styles.dark : ""}`}>
-      <div className={styles.breadcrumb}><Link to="/">Home</Link> <span>/</span> <span>Cookie Policy</span></div>
-      <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-        <h1 className={styles.title}>Cookie Policy</h1>
-        <p className={styles.subtitle}>Last updated: {POLICY_LAST_UPDATED}</p>
-        <p className={styles.intro}>{APP_NAME} uses cookies and similar technologies to improve your browsing experience, analyze site traffic, and personalize content.</p>
-      </motion.div>
-
-      <motion.div className={styles.section} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-        <h2>What Are Cookies?</h2>
-        <p>Cookies are small text files stored on your device when you visit a website. They help the site remember your preferences and improve your experience.</p>
-      </motion.div>
-
-      <motion.div className={styles.section} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }}>
-        <h2>Types of Cookies We Use</h2>
-        <div className={styles.table}>
-          <div className={styles.tableHeader}>
-            <span>Type</span><span>Purpose</span><span>Duration</span><span>Required</span>
-          </div>
-          {cookieTypes.map((cookie, i) => (
-            <div key={i} className={styles.tableRow}>
-              <span className={styles.cookieType}>{cookie.type}</span>
-              <span>{cookie.purpose}</span>
-              <span>{cookie.duration}</span>
-              <span>{cookie.required ? "Yes" : "No"}</span>
-            </div>
-          ))}
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <div className={styles.crumb}>
+          <Breadcrumb items={[{ label: "Cookie Policy" }]} />
         </div>
-      </motion.div>
 
-      <motion.div className={styles.section} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-        <h2>Managing Cookies</h2>
-        <p>You can control cookies through your browser settings. Most browsers allow you to block or delete cookies. Note that disabling essential cookies may affect site functionality.</p>
-      </motion.div>
+        <motion.header
+          className={styles.head}
+          initial={reduce ? false : { opacity: 0, y: 18 }}
+          animate={reduce ? false : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className={styles.eyebrow}>Legal</p>
+          <h1 className={styles.title}>Cookie Policy</h1>
+          <p className={styles.updated}>
+            <Icon icon="mdi:calendar-blank-outline" aria-hidden="true" />
+            Last updated {POLICY_LAST_UPDATED}
+          </p>
+          <p className={styles.intro}>
+            {APP_NAME} uses cookies and similar technologies to improve your
+            browsing experience, analyze site traffic, and personalize content.
+          </p>
+        </motion.header>
 
-      <div className={styles.contact}><p>Questions? <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></p></div>
+        <div className={styles.sections}>
+          <motion.section id="section-1" className={styles.section} {...rise()}>
+            <div className={styles.sectionHead}>
+              <span className={styles.sectionNum} aria-hidden="true">01</span>
+              <h2 className={styles.sectionTitle}>What are cookies?</h2>
+            </div>
+            <p className={styles.sectionBody}>
+              Cookies are small text files stored on your device when you visit a
+              website. They help the site remember your preferences and improve
+              your experience.
+            </p>
+          </motion.section>
+
+          <motion.section id="section-2" className={styles.section} {...rise()}>
+            <div className={styles.sectionHead}>
+              <span className={styles.sectionNum} aria-hidden="true">02</span>
+              <h2 className={styles.sectionTitle}>Types of cookies we use</h2>
+            </div>
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Purpose</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cookieTypes.map((cookie, i) => (
+                    <tr key={i}>
+                      <td data-label="Type"><span className={styles.cookieType}>{cookie.type}</span></td>
+                      <td data-label="Purpose">{cookie.purpose}</td>
+                      <td data-label="Duration">{cookie.duration}</td>
+                      <td data-label="Status">
+                        {cookie.required ? (
+                          <span className={styles.required}>
+                            <Icon icon="mdi:check" aria-hidden="true" /> Required
+                          </span>
+                        ) : (
+                          <span className={styles.optional}>Optional</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.section>
+
+          <motion.section id="section-3" className={styles.section} {...rise()}>
+            <div className={styles.sectionHead}>
+              <span className={styles.sectionNum} aria-hidden="true">03</span>
+              <h2 className={styles.sectionTitle}>Managing cookies</h2>
+            </div>
+            <p className={styles.sectionBody}>
+              You can control cookies through your browser settings. Most browsers
+              allow you to block or delete cookies. Note that disabling essential
+              cookies may affect site functionality.
+            </p>
+          </motion.section>
+        </div>
+
+        <div className={styles.contact}>
+          <p>
+            Questions about cookies? Email{" "}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

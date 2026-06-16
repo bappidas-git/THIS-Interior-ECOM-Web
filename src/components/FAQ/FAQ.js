@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { useTheme } from "../../context/ThemeContext";
 import { FAQ_ITEMS } from "../../utils/constants";
 import styles from "./FAQ.module.css";
 
+// Shared, editorial FAQ accordion. Dark mode is inherited from the --sf-* tokens
+// (they flip under body.dark), so this no longer reads the theme in JS. The
+// FAQ_ITEMS source and the accordion behaviour are unchanged.
 const FAQ = () => {
-  const { isDarkMode } = useTheme();
   const [openId, setOpenId] = useState(null);
 
   return (
-    <section className={`${styles.faq} ${isDarkMode ? styles.dark : ""}`}>
+    <section className={styles.faq}>
       <div className={styles.container}>
-        <h2>Frequently Asked Questions</h2>
+        <p className={styles.eyebrow}>Answers</p>
+        <h2 className={styles.heading}>Frequently asked questions</h2>
         <div className={styles.list}>
           {FAQ_ITEMS.map((faq) => {
             const isOpen = openId === faq.id;

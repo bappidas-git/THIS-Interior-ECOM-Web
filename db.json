@@ -2,27 +2,27 @@
   "banners": [
     {
       "id": 1,
-      "title": "Flash Sale",
-      "subtitle": "Up to 70% Off on Electronics",
-      "cta": "Shop Now",
-      "link": "/products?category=electronics",
-      "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      "title": "The Art of Considered Living",
+      "subtitle": "Curated vases, lighting and objects for a home with soul",
+      "cta": "Shop the Collection",
+      "link": "/products",
+      "gradient": "linear-gradient(135deg, #c9a98c 0%, #6f4e37 100%)"
     },
     {
       "id": 2,
-      "title": "New Arrivals",
-      "subtitle": "Discover Latest Fashion Trends",
-      "cta": "Explore",
-      "link": "/products?category=clothing",
-      "gradient": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+      "title": "Lighting, Reimagined",
+      "subtitle": "Sculptural lamps and warm, layered light",
+      "cta": "Explore Lighting",
+      "link": "/products?category=lighting",
+      "gradient": "linear-gradient(135deg, #e0b088 0%, #b07d56 100%)"
     },
     {
       "id": 3,
-      "title": "Ethnic Collection",
-      "subtitle": "Traditional Meets Modern",
-      "cta": "Shop Collection",
-      "link": "/products?category=womens-ethnic-wear",
-      "gradient": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+      "title": "Mirrors & Wall Art",
+      "subtitle": "Statement pieces that open up every room",
+      "cta": "Discover Wall & Art",
+      "link": "/products?category=wall-art",
+      "gradient": "linear-gradient(135deg, #b7c4a6 0%, #6b7d5a 100%)"
     }
   ],
   "users": [
@@ -96,7 +96,7 @@
       "isActive": true,
       "createdAt": "2025-06-01T10:00:00.000Z",
       "updatedAt": "2026-06-14T14:22:33.376Z",
-      "storeCredit": 2918
+      "storeCredit": 888
     }
   ],
   "admins": [
@@ -114,1553 +114,1769 @@
   "categories": [
     {
       "id": 1,
-      "name": "Electronics",
-      "slug": "electronics",
-      "description": "Gadgets, devices and electronic accessories",
-      "image": "https://placehold.co/400x300/667eea/FFFFFF?text=Electronics",
+      "name": "Lighting",
+      "slug": "lighting",
+      "description": "Sculptural lamps, candles and warm, layered light for every room.",
+      "image": "https://placehold.co/400x300/b07d56/FFFFFF?text=Lighting",
       "parentId": null,
       "isActive": true,
       "sortOrder": 1,
       "showInMainMenu": true,
       "menuOrder": 1,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 2,
-      "name": "Clothing",
-      "slug": "clothing",
-      "description": "Men, women and kids apparel",
-      "image": "https://placehold.co/400x300/764ba2/FFFFFF?text=Clothing",
+      "name": "Wall & Art",
+      "slug": "wall-art",
+      "description": "Framed prints, canvases and photo frames to compose a gallery wall.",
+      "image": "https://placehold.co/400x300/6f4e37/FFFFFF?text=Wall%20%26%20Art",
       "parentId": null,
       "isActive": true,
       "sortOrder": 2,
       "showInMainMenu": true,
       "menuOrder": 2,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 3,
-      "name": "Home & Garden",
-      "slug": "home-garden",
-      "description": "Furniture, decor and garden essentials",
-      "image": "https://placehold.co/400x300/4caf50/FFFFFF?text=Home+%26+Garden",
+      "name": "Living Room",
+      "slug": "living-room",
+      "description": "Considered pieces for the heart of the home.",
+      "image": "https://placehold.co/400x300/8a8170/FFFFFF?text=Living%20Room",
       "parentId": null,
       "isActive": true,
       "sortOrder": 3,
       "showInMainMenu": true,
       "menuOrder": 3,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 4,
-      "name": "Sports & Fitness",
-      "slug": "sports-fitness",
-      "description": "Equipment and gear for sports and fitness",
-      "image": "https://placehold.co/400x300/ff9800/FFFFFF?text=Sports",
+      "name": "Tabletop",
+      "slug": "tabletop",
+      "description": "Trays, bowls and serveware that make everyday moments feel curated.",
+      "image": "https://placehold.co/400x300/c1623f/FFFFFF?text=Tabletop",
       "parentId": null,
       "isActive": true,
       "sortOrder": 4,
       "showInMainMenu": true,
       "menuOrder": 4,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 5,
-      "name": "Books",
-      "slug": "books",
-      "description": "Bestsellers, textbooks and more",
-      "image": "https://placehold.co/400x300/e91e63/FFFFFF?text=Books",
+      "name": "Textiles",
+      "slug": "textiles",
+      "description": "Linen cushions, bouclé throws and handwoven rugs in natural tones.",
+      "image": "https://placehold.co/400x300/9aa57f/FFFFFF?text=Textiles",
       "parentId": null,
       "isActive": true,
       "sortOrder": 5,
       "showInMainMenu": true,
       "menuOrder": 5,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 6,
-      "name": "Laptops",
-      "slug": "laptops",
-      "description": "Laptops and accessories",
-      "image": "https://placehold.co/400x300/2196f3/FFFFFF?text=Laptops",
-      "parentId": 1,
-      "isActive": true,
-      "sortOrder": 1,
-      "showInMainMenu": false,
-      "menuOrder": 0,
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": 7,
-      "name": "Audio",
-      "slug": "audio",
-      "description": "Headphones, speakers and audio gear",
-      "image": "https://placehold.co/400x300/9c27b0/FFFFFF?text=Audio",
-      "parentId": 1,
-      "isActive": true,
-      "sortOrder": 2,
-      "showInMainMenu": false,
-      "menuOrder": 0,
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "id": 8,
-      "name": "Women's Ethnic Wear",
-      "slug": "womens-ethnic-wear",
-      "description": "Sarees, kurtas, lehengas and traditional wear",
-      "image": "https://placehold.co/400x300/e91e63/FFFFFF?text=Ethnic+Wear",
+      "name": "Decorative Objects",
+      "slug": "decorative-objects",
+      "description": "Sculptures, bookends and objet to bring character to a shelf.",
+      "image": "https://placehold.co/400x300/6b7d5a/FFFFFF?text=Decorative%20Objects",
       "parentId": null,
       "isActive": true,
       "sortOrder": 6,
       "showInMainMenu": true,
       "menuOrder": 6,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
-      "id": 9,
-      "name": "Men's Fashion",
-      "slug": "mens-fashion",
-      "description": "Shirts, trousers, suits and accessories",
-      "image": "https://placehold.co/400x300/3f51b5/FFFFFF?text=Men+Fashion",
+      "id": 7,
+      "name": "Mirrors",
+      "slug": "mirrors",
+      "description": "Statement mirrors that open up and light every space.",
+      "image": "https://placehold.co/400x300/c9a24b/FFFFFF?text=Mirrors",
       "parentId": null,
       "isActive": true,
       "sortOrder": 7,
       "showInMainMenu": true,
       "menuOrder": 7,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2026-06-12T01:38:32.822Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
-      "id": 10,
-      "name": "Beauty & Personal Care",
-      "slug": "beauty-personal-care",
-      "description": "Skincare, haircare, fragrances and grooming",
-      "image": "https://placehold.co/400x300/ff4081/FFFFFF?text=Beauty",
+      "id": 8,
+      "name": "Planters & Greenery",
+      "slug": "planters-greenery",
+      "description": "Stoneware planters and pots to bring the outdoors in.",
+      "image": "https://placehold.co/400x300/7f5539/FFFFFF?text=Planters%20%26%20Greenery",
       "parentId": null,
       "isActive": true,
       "sortOrder": 8,
       "showInMainMenu": true,
       "menuOrder": 8,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "name": "Table Lamps",
+      "slug": "table-lamps",
+      "description": "Bedside and console lamps for a soft, ambient glow.",
+      "image": "https://placehold.co/400x300/b07d56/FFFFFF?text=Table%20Lamps",
+      "parentId": 1,
+      "isActive": true,
+      "sortOrder": 1,
+      "showInMainMenu": false,
+      "menuOrder": 0,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-01T00:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "name": "Floor Lamps",
+      "slug": "floor-lamps",
+      "description": "Arc and standing lamps that anchor a corner.",
+      "image": "https://placehold.co/400x300/9c6644/FFFFFF?text=Floor%20Lamps",
+      "parentId": 1,
+      "isActive": true,
+      "sortOrder": 2,
+      "showInMainMenu": false,
+      "menuOrder": 0,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 11,
-      "name": "Kitchen & Dining",
-      "slug": "kitchen-dining",
-      "description": "Cookware, dinnerware, appliances and accessories",
-      "image": "https://placehold.co/400x300/795548/FFFFFF?text=Kitchen",
-      "parentId": null,
-      "isActive": true,
-      "sortOrder": 9,
-      "showInMainMenu": false,
-      "menuOrder": 9,
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2026-06-14T14:28:04.495Z"
-    },
-    {
-      "id": 12,
-      "name": "Footwear",
-      "slug": "footwear",
-      "description": "Shoes, sneakers, sandals and boots",
-      "image": "https://placehold.co/400x300/607d8b/FFFFFF?text=Footwear",
-      "parentId": null,
-      "isActive": true,
-      "sortOrder": 10,
-      "showInMainMenu": false,
-      "menuOrder": 10,
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2026-06-14T14:28:05.635Z"
-    },
-    {
-      "id": 13,
-      "name": "Smartphones",
-      "slug": "smartphones",
-      "description": "Latest smartphones and mobile accessories",
-      "image": "https://placehold.co/400x300/00bcd4/FFFFFF?text=Smartphones",
+      "name": "Candles & Holders",
+      "slug": "candles-holders",
+      "description": "Scented candles and brass holders for evening light.",
+      "image": "https://placehold.co/400x300/d4a373/FFFFFF?text=Candles%20%26%20Holders",
       "parentId": 1,
       "isActive": true,
       "sortOrder": 3,
       "showInMainMenu": false,
       "menuOrder": 0,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
-      "id": 14,
-      "name": "Sarees",
-      "slug": "sarees",
-      "description": "Silk, cotton, chiffon and designer sarees",
-      "image": "https://placehold.co/400x300/c2185b/FFFFFF?text=Sarees",
-      "parentId": 8,
+      "id": 12,
+      "name": "Wall Art & Prints",
+      "slug": "wall-art-prints",
+      "description": "Framed prints, canvases and photo frames.",
+      "image": "https://placehold.co/400x300/6f4e37/FFFFFF?text=Wall%20Art%20%26%20Prints",
+      "parentId": 2,
       "isActive": true,
       "sortOrder": 1,
       "showInMainMenu": false,
       "menuOrder": 0,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
+      "updatedAt": "2025-06-01T00:00:00.000Z"
+    },
+    {
+      "id": 13,
+      "name": "Decorative Mirrors",
+      "slug": "decorative-mirrors",
+      "description": "Round, arched and full-length mirrors.",
+      "image": "https://placehold.co/400x300/c9a24b/FFFFFF?text=Decorative%20Mirrors",
+      "parentId": 7,
+      "isActive": true,
+      "sortOrder": 1,
+      "showInMainMenu": false,
+      "menuOrder": 0,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-01T00:00:00.000Z"
+    },
+    {
+      "id": 14,
+      "name": "Vases",
+      "slug": "vases",
+      "description": "Ceramic and stoneware vases for blooms and branches.",
+      "image": "https://placehold.co/400x300/b5764f/FFFFFF?text=Vases",
+      "parentId": 6,
+      "isActive": true,
+      "sortOrder": 1,
+      "showInMainMenu": false,
+      "menuOrder": 0,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     },
     {
       "id": 15,
-      "name": "Kurtas",
-      "slug": "kurtas",
-      "description": "Anarkali, straight, A-line kurtas and sets",
-      "image": "https://placehold.co/400x300/ad1457/FFFFFF?text=Kurtas",
-      "parentId": 8,
+      "name": "Cushions & Throws",
+      "slug": "cushions-throws",
+      "description": "Linen cushions and bouclé throws to layer.",
+      "image": "https://placehold.co/400x300/9aa57f/FFFFFF?text=Cushions%20%26%20Throws",
+      "parentId": 5,
+      "isActive": true,
+      "sortOrder": 1,
+      "showInMainMenu": false,
+      "menuOrder": 0,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-01T00:00:00.000Z"
+    },
+    {
+      "id": 16,
+      "name": "Rugs",
+      "slug": "rugs",
+      "description": "Handwoven wool rugs in natural tones.",
+      "image": "https://placehold.co/400x300/8a8170/FFFFFF?text=Rugs",
+      "parentId": 5,
       "isActive": true,
       "sortOrder": 2,
       "showInMainMenu": false,
       "menuOrder": 0,
       "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
-    {
-      "name": "Test",
-      "slug": "test",
-      "description": "jdsb jkdbdsk kjdbds kjsksdjc",
-      "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=Maharathi+Books",
-      "parentId": null,
-      "isActive": true,
-      "sortOrder": 11,
-      "createdAt": "2026-06-14T05:11:13.803Z",
-      "updatedAt": "2026-06-14T08:01:05.804Z",
-      "id": 16,
-      "showInMainMenu": false,
-      "menuOrder": 11
+      "updatedAt": "2025-06-01T00:00:00.000Z"
     }
   ],
   "products": [
     {
       "id": 1,
-      "name": "ProBook Ultra Laptop 15\"",
-      "slug": "probook-ultra-laptop-15",
-      "sku": "LAP-PBU-15-001",
-      "shortDescription": "Powerful 15-inch laptop with Intel Core i7 processor and 16GB RAM",
-      "description": "The ProBook Ultra Laptop 15\" is engineered for professionals who demand performance. Equipped with the latest Intel Core i7 processor, 16GB DDR5 RAM, and a 512GB NVMe SSD, this laptop handles everything from intensive multitasking to creative workloads with ease. The stunning 15.6-inch FHD IPS display delivers vivid colors and sharp details for an immersive visual experience.",
-      "categoryId": 6,
-      "brand": "ProBook",
+      "name": "Lumière Fluted Glass Table Lamp",
+      "slug": "lumiere-fluted-glass-table-lamp",
+      "sku": "LMP-LUM-TBL-001",
+      "shortDescription": "Fluted glass table lamp with a warm linen shade for soft, ambient light.",
+      "description": "The Lumière table lamp pairs a hand-finished fluted glass base with a natural linen shade, casting a soft, diffused glow that flatters any room. A weighted base keeps it steady on a console or bedside table, and the in-line dimmer lets you set the mood from a gentle wash to a reading light. Sold ready to use with an energy-efficient bulb.",
+      "categoryId": 9,
+      "brand": "Lumière by THIS",
       "images": [
-        "https://placehold.co/600x400/1a1a2e/FFFFFF?text=ProBook+Laptop",
-        "https://placehold.co/600x400/16213e/FFFFFF?text=ProBook+Side",
-        "https://placehold.co/600x400/0f3460/FFFFFF?text=ProBook+Open"
+        "https://placehold.co/600x400/b07d56/FFFFFF?text=Lumiere%20Table%20Lamp",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Lumiere%20Detail",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Lumiere%20Lit"
       ],
-      "price": 74999,
-      "comparePrice": 89999,
-      "costPrice": 55000,
-      "stock": 45,
-      "lowStockThreshold": 10,
-      "weight": 1.8,
+      "price": 640,
+      "comparePrice": 820,
+      "costPrice": 360,
+      "stock": 38,
+      "lowStockThreshold": 6,
+      "weight": 2.4,
       "dimensions": {
-        "length": 35.7,
-        "width": 23.5,
-        "height": 1.9
+        "length": 32,
+        "width": 32,
+        "height": 52
       },
       "variants": [
         {
           "id": "v1",
-          "name": "8GB RAM / 256GB SSD",
-          "price": 64999,
-          "stock": 20,
-          "sku": "LAP-PBU-15-8-256",
+          "name": "Brushed Brass",
+          "price": 640,
+          "stock": 16,
+          "sku": "LMP-LUM-TBL-BRS",
           "attributes": {
-            "Configuration": "8GB · 256GB SSD"
-          }
+            "Finish": "Brushed Brass"
+          },
+          "swatchHex": "#c9a24b"
         },
         {
           "id": "v2",
-          "name": "16GB RAM / 512GB SSD",
-          "price": 74999,
-          "stock": 15,
-          "sku": "LAP-PBU-15-16-512",
+          "name": "Matte Black",
+          "price": 640,
+          "stock": 14,
+          "sku": "LMP-LUM-TBL-BLK",
           "attributes": {
-            "Configuration": "16GB · 512GB SSD"
-          }
+            "Finish": "Matte Black"
+          },
+          "swatchHex": "#2b2b2b"
         },
         {
           "id": "v3",
-          "name": "32GB RAM / 1TB SSD",
-          "price": 94999,
-          "stock": 10,
-          "sku": "LAP-PBU-15-32-1TB",
+          "name": "Polished Nickel",
+          "price": 680,
+          "stock": 8,
+          "sku": "LMP-LUM-TBL-NKL",
           "attributes": {
-            "Configuration": "32GB · 1TB SSD"
-          }
+            "Finish": "Polished Nickel"
+          },
+          "swatchHex": "#b8bcc0"
         }
       ],
       "tags": [
-        "laptop",
-        "intel",
-        "i7",
-        "ultrabook",
-        "work",
-        "productivity"
+        "table lamp",
+        "lighting",
+        "glass",
+        "bedside",
+        "ambient",
+        "living room"
       ],
       "featured": true,
       "trending": true,
       "hot": false,
       "isActive": true,
-      "rating": 4.6,
-      "totalReviews": 128,
-      "metaTitle": "ProBook Ultra Laptop 15\" - Intel Core i7 | Best Price",
-      "metaDescription": "Buy ProBook Ultra Laptop 15\" with Intel Core i7, 16GB RAM, 512GB SSD. Free shipping available.",
+      "rating": 4.7,
+      "totalReviews": 64,
+      "metaTitle": "Lumière Fluted Glass Table Lamp | THIS Interiors",
+      "metaDescription": "A fluted glass table lamp with linen shade and dimmer — soft, ambient light for bedside or console. Shop THIS Interiors, Dubai.",
       "createdAt": "2025-01-10T00:00:00.000Z",
       "updatedAt": "2025-03-01T00:00:00.000Z",
-      "frequentlyBoughtTogetherIds": [
-        4,
-        6
-      ],
       "relatedProductIds": [
-        13,
         3,
-        16,
-        4,
-        6
+        10,
+        7
+      ],
+      "frequentlyBoughtTogetherIds": [
+        7,
+        2
       ]
     },
     {
       "id": 2,
-      "name": "SoundWave Pro Wireless Earbuds",
-      "slug": "soundwave-pro-wireless-earbuds",
-      "sku": "AUD-SWP-TWS-001",
-      "shortDescription": "Premium true wireless earbuds with active noise cancellation",
-      "description": "Experience audio like never before with SoundWave Pro Wireless Earbuds. Featuring advanced Active Noise Cancellation (ANC) technology, 30-hour total battery life, and premium sound quality. The ergonomic design ensures a secure, comfortable fit for all-day wear. IPX5 water resistance makes them perfect for workouts and outdoor activities.",
-      "categoryId": 7,
-      "brand": "SoundWave",
+      "name": "Aurelia Ribbed Ceramic Vase",
+      "slug": "aurelia-ribbed-ceramic-vase",
+      "sku": "VAS-AUR-CER-001",
+      "shortDescription": "Hand-thrown ribbed ceramic vase with a soft matte glaze.",
+      "description": "Aurelia is a sculptural, hand-thrown vase with deep vertical ribbing and a soft matte glaze that catches the light beautifully. Generous enough for a full bouquet yet just as striking on its own, it brings quiet texture to a mantel, console or dining table. Each piece is individually finished, so subtle variations are part of its charm.",
+      "categoryId": 14,
+      "brand": "THIS Atelier",
       "images": [
-        "https://placehold.co/600x400/1a1a2e/FFFFFF?text=SoundWave+Earbuds",
-        "https://placehold.co/600x400/16213e/FFFFFF?text=SoundWave+Case"
+        "https://placehold.co/600x400/b5764f/FFFFFF?text=Aurelia%20Vase",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Aurelia%20Detail",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Aurelia%20Styled"
       ],
-      "price": 8999,
-      "comparePrice": 12999,
-      "costPrice": 5500,
-      "stock": 120,
-      "lowStockThreshold": 20,
-      "weight": 0.065,
+      "price": 185,
+      "comparePrice": 240,
+      "costPrice": 92,
+      "stock": 60,
+      "lowStockThreshold": 10,
+      "weight": 1.3,
       "dimensions": {
-        "length": 6.5,
-        "width": 4.2,
-        "height": 2.8
+        "length": 16,
+        "width": 16,
+        "height": 30
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Midnight Black",
-          "price": 8999,
-          "stock": 50,
-          "sku": "AUD-SWP-TWS-BLK",
+          "name": "Ivory · Medium",
+          "price": 185,
+          "stock": 18,
+          "sku": "VAS-AUR-IVY-M",
           "attributes": {
-            "Color": "Midnight Black"
+            "Color": "Ivory",
+            "Size": "Medium"
           },
-          "swatchHex": "#1a1a2e"
+          "swatchHex": "#efe7da"
         },
         {
           "id": "v2",
-          "name": "Pearl White",
-          "price": 8999,
-          "stock": 40,
-          "sku": "AUD-SWP-TWS-WHT",
+          "name": "Ivory · Large",
+          "price": 235,
+          "stock": 12,
+          "sku": "VAS-AUR-IVY-L",
           "attributes": {
-            "Color": "Pearl White"
+            "Color": "Ivory",
+            "Size": "Large"
           },
-          "swatchHex": "#f3f1ea"
+          "swatchHex": "#efe7da"
         },
         {
           "id": "v3",
-          "name": "Navy Blue",
-          "price": 8999,
-          "stock": 30,
-          "sku": "AUD-SWP-TWS-NVY",
+          "name": "Clay · Medium",
+          "price": 185,
+          "stock": 16,
+          "sku": "VAS-AUR-CLY-M",
           "attributes": {
-            "Color": "Navy Blue"
+            "Color": "Clay",
+            "Size": "Medium"
           },
-          "swatchHex": "#1e3a5f"
+          "swatchHex": "#b5764f"
+        },
+        {
+          "id": "v4",
+          "name": "Charcoal · Medium",
+          "price": 185,
+          "stock": 14,
+          "sku": "VAS-AUR-CHR-M",
+          "attributes": {
+            "Color": "Charcoal",
+            "Size": "Medium"
+          },
+          "swatchHex": "#3a3a3a"
         }
       ],
       "tags": [
-        "earbuds",
-        "wireless",
-        "anc",
-        "bluetooth",
-        "audio",
-        "tws"
+        "vase",
+        "ceramic",
+        "ribbed",
+        "flowers",
+        "tabletop",
+        "decor"
       ],
       "featured": true,
       "trending": true,
       "hot": true,
       "isActive": true,
       "rating": 4.8,
-      "totalReviews": 342,
-      "metaTitle": "SoundWave Pro Wireless Earbuds - ANC | True Wireless",
-      "metaDescription": "Shop SoundWave Pro Wireless Earbuds with Active Noise Cancellation, 30hr battery, IPX5 rating.",
-      "createdAt": "2025-01-15T00:00:00.000Z",
-      "updatedAt": "2025-02-20T00:00:00.000Z",
+      "totalReviews": 96,
+      "metaTitle": "Aurelia Ribbed Ceramic Vase | THIS Interiors",
+      "metaDescription": "Hand-thrown ribbed ceramic vase with a soft matte glaze, in ivory, clay and charcoal. Shop THIS Interiors décor, Dubai.",
+      "createdAt": "2025-01-12T00:00:00.000Z",
+      "updatedAt": "2025-03-02T00:00:00.000Z",
       "relatedProductIds": [
-        10,
-        4,
-        3
+        20,
+        11,
+        6
+      ],
+      "frequentlyBoughtTogetherIds": [
+        7,
+        1
       ]
     },
     {
       "id": 3,
-      "name": "FitPulse Smartwatch Series 5",
-      "slug": "fitpulse-smartwatch-series-5",
-      "sku": "ELC-FPS-SW5-001",
-      "shortDescription": "Advanced health tracking smartwatch with GPS and AMOLED display",
-      "description": "The FitPulse Smartwatch Series 5 is your ultimate health and fitness companion. Track your heart rate, SpO2, sleep quality, and stress levels with clinical-grade accuracy. Built-in GPS for precise route tracking, 7-day battery life, and 100+ workout modes. The always-on AMOLED display looks stunning in any lighting condition.",
-      "categoryId": 1,
-      "brand": "FitPulse",
+      "name": "Noor Brass Arc Floor Lamp",
+      "slug": "noor-brass-arc-floor-lamp",
+      "sku": "LMP-NOR-FLR-001",
+      "shortDescription": "Sweeping arc floor lamp with a marble base and brass stem.",
+      "description": "Noor makes a quiet statement: a slender metal stem arcs gracefully over a sofa or reading chair, finished with a solid stone base for balance. The adjustable head directs a pool of warm light exactly where you want it, while the sculptural silhouette earns its place even when switched off. A foot-dimmer keeps controls effortless.",
+      "categoryId": 10,
+      "brand": "Lumière by THIS",
       "images": [
-        "https://placehold.co/600x400/0f3460/FFFFFF?text=FitPulse+Watch",
-        "https://placehold.co/600x400/533483/FFFFFF?text=FitPulse+Side"
+        "https://placehold.co/600x400/9c6644/FFFFFF?text=Noor%20Floor%20Lamp",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Noor%20Base",
+        "https://placehold.co/600x400/c9a24b/FFFFFF?text=Noor%20Arc"
       ],
-      "price": 14999,
-      "comparePrice": 19999,
-      "costPrice": 9000,
-      "stock": 75,
-      "lowStockThreshold": 15,
-      "weight": 0.045,
+      "price": 1290,
+      "comparePrice": 1650,
+      "costPrice": 760,
+      "stock": 22,
+      "lowStockThreshold": 4,
+      "weight": 9.5,
       "dimensions": {
-        "length": 4.5,
-        "width": 3.8,
-        "height": 1
+        "length": 45,
+        "width": 30,
+        "height": 210
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Black / Rubber Band",
-          "price": 14999,
-          "stock": 30,
-          "sku": "ELC-FPS-SW5-BLK-R"
+          "name": "Antique Brass",
+          "price": 1290,
+          "stock": 12,
+          "sku": "LMP-NOR-FLR-BRS",
+          "attributes": {
+            "Finish": "Antique Brass"
+          },
+          "swatchHex": "#b08d57"
         },
         {
           "id": "v2",
-          "name": "Silver / Metal Band",
-          "price": 16999,
-          "stock": 25,
-          "sku": "ELC-FPS-SW5-SLV-M"
-        },
-        {
-          "id": "v3",
-          "name": "Gold / Leather Band",
-          "price": 18999,
-          "stock": 20,
-          "sku": "ELC-FPS-SW5-GLD-L"
+          "name": "Matte Black",
+          "price": 1290,
+          "stock": 10,
+          "sku": "LMP-NOR-FLR-BLK",
+          "attributes": {
+            "Finish": "Matte Black"
+          },
+          "swatchHex": "#2b2b2b"
         }
       ],
       "tags": [
-        "smartwatch",
-        "fitness",
-        "gps",
-        "health",
-        "amoled",
-        "wearable"
+        "floor lamp",
+        "lighting",
+        "brass",
+        "arc",
+        "statement",
+        "living room"
       ],
       "featured": true,
       "trending": false,
       "hot": true,
       "isActive": true,
-      "rating": 4.5,
-      "totalReviews": 215,
-      "metaTitle": "FitPulse Smartwatch Series 5 - Health & Fitness Tracker",
-      "metaDescription": "Buy FitPulse Smartwatch Series 5 with GPS, heart rate monitor, SpO2 tracking and 7-day battery.",
-      "createdAt": "2025-01-20T00:00:00.000Z",
-      "updatedAt": "2025-02-15T00:00:00.000Z"
+      "rating": 4.6,
+      "totalReviews": 41,
+      "metaTitle": "Noor Brass Arc Floor Lamp | THIS Interiors",
+      "metaDescription": "A sweeping arc floor lamp with marble base and adjustable head — warm reading light and a sculptural silhouette. THIS Interiors, Dubai.",
+      "createdAt": "2025-01-14T00:00:00.000Z",
+      "updatedAt": "2025-03-03T00:00:00.000Z",
+      "relatedProductIds": [
+        1,
+        10,
+        15
+      ],
+      "frequentlyBoughtTogetherIds": [
+        1
+      ]
     },
     {
       "id": 4,
-      "name": "MechKey RGB Gaming Keyboard",
-      "slug": "mechkey-rgb-gaming-keyboard",
-      "sku": "ELC-MKB-RGB-001",
-      "shortDescription": "Mechanical gaming keyboard with per-key RGB backlight and tactile switches",
-      "description": "Dominate your game with the MechKey RGB Gaming Keyboard. Features genuine mechanical switches rated for 100 million keystrokes, full per-key RGB customization with 16 million colors, and a durable aircraft-grade aluminum frame. Anti-ghosting with N-key rollover ensures every keystroke is registered, even in the most intense gaming sessions.",
-      "categoryId": 1,
-      "brand": "MechKey",
+      "name": "Métropole Round Wall Mirror",
+      "slug": "metropole-round-wall-mirror",
+      "sku": "MIR-MET-RND-001",
+      "shortDescription": "Slim-framed round wall mirror that opens up any room.",
+      "description": "A clean, slim metal frame wraps a generous round mirror to bounce light and visually double a space. Métropole is equally at home above a console, in an entryway, or leaning into a gallery wall. Arrives with secure cleat fixings for a flush, floating look on the wall.",
+      "categoryId": 13,
+      "brand": "THIS Studio",
       "images": [
-        "https://placehold.co/600x400/1a1a2e/FFFFFF?text=MechKey+Keyboard",
-        "https://placehold.co/600x400/16213e/FFFFFF?text=MechKey+RGB"
+        "https://placehold.co/600x400/c9a24b/FFFFFF?text=Metropole%20Mirror",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Metropole%20Entryway",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Metropole%20Frame"
       ],
-      "price": 6499,
-      "comparePrice": 8999,
-      "costPrice": 3800,
-      "stock": 60,
-      "lowStockThreshold": 12,
-      "weight": 1.2,
+      "price": 880,
+      "comparePrice": 1150,
+      "costPrice": 500,
+      "stock": 30,
+      "lowStockThreshold": 5,
+      "weight": 6.2,
       "dimensions": {
-        "length": 44,
-        "width": 13.5,
-        "height": 3.8
+        "length": 70,
+        "width": 4,
+        "height": 70
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Blue Switches (Clicky)",
-          "price": 6499,
-          "stock": 25,
-          "sku": "ELC-MKB-RGB-BLU"
+          "name": "Brushed Brass · 70cm",
+          "price": 880,
+          "stock": 10,
+          "sku": "MIR-MET-BRS-70",
+          "attributes": {
+            "Finish": "Brushed Brass",
+            "Size": "70cm"
+          },
+          "swatchHex": "#c9a24b"
         },
         {
           "id": "v2",
-          "name": "Red Switches (Linear)",
-          "price": 6499,
-          "stock": 20,
-          "sku": "ELC-MKB-RGB-RED"
+          "name": "Brushed Brass · 90cm",
+          "price": 1180,
+          "stock": 6,
+          "sku": "MIR-MET-BRS-90",
+          "attributes": {
+            "Finish": "Brushed Brass",
+            "Size": "90cm"
+          },
+          "swatchHex": "#c9a24b"
         },
         {
           "id": "v3",
-          "name": "Brown Switches (Tactile)",
-          "price": 6499,
-          "stock": 15,
-          "sku": "ELC-MKB-RGB-BRN"
+          "name": "Matte Black · 70cm",
+          "price": 880,
+          "stock": 8,
+          "sku": "MIR-MET-BLK-70",
+          "attributes": {
+            "Finish": "Matte Black",
+            "Size": "70cm"
+          },
+          "swatchHex": "#2b2b2b"
+        },
+        {
+          "id": "v4",
+          "name": "Matte Black · 90cm",
+          "price": 1180,
+          "stock": 6,
+          "sku": "MIR-MET-BLK-90",
+          "attributes": {
+            "Finish": "Matte Black",
+            "Size": "90cm"
+          },
+          "swatchHex": "#2b2b2b"
         }
       ],
       "tags": [
-        "keyboard",
-        "mechanical",
-        "gaming",
-        "rgb",
-        "tactile"
+        "mirror",
+        "wall mirror",
+        "round",
+        "brass",
+        "entryway",
+        "statement"
       ],
-      "featured": false,
+      "featured": true,
       "trending": true,
-      "hot": true,
+      "hot": false,
       "isActive": true,
       "rating": 4.7,
-      "totalReviews": 189,
-      "metaTitle": "MechKey RGB Gaming Keyboard - Mechanical Switches",
-      "metaDescription": "Buy MechKey RGB Mechanical Gaming Keyboard with per-key RGB, aluminum frame, N-key rollover.",
-      "createdAt": "2025-02-01T00:00:00.000Z",
-      "updatedAt": "2025-02-28T00:00:00.000Z",
-      "frequentlyBoughtTogetherIds": [
-        1,
-        6
-      ],
+      "totalReviews": 58,
+      "metaTitle": "Métropole Round Wall Mirror | THIS Interiors",
+      "metaDescription": "A slim-framed round wall mirror in brass or black, 70cm or 90cm — opens up entryways and living rooms. THIS Interiors, Dubai.",
+      "createdAt": "2025-01-16T00:00:00.000Z",
+      "updatedAt": "2025-03-04T00:00:00.000Z",
       "relatedProductIds": [
-        3,
-        16,
-        13
+        18,
+        15,
+        2
       ]
     },
     {
       "id": 5,
-      "name": "Urban Classic Cotton T-Shirt",
-      "slug": "urban-classic-cotton-t-shirt",
-      "sku": "CLT-UCT-CRW-001",
-      "shortDescription": "Premium 100% organic cotton crew neck t-shirt",
-      "description": "Made from 100% GOTS-certified organic cotton, the Urban Classic T-Shirt is the foundation of any wardrobe. The relaxed, slightly oversized fit offers comfort without compromising style. Pre-shrunk fabric ensures it maintains its shape wash after wash. Available in a range of versatile colors.",
-      "categoryId": 2,
-      "brand": "Urban Threads",
+      "name": "Dune Washed Linen Cushion Cover",
+      "slug": "dune-washed-linen-cushion-cover",
+      "sku": "TEX-DUN-CSH-001",
+      "shortDescription": "Stonewashed pure-linen cushion cover with a hidden zip.",
+      "description": "Cut from pure stonewashed linen, the Dune cover has a relaxed, lived-in softness from the very first day. A concealed zip keeps the look clean, and the earthy palette is made to layer — mix sand, clay and sage across a sofa or bed. Cover only; pad sold separately. 50 × 50 cm.",
+      "categoryId": 15,
+      "brand": "THIS Home",
       "images": [
-        "https://placehold.co/600x400/764ba2/FFFFFF?text=Urban+T-Shirt",
-        "https://placehold.co/600x400/533483/FFFFFF?text=Urban+Back"
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Dune%20Cushion",
+        "https://placehold.co/600x400/9aa57f/FFFFFF?text=Dune%20Layered",
+        "https://placehold.co/600x400/b5764f/FFFFFF?text=Dune%20Texture"
       ],
-      "price": 899,
-      "comparePrice": 1299,
-      "costPrice": 400,
-      "stock": 250,
-      "lowStockThreshold": 30,
-      "weight": 0.18,
+      "price": 95,
+      "comparePrice": 130,
+      "costPrice": 44,
+      "stock": 200,
+      "lowStockThreshold": 24,
+      "weight": 0.4,
       "dimensions": {
-        "length": 30,
-        "width": 25,
-        "height": 0.5
+        "length": 50,
+        "width": 50,
+        "height": 2
       },
       "variants": [
         {
           "id": "v1",
-          "name": "S / White",
-          "price": 899,
-          "stock": 50,
-          "sku": "CLT-UCT-CRW-S-WHT",
+          "name": "Sand",
+          "price": 95,
+          "stock": 45,
+          "sku": "TEX-DUN-CSH-SND",
           "attributes": {
-            "Size": "S",
-            "Color": "White"
+            "Color": "Sand"
           },
-          "swatchHex": "#ffffff"
+          "swatchHex": "#d9c5a8"
         },
         {
           "id": "v2",
-          "name": "M / White",
-          "price": 899,
-          "stock": 60,
-          "sku": "CLT-UCT-CRW-M-WHT",
+          "name": "Clay",
+          "price": 95,
+          "stock": 40,
+          "sku": "TEX-DUN-CSH-CLY",
           "attributes": {
-            "Size": "M",
-            "Color": "White"
+            "Color": "Clay"
           },
-          "swatchHex": "#ffffff"
+          "swatchHex": "#b5764f"
         },
         {
           "id": "v3",
-          "name": "L / White",
-          "price": 899,
-          "stock": 55,
-          "sku": "CLT-UCT-CRW-L-WHT",
+          "name": "Sage",
+          "price": 95,
+          "stock": 40,
+          "sku": "TEX-DUN-CSH-SGE",
           "attributes": {
-            "Size": "L",
-            "Color": "White"
+            "Color": "Sage"
           },
-          "swatchHex": "#ffffff"
+          "swatchHex": "#9aa57f"
         },
         {
           "id": "v4",
-          "name": "XL / White",
-          "price": 899,
-          "stock": 40,
-          "sku": "CLT-UCT-CRW-XL-WHT",
+          "name": "Charcoal",
+          "price": 95,
+          "stock": 38,
+          "sku": "TEX-DUN-CSH-CHR",
           "attributes": {
-            "Size": "XL",
-            "Color": "White"
+            "Color": "Charcoal"
           },
-          "swatchHex": "#ffffff"
+          "swatchHex": "#3a3a3a"
         },
         {
           "id": "v5",
-          "name": "S / Black",
-          "price": 899,
-          "stock": 45,
-          "sku": "CLT-UCT-CRW-S-BLK",
+          "name": "Ivory",
+          "price": 95,
+          "stock": 37,
+          "sku": "TEX-DUN-CSH-IVY",
           "attributes": {
-            "Size": "S",
-            "Color": "Black"
+            "Color": "Ivory"
           },
-          "swatchHex": "#1a1a1a"
+          "swatchHex": "#efe7da"
         }
       ],
       "tags": [
-        "tshirt",
-        "cotton",
-        "organic",
-        "casual",
-        "unisex",
-        "basics"
+        "cushion",
+        "cushion cover",
+        "linen",
+        "throw pillow",
+        "sofa",
+        "textiles"
       ],
       "featured": false,
       "trending": false,
       "hot": false,
       "isActive": true,
-      "rating": 4.3,
-      "totalReviews": 567,
-      "metaTitle": "Urban Classic Cotton T-Shirt - Organic | Sustainable Fashion",
-      "metaDescription": "Shop Urban Classic 100% organic cotton t-shirts. Comfortable, sustainable and stylish.",
-      "createdAt": "2025-02-10T00:00:00.000Z",
-      "updatedAt": "2025-03-05T00:00:00.000Z"
+      "rating": 4.5,
+      "totalReviews": 132,
+      "metaTitle": "Dune Washed Linen Cushion Cover | THIS Interiors",
+      "metaDescription": "Stonewashed pure-linen cushion cover in five earthy tones with a hidden zip. Layer your sofa with THIS Interiors, Dubai.",
+      "createdAt": "2025-01-18T00:00:00.000Z",
+      "updatedAt": "2025-03-05T00:00:00.000Z",
+      "relatedProductIds": [
+        12,
+        8,
+        2
+      ],
+      "frequentlyBoughtTogetherIds": [
+        12
+      ]
     },
     {
       "id": 6,
-      "name": "ZenPro USB-C 7-in-1 Hub",
-      "slug": "zenpro-usb-c-7-in-1-hub",
-      "sku": "ELC-ZPH-7C1-001",
-      "shortDescription": "Compact 7-in-1 USB-C hub with 4K HDMI, 100W PD charging and SD card reader",
-      "description": "The ZenPro USB-C 7-in-1 Hub transforms your single USB-C port into a productivity powerhouse. Connects up to 7 devices simultaneously: 4K@60Hz HDMI, 100W Power Delivery pass-through, 2x USB-A 3.0, USB-C data, SD and microSD card readers. The slim, pocket-friendly design makes it perfect for on-the-go professionals.",
-      "categoryId": 1,
-      "brand": "ZenPro",
+      "name": "Atlas Marble & Brass Serving Tray",
+      "slug": "atlas-marble-brass-serving-tray",
+      "sku": "TAB-ATL-TRY-001",
+      "shortDescription": "Natural marble tray with slim brass handles.",
+      "description": "A slab of genuine marble framed by slim brass handles, Atlas turns an ottoman, bar cart or kitchen island into something considered. Use it to corral candles and a carafe, or to serve in style. Natural stone veining means no two trays are exactly alike. Wipe clean with a soft, dry cloth.",
+      "categoryId": 4,
+      "brand": "THIS Atelier",
       "images": [
-        "https://placehold.co/600x400/2196f3/FFFFFF?text=ZenPro+Hub",
-        "https://placehold.co/600x400/1976d2/FFFFFF?text=ZenPro+Ports"
+        "https://placehold.co/600x400/c1623f/FFFFFF?text=Atlas%20Tray",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Atlas%20Marble",
+        "https://placehold.co/600x400/c9a24b/FFFFFF?text=Atlas%20Handles"
       ],
-      "price": 3499,
-      "comparePrice": 4999,
-      "costPrice": 1800,
-      "stock": 90,
-      "lowStockThreshold": 15,
-      "weight": 0.095,
+      "price": 320,
+      "comparePrice": 420,
+      "costPrice": 175,
+      "stock": 44,
+      "lowStockThreshold": 8,
+      "weight": 2.8,
       "dimensions": {
-        "length": 11.5,
-        "width": 3.5,
-        "height": 1.4
-      },
-      "variants": [
-        {
-          "id": "v1",
-          "name": "Space Gray",
-          "price": 3499,
-          "stock": 50,
-          "sku": "ELC-ZPH-7C1-GRY"
-        },
-        {
-          "id": "v2",
-          "name": "Silver",
-          "price": 3499,
-          "stock": 40,
-          "sku": "ELC-ZPH-7C1-SLV"
-        }
-      ],
-      "tags": [
-        "usb-c",
-        "hub",
-        "docking",
-        "4k",
-        "hdmi",
-        "productivity"
-      ],
-      "featured": false,
-      "trending": true,
-      "hot": false,
-      "isActive": true,
-      "rating": 4.5,
-      "totalReviews": 98,
-      "metaTitle": "ZenPro USB-C 7-in-1 Hub - 4K HDMI, 100W PD | Best Dock",
-      "metaDescription": "Buy ZenPro 7-in-1 USB-C Hub with 4K HDMI, 100W Power Delivery, USB 3.0 and SD card readers.",
-      "createdAt": "2025-02-20T00:00:00.000Z",
-      "updatedAt": "2025-03-10T00:00:00.000Z"
-    },
-    {
-      "id": 7,
-      "name": "Banarasi Silk Saree",
-      "slug": "banarasi-silk-saree",
-      "sku": "SAR-BNR-SLK-001",
-      "shortDescription": "Handwoven Banarasi silk saree with rich zari work",
-      "description": "This exquisite Banarasi silk saree is handwoven by master artisans of Varanasi. Featuring intricate gold zari work with traditional motifs, it comes with an unstitched blouse piece. The rich texture and luxurious feel make it perfect for weddings, festivals, and special occasions.",
-      "categoryId": 14,
-      "brand": "WeaveKraft",
-      "images": [
-        "https://placehold.co/600x400/c2185b/FFFFFF?text=Banarasi+Saree",
-        "https://placehold.co/600x400/d81b60/FFFFFF?text=Saree+Detail",
-        "https://placehold.co/600x400/e91e63/FFFFFF?text=Saree+Pallu"
-      ],
-      "price": 5999,
-      "comparePrice": 8999,
-      "costPrice": 3500,
-      "stock": 30,
-      "lowStockThreshold": 5,
-      "weight": 0.6,
-      "dimensions": {
-        "length": 30,
-        "width": 25,
+        "length": 45,
+        "width": 30,
         "height": 5
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Maroon & Gold",
-          "price": 5999,
-          "stock": 10,
-          "sku": "SAR-BNR-SLK-MRN"
+          "name": "White Marble",
+          "price": 320,
+          "stock": 24,
+          "sku": "TAB-ATL-TRY-WHT",
+          "attributes": {
+            "Color": "White Marble"
+          },
+          "swatchHex": "#ece9e4"
         },
         {
           "id": "v2",
-          "name": "Royal Blue & Gold",
-          "price": 5999,
-          "stock": 10,
-          "sku": "SAR-BNR-SLK-BLU"
-        },
-        {
-          "id": "v3",
-          "name": "Green & Gold",
-          "price": 6499,
-          "stock": 10,
-          "sku": "SAR-BNR-SLK-GRN"
+          "name": "Green Marble",
+          "price": 350,
+          "stock": 20,
+          "sku": "TAB-ATL-TRY-GRN",
+          "attributes": {
+            "Color": "Green Marble"
+          },
+          "swatchHex": "#4f6b4a"
         }
       ],
       "tags": [
-        "saree",
-        "silk",
-        "banarasi",
-        "wedding",
-        "ethnic",
-        "traditional"
+        "tray",
+        "serving tray",
+        "marble",
+        "brass",
+        "ottoman",
+        "tabletop"
+      ],
+      "featured": false,
+      "trending": true,
+      "hot": false,
+      "isActive": true,
+      "rating": 4.6,
+      "totalReviews": 37,
+      "metaTitle": "Atlas Marble & Brass Serving Tray | THIS Interiors",
+      "metaDescription": "A natural marble serving tray with slim brass handles, in white or green marble. Style your ottoman with THIS Interiors, Dubai.",
+      "createdAt": "2025-01-20T00:00:00.000Z",
+      "updatedAt": "2025-03-06T00:00:00.000Z",
+      "relatedProductIds": [
+        11,
+        2,
+        15
+      ],
+      "frequentlyBoughtTogetherIds": [
+        2
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Maison Oud Scented Candle",
+      "slug": "maison-oud-scented-candle",
+      "sku": "CND-MSN-OUD-001",
+      "shortDescription": "Hand-poured soy candle with a refined oud fragrance.",
+      "description": "Maison is a hand-poured soy-blend candle housed in a reusable ribbed glass vessel. The signature Oud & Amber pour opens with warm spice and settles into soft resin and amber — an evening in Dubai, captured. Around 50 hours of clean, even burn. Trim the wick before each light for the best throw.",
+      "categoryId": 11,
+      "brand": "Maison THIS",
+      "images": [
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Maison%20Candle",
+        "https://placehold.co/600x400/b07d56/FFFFFF?text=Maison%20Glass",
+        "https://placehold.co/600x400/c1623f/FFFFFF?text=Maison%20Lit"
+      ],
+      "price": 130,
+      "comparePrice": 165,
+      "costPrice": 58,
+      "stock": 90,
+      "lowStockThreshold": 15,
+      "weight": 0.6,
+      "dimensions": {
+        "length": 9,
+        "width": 9,
+        "height": 10
+      },
+      "variants": [
+        {
+          "id": "v1",
+          "name": "Oud & Amber",
+          "price": 130,
+          "stock": 34,
+          "sku": "CND-MSN-OUD-AMB",
+          "attributes": {
+            "Scent": "Oud & Amber"
+          }
+        },
+        {
+          "id": "v2",
+          "name": "Fig & Cedar",
+          "price": 130,
+          "stock": 30,
+          "sku": "CND-MSN-FIG-CDR",
+          "attributes": {
+            "Scent": "Fig & Cedar"
+          }
+        },
+        {
+          "id": "v3",
+          "name": "Rose & Saffron",
+          "price": 130,
+          "stock": 26,
+          "sku": "CND-MSN-ROS-SAF",
+          "attributes": {
+            "Scent": "Rose & Saffron"
+          }
+        }
+      ],
+      "tags": [
+        "candle",
+        "scented candle",
+        "soy wax",
+        "oud",
+        "fragrance",
+        "gift"
       ],
       "featured": true,
       "trending": true,
       "hot": false,
       "isActive": true,
-      "rating": 4.8,
-      "totalReviews": 215,
-      "metaTitle": "Banarasi Silk Saree - Handwoven Zari Work | Best Price",
-      "metaDescription": "Buy authentic Banarasi silk saree with intricate zari work. Perfect for weddings and festivals.",
-      "createdAt": "2025-01-15T00:00:00.000Z",
-      "updatedAt": "2025-03-01T00:00:00.000Z"
+      "rating": 4.9,
+      "totalReviews": 88,
+      "metaTitle": "Maison Oud Scented Candle | THIS Interiors",
+      "metaDescription": "Hand-poured soy candle in a reusable glass vessel — oud, fig and rose pours with ~50hr burn. THIS Interiors, Dubai.",
+      "createdAt": "2025-01-22T00:00:00.000Z",
+      "updatedAt": "2025-03-07T00:00:00.000Z",
+      "relatedProductIds": [
+        10,
+        2,
+        1
+      ],
+      "frequentlyBoughtTogetherIds": [
+        10,
+        2
+      ]
     },
     {
       "id": 8,
-      "name": "Designer Anarkali Kurta Set",
-      "slug": "designer-anarkali-kurta-set",
-      "sku": "KRT-ANK-DSG-001",
-      "shortDescription": "Embroidered Anarkali kurta with dupatta and palazzo",
-      "description": "Stunning designer Anarkali kurta set featuring delicate chikankari embroidery on premium georgette fabric. Comes with matching palazzo pants and a net dupatta with lace border. Flattering flared silhouette suitable for festivities and celebrations.",
-      "categoryId": 15,
-      "brand": "EthnicVogue",
+      "name": "Sahara Handwoven Wool Rug",
+      "slug": "sahara-handwoven-wool-rug",
+      "sku": "RUG-SAH-WOL-001",
+      "shortDescription": "Handwoven wool rug with a tonal, low-pile geometric weave.",
+      "description": "Handwoven from pure wool, Sahara grounds a room with a soft, low pile and a subtle tonal geometry inspired by desert light. Wool is naturally resilient and stain-resistant, so it wears beautifully in living and dining rooms alike. Use a rug pad underneath to keep it flat and in place.",
+      "categoryId": 16,
+      "brand": "THIS Atelier",
       "images": [
-        "https://placehold.co/600x400/ad1457/FFFFFF?text=Anarkali+Kurta",
-        "https://placehold.co/600x400/c2185b/FFFFFF?text=Kurta+Back",
-        "https://placehold.co/600x400/d81b60/FFFFFF?text=Kurta+Detail"
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Sahara%20Rug",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Sahara%20Weave",
+        "https://placehold.co/600x400/b5764f/FFFFFF?text=Sahara%20Room"
       ],
-      "price": 3499,
-      "comparePrice": 4999,
-      "costPrice": 2000,
-      "stock": 50,
-      "lowStockThreshold": 8,
-      "weight": 0.5,
+      "price": 1850,
+      "comparePrice": 2400,
+      "costPrice": 1080,
+      "stock": 18,
+      "lowStockThreshold": 3,
+      "weight": 12,
       "dimensions": {
-        "length": 28,
-        "width": 22,
-        "height": 4
+        "length": 230,
+        "width": 160,
+        "height": 2
       },
       "variants": [
         {
           "id": "v1",
-          "name": "S",
-          "price": 3499,
-          "stock": 12,
-          "sku": "KRT-ANK-DSG-S"
+          "name": "160 × 230 cm",
+          "price": 1850,
+          "stock": 8,
+          "sku": "RUG-SAH-WOL-M",
+          "attributes": {
+            "Size": "160 × 230 cm"
+          }
         },
         {
           "id": "v2",
-          "name": "M",
-          "price": 3499,
-          "stock": 15,
-          "sku": "KRT-ANK-DSG-M"
+          "name": "200 × 300 cm",
+          "price": 2750,
+          "stock": 6,
+          "sku": "RUG-SAH-WOL-L",
+          "attributes": {
+            "Size": "200 × 300 cm"
+          }
         },
         {
           "id": "v3",
-          "name": "L",
-          "price": 3499,
-          "stock": 13,
-          "sku": "KRT-ANK-DSG-L"
-        },
-        {
-          "id": "v4",
-          "name": "XL",
-          "price": 3499,
-          "stock": 10,
-          "sku": "KRT-ANK-DSG-XL"
+          "name": "Runner 80 × 300 cm",
+          "price": 1200,
+          "stock": 4,
+          "sku": "RUG-SAH-WOL-R",
+          "attributes": {
+            "Size": "Runner 80 × 300 cm"
+          }
         }
       ],
       "tags": [
-        "kurta",
-        "anarkali",
-        "ethnic",
-        "embroidery",
-        "festive",
-        "women"
-      ],
-      "featured": true,
-      "trending": false,
-      "hot": true,
-      "isActive": true,
-      "rating": 4.5,
-      "totalReviews": 143,
-      "metaTitle": "Designer Anarkali Kurta Set - Chikankari Embroidery",
-      "metaDescription": "Buy designer Anarkali kurta set with chikankari embroidery. Includes palazzo and dupatta.",
-      "createdAt": "2025-01-20T00:00:00.000Z",
-      "updatedAt": "2025-03-05T00:00:00.000Z"
-    },
-    {
-      "id": 9,
-      "name": "AirStride Running Shoes",
-      "slug": "airstride-running-shoes",
-      "sku": "FTW-ASR-RUN-001",
-      "shortDescription": "Lightweight running shoes with responsive cushioning",
-      "description": "AirStride running shoes are engineered for performance. Featuring a breathable knit upper, responsive foam midsole, and durable rubber outsole with multi-directional grip. Perfect for daily runs, gym workouts, and casual wear. Ultra-lightweight at just 250g per shoe.",
-      "categoryId": 12,
-      "brand": "AirStride",
-      "images": [
-        "https://placehold.co/600x400/607d8b/FFFFFF?text=Running+Shoes",
-        "https://placehold.co/600x400/546e7a/FFFFFF?text=Shoes+Side",
-        "https://placehold.co/600x400/455a64/FFFFFF?text=Shoes+Sole"
-      ],
-      "price": 3999,
-      "comparePrice": 5999,
-      "costPrice": 2200,
-      "stock": 80,
-      "lowStockThreshold": 15,
-      "weight": 0.5,
-      "dimensions": {
-        "length": 32,
-        "width": 12,
-        "height": 12
-      },
-      "variants": [
-        {
-          "id": "v1",
-          "name": "UK 7 - Black",
-          "price": 3999,
-          "stock": 20,
-          "sku": "FTW-ASR-7-BLK",
-          "attributes": {
-            "Size": "UK 7",
-            "Color": "Black"
-          },
-          "swatchHex": "#1a1a1a"
-        },
-        {
-          "id": "v2",
-          "name": "UK 8 - Black",
-          "price": 3999,
-          "stock": 20,
-          "sku": "FTW-ASR-8-BLK",
-          "attributes": {
-            "Size": "UK 8",
-            "Color": "Black"
-          },
-          "swatchHex": "#1a1a1a"
-        },
-        {
-          "id": "v3",
-          "name": "UK 9 - Blue",
-          "price": 3999,
-          "stock": 20,
-          "sku": "FTW-ASR-9-BLU",
-          "attributes": {
-            "Size": "UK 9",
-            "Color": "Blue"
-          },
-          "swatchHex": "#1e3a5f"
-        },
-        {
-          "id": "v4",
-          "name": "UK 10 - Blue",
-          "price": 3999,
-          "stock": 20,
-          "sku": "FTW-ASR-10-BLU",
-          "attributes": {
-            "Size": "UK 10",
-            "Color": "Blue"
-          },
-          "swatchHex": "#1e3a5f"
-        }
-      ],
-      "tags": [
-        "shoes",
-        "running",
-        "sports",
-        "fitness",
-        "lightweight",
-        "sneakers"
+        "rug",
+        "wool rug",
+        "handwoven",
+        "berber",
+        "living room",
+        "textiles"
       ],
       "featured": true,
       "trending": true,
+      "hot": true,
+      "isActive": true,
+      "rating": 4.8,
+      "totalReviews": 52,
+      "metaTitle": "Sahara Handwoven Wool Rug | THIS Interiors",
+      "metaDescription": "A handwoven pure-wool rug with a tonal, low-pile weave, in three sizes. Ground your room with THIS Interiors, Dubai.",
+      "createdAt": "2025-01-24T00:00:00.000Z",
+      "updatedAt": "2025-03-08T00:00:00.000Z",
+      "relatedProductIds": [
+        5,
+        12,
+        15
+      ],
+      "frequentlyBoughtTogetherIds": [
+        5
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Terra Fluted Stoneware Planter",
+      "slug": "terra-fluted-stoneware-planter",
+      "sku": "PLT-TER-STN-001",
+      "shortDescription": "Fluted stoneware planter with a drainage plug.",
+      "description": "Terra is a substantial fluted planter in tactile stoneware, sized to give statement plants a home indoors. A removable drainage plug lets you plant directly or drop in a nursery pot, and the matte glaze sits beautifully against greenery. Felt feet protect floors and shelves.",
+      "categoryId": 8,
+      "brand": "Terra by THIS",
+      "images": [
+        "https://placehold.co/600x400/7f5539/FFFFFF?text=Terra%20Planter",
+        "https://placehold.co/600x400/9aa57f/FFFFFF?text=Terra%20Plant",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Terra%20Detail"
+      ],
+      "price": 245,
+      "comparePrice": 320,
+      "costPrice": 120,
+      "stock": 50,
+      "lowStockThreshold": 8,
+      "weight": 3.2,
+      "dimensions": {
+        "length": 28,
+        "width": 28,
+        "height": 26
+      },
+      "variants": [
+        {
+          "id": "v1",
+          "name": "Chalk · Small",
+          "price": 245,
+          "stock": 18,
+          "sku": "PLT-TER-CHK-S",
+          "attributes": {
+            "Color": "Chalk",
+            "Size": "Small"
+          },
+          "swatchHex": "#efe7da"
+        },
+        {
+          "id": "v2",
+          "name": "Chalk · Large",
+          "price": 320,
+          "stock": 14,
+          "sku": "PLT-TER-CHK-L",
+          "attributes": {
+            "Color": "Chalk",
+            "Size": "Large"
+          },
+          "swatchHex": "#efe7da"
+        },
+        {
+          "id": "v3",
+          "name": "Terracotta · Small",
+          "price": 245,
+          "stock": 18,
+          "sku": "PLT-TER-TRA-S",
+          "attributes": {
+            "Color": "Terracotta",
+            "Size": "Small"
+          },
+          "swatchHex": "#c1623f"
+        }
+      ],
+      "tags": [
+        "planter",
+        "plant pot",
+        "stoneware",
+        "indoor",
+        "greenery",
+        "fluted"
+      ],
+      "featured": false,
+      "trending": true,
       "hot": false,
       "isActive": true,
-      "rating": 4.4,
-      "totalReviews": 312,
-      "metaTitle": "AirStride Running Shoes - Lightweight & Responsive",
-      "metaDescription": "Buy AirStride running shoes with responsive cushioning. Breathable, lightweight, and durable.",
-      "createdAt": "2025-02-01T00:00:00.000Z",
-      "updatedAt": "2025-03-10T00:00:00.000Z",
+      "rating": 4.6,
+      "totalReviews": 44,
+      "metaTitle": "Terra Fluted Stoneware Planter | THIS Interiors",
+      "metaDescription": "A fluted stoneware planter with drainage plug, in chalk and terracotta. Bring greenery indoors with THIS Interiors, Dubai.",
+      "createdAt": "2025-01-26T00:00:00.000Z",
+      "updatedAt": "2025-03-09T00:00:00.000Z",
       "relatedProductIds": [
-        12,
-        19
+        2,
+        20,
+        8
+      ],
+      "frequentlyBoughtTogetherIds": [
+        2
       ]
     },
     {
       "id": 10,
-      "name": "BassBox Bluetooth Speaker",
-      "slug": "bassbox-bluetooth-speaker",
-      "sku": "AUD-BBX-SPK-001",
-      "shortDescription": "Portable waterproof Bluetooth speaker with deep bass",
-      "description": "BassBox delivers room-filling sound in a compact, portable design. IPX7 waterproof rating means it can handle rain, pool splashes, and showers. 24-hour battery life, built-in microphone for calls, and TWS pairing to connect two speakers for stereo sound.",
-      "categoryId": 7,
-      "brand": "BassBox",
+      "name": "Aria Pillar Candle Holders, Set of 2",
+      "slug": "aria-pillar-candle-holders-set-of-2",
+      "sku": "CND-ARI-HLD-001",
+      "shortDescription": "A pair of solid-metal pillar candle holders in two heights.",
+      "description": "Aria is a coordinated pair of solid-metal pillar holders in two heights, designed to be grouped for an easy, layered tablescape. Weighted bases keep them stable, and wide dishes catch any drips. Style them with pillar candles on a mantel, sideboard or dining table.",
+      "categoryId": 11,
+      "brand": "Maison THIS",
       "images": [
-        "https://placehold.co/600x400/9c27b0/FFFFFF?text=Bluetooth+Speaker",
-        "https://placehold.co/600x400/7b1fa2/FFFFFF?text=Speaker+Side"
+        "https://placehold.co/600x400/c9a24b/FFFFFF?text=Aria%20Holders",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Aria%20Pair",
+        "https://placehold.co/600x400/b07d56/FFFFFF?text=Aria%20Styled"
       ],
-      "price": 2999,
-      "comparePrice": 4499,
-      "costPrice": 1500,
-      "stock": 100,
-      "lowStockThreshold": 20,
-      "weight": 0.45,
+      "price": 175,
+      "comparePrice": 230,
+      "costPrice": 84,
+      "stock": 56,
+      "lowStockThreshold": 10,
+      "weight": 1.4,
       "dimensions": {
-        "length": 18,
-        "width": 7,
-        "height": 7
+        "length": 12,
+        "width": 12,
+        "height": 18
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Midnight Black",
-          "price": 2999,
-          "stock": 40,
-          "sku": "AUD-BBX-SPK-BLK"
+          "name": "Brushed Brass",
+          "price": 175,
+          "stock": 30,
+          "sku": "CND-ARI-HLD-BRS",
+          "attributes": {
+            "Finish": "Brushed Brass"
+          },
+          "swatchHex": "#c9a24b"
         },
         {
           "id": "v2",
-          "name": "Ocean Blue",
-          "price": 2999,
-          "stock": 30,
-          "sku": "AUD-BBX-SPK-BLU"
-        },
-        {
-          "id": "v3",
-          "name": "Olive Green",
-          "price": 2999,
-          "stock": 30,
-          "sku": "AUD-BBX-SPK-GRN"
+          "name": "Matte Black",
+          "price": 175,
+          "stock": 26,
+          "sku": "CND-ARI-HLD-BLK",
+          "attributes": {
+            "Finish": "Matte Black"
+          },
+          "swatchHex": "#2b2b2b"
         }
       ],
       "tags": [
-        "speaker",
-        "bluetooth",
-        "portable",
-        "waterproof",
-        "bass",
-        "wireless"
+        "candle holder",
+        "taper holder",
+        "brass",
+        "pillar",
+        "mantel",
+        "decor"
       ],
       "featured": false,
       "trending": true,
-      "hot": true,
+      "hot": false,
       "isActive": true,
-      "rating": 4.3,
-      "totalReviews": 189,
-      "metaTitle": "BassBox Bluetooth Speaker - IPX7 Waterproof, 24hr Battery",
-      "metaDescription": "Buy BassBox portable Bluetooth speaker with deep bass and IPX7 waterproof rating.",
-      "createdAt": "2025-01-25T00:00:00.000Z",
-      "updatedAt": "2025-03-08T00:00:00.000Z"
+      "rating": 4.5,
+      "totalReviews": 29,
+      "metaTitle": "Aria Pillar Candle Holders, Set of 2 | THIS Interiors",
+      "metaDescription": "A pair of solid-metal pillar candle holders in brass or black, two heights. Build a tablescape with THIS Interiors, Dubai.",
+      "createdAt": "2025-01-28T00:00:00.000Z",
+      "updatedAt": "2025-03-10T00:00:00.000Z",
+      "relatedProductIds": [
+        7,
+        1,
+        6
+      ],
+      "frequentlyBoughtTogetherIds": [
+        7
+      ]
     },
     {
       "id": 11,
-      "name": "Ceramic Dinner Set - 24 Piece",
-      "slug": "ceramic-dinner-set-24-piece",
-      "sku": "KIT-CDS-24P-001",
-      "shortDescription": "Premium bone china dinner set with elegant floral design",
-      "description": "Elevate your dining experience with this 24-piece premium bone china dinner set. Includes 6 dinner plates, 6 quarter plates, 6 bowls, 2 serving bowls, 2 serving plates, and 2 spoons. Microwave and dishwasher safe with chip-resistant design and lead-free glaze.",
-      "categoryId": 11,
-      "brand": "CeraHome",
+      "name": "Lustre Reactive-Glaze Serving Bowl",
+      "slug": "lustre-reactive-glaze-serving-bowl",
+      "sku": "TAB-LUS-BWL-001",
+      "shortDescription": "Large stoneware bowl with a flowing reactive glaze.",
+      "description": "Each Lustre bowl is finished in a flowing reactive glaze that pools and shifts in the kiln, so every piece is one of a kind. Generous and footed, it works as a centrepiece, a fruit bowl, or a catch-all for the entryway. Food-safe and dishwasher-friendly stoneware.",
+      "categoryId": 4,
+      "brand": "THIS Atelier",
       "images": [
-        "https://placehold.co/600x400/795548/FFFFFF?text=Dinner+Set",
-        "https://placehold.co/600x400/6d4c41/FFFFFF?text=Plate+Detail",
-        "https://placehold.co/600x400/5d4037/FFFFFF?text=Full+Set"
+        "https://placehold.co/600x400/2f6f7e/FFFFFF?text=Lustre%20Bowl",
+        "https://placehold.co/600x400/b5532f/FFFFFF?text=Lustre%20Glaze",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Lustre%20Styled"
       ],
-      "price": 4999,
-      "comparePrice": 7499,
-      "costPrice": 2800,
-      "stock": 25,
-      "lowStockThreshold": 5,
-      "weight": 8.5,
+      "price": 165,
+      "comparePrice": 220,
+      "costPrice": 78,
+      "stock": 48,
+      "lowStockThreshold": 8,
+      "weight": 1.6,
       "dimensions": {
-        "length": 45,
-        "width": 40,
-        "height": 25
+        "length": 28,
+        "width": 28,
+        "height": 11
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Royal Floral",
-          "price": 4999,
-          "stock": 10,
-          "sku": "KIT-CDS-24P-FLR"
+          "name": "Ocean",
+          "price": 165,
+          "stock": 26,
+          "sku": "TAB-LUS-BWL-OCN",
+          "attributes": {
+            "Color": "Ocean"
+          },
+          "swatchHex": "#2f6f7e"
         },
         {
           "id": "v2",
-          "name": "Classic White",
-          "price": 4499,
-          "stock": 15,
-          "sku": "KIT-CDS-24P-WHT"
+          "name": "Ember",
+          "price": 165,
+          "stock": 22,
+          "sku": "TAB-LUS-BWL-EMB",
+          "attributes": {
+            "Color": "Ember"
+          },
+          "swatchHex": "#b5532f"
         }
       ],
       "tags": [
-        "dinner set",
-        "bone china",
-        "kitchen",
-        "dining",
-        "crockery",
-        "housewarming"
+        "bowl",
+        "serving bowl",
+        "ceramic",
+        "reactive glaze",
+        "centrepiece",
+        "tabletop"
       ],
       "featured": true,
       "trending": false,
-      "hot": false,
-      "isActive": true,
-      "rating": 4.6,
-      "totalReviews": 87,
-      "metaTitle": "24-Piece Ceramic Dinner Set - Premium Bone China",
-      "metaDescription": "Buy premium 24-piece bone china dinner set. Microwave safe, dishwasher safe, elegant design.",
-      "createdAt": "2025-02-10T00:00:00.000Z",
-      "updatedAt": "2025-03-05T00:00:00.000Z"
-    },
-    {
-      "id": 12,
-      "name": "ProFlex Yoga Mat",
-      "slug": "proflex-yoga-mat",
-      "sku": "SPT-PFX-YGA-001",
-      "shortDescription": "Extra thick non-slip yoga mat with alignment lines",
-      "description": "ProFlex yoga mat is designed for all levels of practice. 6mm thick TPE material provides excellent cushioning for joints while maintaining stability. Laser-etched alignment lines help perfect your form. Comes with a carrying strap. Eco-friendly, non-toxic, and free from PVC, latex, and heavy metals.",
-      "categoryId": 4,
-      "brand": "ProFlex",
-      "images": [
-        "https://placehold.co/600x400/ff9800/FFFFFF?text=Yoga+Mat",
-        "https://placehold.co/600x400/f57c00/FFFFFF?text=Mat+Rolled"
-      ],
-      "price": 1499,
-      "comparePrice": 2499,
-      "costPrice": 700,
-      "stock": 60,
-      "lowStockThreshold": 10,
-      "weight": 1.2,
-      "dimensions": {
-        "length": 183,
-        "width": 61,
-        "height": 0.6
-      },
-      "variants": [
-        {
-          "id": "v1",
-          "name": "Purple",
-          "price": 1499,
-          "stock": 20,
-          "sku": "SPT-PFX-YGA-PRP"
-        },
-        {
-          "id": "v2",
-          "name": "Teal",
-          "price": 1499,
-          "stock": 20,
-          "sku": "SPT-PFX-YGA-TEL"
-        },
-        {
-          "id": "v3",
-          "name": "Grey",
-          "price": 1499,
-          "stock": 20,
-          "sku": "SPT-PFX-YGA-GRY"
-        }
-      ],
-      "tags": [
-        "yoga",
-        "mat",
-        "fitness",
-        "exercise",
-        "non-slip",
-        "eco-friendly"
-      ],
-      "featured": false,
-      "trending": true,
       "hot": false,
       "isActive": true,
       "rating": 4.7,
-      "totalReviews": 256,
-      "metaTitle": "ProFlex Yoga Mat - 6mm Thick, Non-Slip with Alignment Lines",
-      "metaDescription": "Buy ProFlex eco-friendly yoga mat with alignment lines. Extra thick, non-slip, with carrying strap.",
-      "createdAt": "2025-02-15T00:00:00.000Z",
-      "updatedAt": "2025-03-12T00:00:00.000Z"
-    },
-    {
-      "id": 13,
-      "name": "VisionX 55\" Smart LED TV",
-      "slug": "visionx-55-smart-led-tv",
-      "sku": "ELC-VXN-55-001",
-      "shortDescription": "55-inch 4K Ultra HD Smart LED TV with Dolby Vision",
-      "description": "VisionX 55\" Smart LED TV delivers breathtaking picture quality with 4K Ultra HD resolution and Dolby Vision HDR. Built-in smart OS gives you access to all major streaming apps. Features 20W stereo speakers with Dolby Atmos, 3 HDMI ports, and screen mirroring. Ultra-slim bezel design.",
-      "categoryId": 1,
-      "brand": "VisionX",
-      "images": [
-        "https://placehold.co/600x400/1a1a2e/FFFFFF?text=Smart+TV+55",
-        "https://placehold.co/600x400/16213e/FFFFFF?text=TV+Side+View",
-        "https://placehold.co/600x400/0f3460/FFFFFF?text=TV+Remote"
-      ],
-      "price": 34999,
-      "comparePrice": 49999,
-      "costPrice": 24000,
-      "stock": 15,
-      "lowStockThreshold": 3,
-      "weight": 12.5,
-      "dimensions": {
-        "length": 124,
-        "width": 72,
-        "height": 8
-      },
-      "variants": [],
-      "tags": [
-        "tv",
-        "smart tv",
-        "4k",
-        "led",
-        "dolby",
-        "entertainment",
-        "electronics"
-      ],
-      "featured": true,
-      "trending": true,
-      "hot": true,
-      "isActive": true,
-      "rating": 4.5,
-      "totalReviews": 174,
-      "metaTitle": "VisionX 55\" 4K Smart LED TV - Dolby Vision & Atmos",
-      "metaDescription": "Buy VisionX 55\" 4K Smart LED TV with Dolby Vision HDR and Dolby Atmos sound.",
-      "createdAt": "2025-01-05T00:00:00.000Z",
-      "updatedAt": "2025-03-15T00:00:00.000Z"
-    },
-    {
-      "id": 14,
-      "name": "Cotton Bedsheet Set - King Size",
-      "slug": "cotton-bedsheet-set-king-size",
-      "sku": "HOM-CBS-KNG-001",
-      "shortDescription": "300 TC pure cotton bedsheet with 2 pillow covers",
-      "description": "Luxuriously soft 300 thread count pure cotton bedsheet set in king size. Includes one bedsheet (108x108 inches) and 2 pillow covers (18x28 inches). Reactive printed with vibrant colors that won't fade. Pre-shrunk fabric ensures long-lasting fit. Machine washable.",
-      "categoryId": 3,
-      "brand": "SleepNest",
-      "images": [
-        "https://placehold.co/600x400/4caf50/FFFFFF?text=Bedsheet+Set",
-        "https://placehold.co/600x400/388e3c/FFFFFF?text=Bedsheet+Pattern"
-      ],
-      "price": 1299,
-      "comparePrice": 1999,
-      "costPrice": 650,
-      "stock": 70,
-      "lowStockThreshold": 15,
-      "weight": 1,
-      "dimensions": {
-        "length": 35,
-        "width": 30,
-        "height": 8
-      },
-      "variants": [
-        {
-          "id": "v1",
-          "name": "Floral Blue",
-          "price": 1299,
-          "stock": 25,
-          "sku": "HOM-CBS-KNG-FBL"
-        },
-        {
-          "id": "v2",
-          "name": "Geometric Grey",
-          "price": 1299,
-          "stock": 25,
-          "sku": "HOM-CBS-KNG-GGR"
-        },
-        {
-          "id": "v3",
-          "name": "Paisley Maroon",
-          "price": 1399,
-          "stock": 20,
-          "sku": "HOM-CBS-KNG-PMR"
-        }
-      ],
-      "tags": [
-        "bedsheet",
-        "cotton",
-        "king size",
-        "bedroom",
-        "home",
-        "pillow cover"
-      ],
-      "featured": false,
-      "trending": false,
-      "hot": false,
-      "isActive": true,
-      "rating": 4.3,
-      "totalReviews": 198,
-      "metaTitle": "King Size Cotton Bedsheet Set - 300 TC with Pillow Covers",
-      "metaDescription": "Buy premium 300 TC cotton bedsheet with 2 pillow covers. Reactive printed, pre-shrunk, machine washable.",
-      "createdAt": "2025-02-05T00:00:00.000Z",
-      "updatedAt": "2025-03-08T00:00:00.000Z"
-    },
-    {
-      "id": 15,
-      "name": "ProStrike Cricket Bat - English Willow",
-      "slug": "prostrike-cricket-bat-english-willow",
-      "sku": "SPT-PSK-CKT-001",
-      "shortDescription": "Grade A English willow cricket bat with premium grip",
-      "description": "ProStrike cricket bat crafted from Grade A English willow for superior stroke play. Features a thick edge profile for maximum power and a mid-to-low sweet spot ideal for front-foot play. Comes with premium octopus grip and padded toe guard. Full size (SH). Knocked-in and ready to play.",
-      "categoryId": 4,
-      "brand": "ProStrike",
-      "images": [
-        "https://placehold.co/600x400/ff9800/FFFFFF?text=Cricket+Bat",
-        "https://placehold.co/600x400/f57c00/FFFFFF?text=Bat+Profile"
-      ],
-      "price": 6999,
-      "comparePrice": 9999,
-      "costPrice": 4200,
-      "stock": 20,
-      "lowStockThreshold": 5,
-      "weight": 1.2,
-      "dimensions": {
-        "length": 86,
-        "width": 11,
-        "height": 6
-      },
-      "variants": [],
-      "tags": [
-        "cricket",
-        "bat",
-        "english willow",
-        "sports",
-        "outdoor",
-        "game"
-      ],
-      "featured": false,
-      "trending": true,
-      "hot": false,
-      "isActive": true,
-      "rating": 4.6,
-      "totalReviews": 92,
-      "metaTitle": "ProStrike Cricket Bat - Grade A English Willow",
-      "metaDescription": "Buy ProStrike English willow cricket bat. Grade A, thick edge, ready to play.",
+      "totalReviews": 33,
+      "metaTitle": "Lustre Reactive-Glaze Serving Bowl | THIS Interiors",
+      "metaDescription": "A large footed stoneware bowl with a flowing reactive glaze, in ocean or ember. A one-of-a-kind centrepiece from THIS Interiors, Dubai.",
       "createdAt": "2025-01-30T00:00:00.000Z",
-      "updatedAt": "2025-03-10T00:00:00.000Z"
+      "updatedAt": "2025-03-11T00:00:00.000Z",
+      "relatedProductIds": [
+        6,
+        2,
+        20
+      ],
+      "frequentlyBoughtTogetherIds": [
+        6
+      ]
     },
     {
-      "id": 17,
-      "name": "Men's Premium Formal Shirt",
-      "slug": "mens-premium-formal-shirt",
-      "sku": "CLT-MFS-PRM-001",
-      "shortDescription": "Slim fit cotton formal shirt with wrinkle-free finish",
-      "description": "Elevate your professional wardrobe with this premium formal shirt. Made from 100% Egyptian cotton with a wrinkle-free finish that keeps you looking sharp all day. Features a semi-spread collar, single-button barrel cuffs, and a tailored slim fit. Available in classic solid colors.",
-      "categoryId": 9,
-      "brand": "UrbanEdge",
+      "id": 12,
+      "name": "Sereno Bouclé Knit Throw",
+      "slug": "sereno-boucle-knit-throw",
+      "sku": "TEX-SER-THR-001",
+      "shortDescription": "Plush bouclé throw with a soft fringed edge.",
+      "description": "Sereno is a deep, textural bouclé throw with a softly fringed edge — the kind you reach for the moment the evening cools. Generously sized to drape a sofa or layer at the foot of a bed, in a palette built to sit with our linen cushions. Gentle cold wash; reshape and dry flat.",
+      "categoryId": 15,
+      "brand": "THIS Home",
       "images": [
-        "https://placehold.co/600x400/3f51b5/FFFFFF?text=Formal+Shirt",
-        "https://placehold.co/600x400/303f9f/FFFFFF?text=Shirt+Detail"
+        "https://placehold.co/600x400/efe7da/FFFFFF?text=Sereno%20Throw",
+        "https://placehold.co/600x400/cfc4b4/FFFFFF?text=Sereno%20Texture",
+        "https://placehold.co/600x400/9aa57f/FFFFFF?text=Sereno%20Sofa"
       ],
-      "price": 1999,
-      "comparePrice": 2999,
-      "costPrice": 900,
-      "stock": 90,
-      "lowStockThreshold": 15,
-      "weight": 0.3,
+      "price": 285,
+      "comparePrice": 360,
+      "costPrice": 150,
+      "stock": 40,
+      "lowStockThreshold": 6,
+      "weight": 1.5,
       "dimensions": {
-        "length": 30,
-        "width": 22,
+        "length": 130,
+        "width": 170,
         "height": 3
       },
       "variants": [
         {
           "id": "v1",
-          "name": "S - White",
-          "price": 1999,
-          "stock": 20,
-          "sku": "CLT-MFS-S-WHT",
+          "name": "Cream",
+          "price": 285,
+          "stock": 16,
+          "sku": "TEX-SER-THR-CRM",
           "attributes": {
-            "Size": "S",
-            "Color": "White"
+            "Color": "Cream"
           },
-          "swatchHex": "#ffffff"
+          "swatchHex": "#efe7da"
         },
         {
           "id": "v2",
-          "name": "M - White",
-          "price": 1999,
-          "stock": 25,
-          "sku": "CLT-MFS-M-WHT",
+          "name": "Stone",
+          "price": 285,
+          "stock": 14,
+          "sku": "TEX-SER-THR-STN",
           "attributes": {
-            "Size": "M",
-            "Color": "White"
+            "Color": "Stone"
           },
-          "swatchHex": "#ffffff"
+          "swatchHex": "#cfc4b4"
         },
         {
           "id": "v3",
-          "name": "L - Light Blue",
-          "price": 1999,
-          "stock": 25,
-          "sku": "CLT-MFS-L-BLU",
+          "name": "Moss",
+          "price": 285,
+          "stock": 10,
+          "sku": "TEX-SER-THR-MSS",
           "attributes": {
-            "Size": "L",
-            "Color": "Light Blue"
+            "Color": "Moss"
           },
-          "swatchHex": "#cfe2f3"
-        },
-        {
-          "id": "v4",
-          "name": "XL - Light Blue",
-          "price": 1999,
-          "stock": 20,
-          "sku": "CLT-MFS-XL-BLU",
-          "attributes": {
-            "Size": "XL",
-            "Color": "Light Blue"
-          },
-          "swatchHex": "#cfe2f3"
+          "swatchHex": "#6b7d5a"
         }
       ],
       "tags": [
-        "shirt",
-        "formal",
-        "cotton",
-        "slim fit",
-        "men",
-        "office",
-        "professional"
+        "throw",
+        "blanket",
+        "boucle",
+        "knit",
+        "sofa",
+        "textiles"
       ],
-      "featured": true,
-      "trending": false,
+      "featured": false,
+      "trending": true,
       "hot": false,
       "isActive": true,
-      "rating": 4.4,
-      "totalReviews": 167,
-      "metaTitle": "Men's Premium Formal Shirt - Egyptian Cotton, Slim Fit",
-      "metaDescription": "Buy premium slim fit formal shirt. 100% Egyptian cotton, wrinkle-free finish.",
-      "createdAt": "2025-02-12T00:00:00.000Z",
-      "updatedAt": "2025-03-10T00:00:00.000Z"
+      "rating": 4.6,
+      "totalReviews": 47,
+      "metaTitle": "Sereno Bouclé Knit Throw | THIS Interiors",
+      "metaDescription": "A plush fringed bouclé throw in cream, stone and moss to layer your sofa. Shop THIS Interiors textiles, Dubai.",
+      "createdAt": "2025-02-01T00:00:00.000Z",
+      "updatedAt": "2025-03-12T00:00:00.000Z",
+      "relatedProductIds": [
+        5,
+        8,
+        15
+      ],
+      "frequentlyBoughtTogetherIds": [
+        5
+      ]
     },
     {
-      "id": 18,
-      "name": "Abstract Wall Art Canvas - Set of 3",
-      "slug": "abstract-wall-art-canvas-set-3",
-      "sku": "HOM-WAC-ABS-001",
-      "shortDescription": "Modern abstract art canvas prints for living room decor",
-      "description": "Transform your living space with this set of 3 abstract canvas prints. Gallery-quality giclée printing on premium cotton canvas, stretched over solid wood frames. Ready to hang with pre-installed hardware. Each panel: 16x24 inches. UV-resistant inks ensure vibrant colors for years.",
-      "categoryId": 3,
-      "brand": "ArtNova",
+      "id": 13,
+      "name": "Vista Framed Botanical Prints, Set of 3",
+      "slug": "vista-framed-botanical-prints-set-of-3",
+      "sku": "ART-VIS-BOT-001",
+      "shortDescription": "A trio of framed botanical prints, ready to hang.",
+      "description": "Vista is a curated set of three botanical studies, giclée-printed on textured art paper and framed behind glass with a generous mount. Designed to hang together as an instant gallery wall, they bring calm, organic line-work to a living room, hallway or study. Arrives ready to hang with fixings included.",
+      "categoryId": 12,
+      "brand": "THIS Studio",
       "images": [
-        "https://placehold.co/600x400/4caf50/FFFFFF?text=Wall+Art+Set",
-        "https://placehold.co/600x400/388e3c/FFFFFF?text=Art+Detail"
+        "https://placehold.co/600x400/6b7d5a/FFFFFF?text=Vista%20Prints",
+        "https://placehold.co/600x400/9aa57f/FFFFFF?text=Vista%20Frame",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Vista%20Wall"
       ],
-      "price": 2499,
-      "comparePrice": 3999,
-      "costPrice": 1200,
-      "stock": 35,
+      "price": 540,
+      "comparePrice": 720,
+      "costPrice": 290,
+      "stock": 32,
       "lowStockThreshold": 5,
-      "weight": 3,
+      "weight": 4.2,
       "dimensions": {
-        "length": 62,
-        "width": 42,
-        "height": 4
+        "length": 42,
+        "width": 3,
+        "height": 55
       },
       "variants": [
         {
           "id": "v1",
-          "name": "Blue & Gold",
-          "price": 2499,
-          "stock": 15,
-          "sku": "HOM-WAC-ABS-BGD"
+          "name": "Natural Oak",
+          "price": 540,
+          "stock": 14,
+          "sku": "ART-VIS-BOT-OAK",
+          "attributes": {
+            "Finish": "Natural Oak"
+          },
+          "swatchHex": "#c9a06a"
         },
         {
           "id": "v2",
-          "name": "Earthy Tones",
-          "price": 2499,
-          "stock": 20,
-          "sku": "HOM-WAC-ABS-ETH"
+          "name": "Matte Black",
+          "price": 540,
+          "stock": 12,
+          "sku": "ART-VIS-BOT-BLK",
+          "attributes": {
+            "Finish": "Matte Black"
+          },
+          "swatchHex": "#2b2b2b"
+        },
+        {
+          "id": "v3",
+          "name": "Brushed Brass",
+          "price": 590,
+          "stock": 6,
+          "sku": "ART-VIS-BOT-BRS",
+          "attributes": {
+            "Finish": "Brushed Brass"
+          },
+          "swatchHex": "#c9a24b"
+        }
+      ],
+      "tags": [
+        "wall art",
+        "framed print",
+        "botanical",
+        "gallery wall",
+        "set of 3",
+        "wall decor"
+      ],
+      "featured": true,
+      "trending": true,
+      "hot": true,
+      "isActive": true,
+      "rating": 4.7,
+      "totalReviews": 61,
+      "metaTitle": "Vista Framed Botanical Prints, Set of 3 | THIS Interiors",
+      "metaDescription": "A trio of framed botanical prints in oak, black or brass — an instant gallery wall, ready to hang. THIS Interiors, Dubai.",
+      "createdAt": "2025-02-03T00:00:00.000Z",
+      "updatedAt": "2025-03-13T00:00:00.000Z",
+      "relatedProductIds": [
+        18,
+        14,
+        4
+      ],
+      "frequentlyBoughtTogetherIds": [
+        14
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Galleria Brass Photo Frames, Set of 4",
+      "slug": "galleria-brass-photo-frames-set-of-4",
+      "sku": "ART-GAL-FRM-001",
+      "shortDescription": "A set of four metal photo frames in mixed sizes.",
+      "description": "Galleria is a coordinated set of four slim metal frames in mixed sizes, made to cluster on a shelf or build out a gallery wall. Each frame holds glass and a removable mount, so prints sit crisp and centred. Includes both tabletop easels and wall hooks.",
+      "categoryId": 12,
+      "brand": "THIS Studio",
+      "images": [
+        "https://placehold.co/600x400/c9a24b/FFFFFF?text=Galleria%20Frames",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Galleria%20Shelf",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Galleria%20Set"
+      ],
+      "price": 175,
+      "comparePrice": 230,
+      "costPrice": 82,
+      "stock": 60,
+      "lowStockThreshold": 10,
+      "weight": 2.1,
+      "dimensions": {
+        "length": 25,
+        "width": 3,
+        "height": 30
+      },
+      "variants": [
+        {
+          "id": "v1",
+          "name": "Brushed Brass",
+          "price": 175,
+          "stock": 32,
+          "sku": "ART-GAL-FRM-BRS",
+          "attributes": {
+            "Finish": "Brushed Brass"
+          },
+          "swatchHex": "#c9a24b"
+        },
+        {
+          "id": "v2",
+          "name": "Matte Black",
+          "price": 175,
+          "stock": 28,
+          "sku": "ART-GAL-FRM-BLK",
+          "attributes": {
+            "Finish": "Matte Black"
+          },
+          "swatchHex": "#2b2b2b"
+        }
+      ],
+      "tags": [
+        "photo frame",
+        "picture frame",
+        "brass",
+        "gallery wall",
+        "set of 4",
+        "wall decor"
+      ],
+      "featured": false,
+      "trending": false,
+      "hot": false,
+      "isActive": true,
+      "rating": 4.5,
+      "totalReviews": 26,
+      "metaTitle": "Galleria Brass Photo Frames, Set of 4 | THIS Interiors",
+      "metaDescription": "A set of four slim metal photo frames in mixed sizes, brass or black — for shelf or wall. THIS Interiors, Dubai.",
+      "createdAt": "2025-02-05T00:00:00.000Z",
+      "updatedAt": "2025-03-14T00:00:00.000Z",
+      "relatedProductIds": [
+        13,
+        18,
+        15
+      ],
+      "frequentlyBoughtTogetherIds": [
+        13
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Celeste Resin Abstract Sculpture",
+      "slug": "celeste-resin-abstract-sculpture",
+      "sku": "OBJ-CEL-SCP-001",
+      "shortDescription": "A sculptural objet with a smooth, hand-finished form.",
+      "description": "Celeste is a tactile abstract sculpture cast in solid resin and hand-finished to a smooth, stone-like surface. Its fluid form draws the eye on a shelf, console or stack of books, adding a gallery note without taking up a footprint. A felted base protects surfaces.",
+      "categoryId": 6,
+      "brand": "THIS Atelier",
+      "images": [
+        "https://placehold.co/600x400/efe7da/FFFFFF?text=Celeste%20Sculpture",
+        "https://placehold.co/600x400/7f5539/FFFFFF?text=Celeste%20Form",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Celeste%20Shelf"
+      ],
+      "price": 360,
+      "comparePrice": 470,
+      "costPrice": 190,
+      "stock": 26,
+      "lowStockThreshold": 5,
+      "weight": 1.9,
+      "dimensions": {
+        "length": 18,
+        "width": 12,
+        "height": 32
+      },
+      "variants": [
+        {
+          "id": "v1",
+          "name": "Ivory",
+          "price": 360,
+          "stock": 14,
+          "sku": "OBJ-CEL-SCP-IVY",
+          "attributes": {
+            "Color": "Ivory"
+          },
+          "swatchHex": "#efe7da"
+        },
+        {
+          "id": "v2",
+          "name": "Bronze",
+          "price": 390,
+          "stock": 12,
+          "sku": "OBJ-CEL-SCP-BRZ",
+          "attributes": {
+            "Color": "Bronze"
+          },
+          "swatchHex": "#7f5539"
+        }
+      ],
+      "tags": [
+        "sculpture",
+        "objet",
+        "abstract",
+        "shelf decor",
+        "statement",
+        "decorative object"
+      ],
+      "featured": false,
+      "trending": false,
+      "hot": true,
+      "isActive": true,
+      "rating": 4.4,
+      "totalReviews": 19,
+      "metaTitle": "Celeste Resin Abstract Sculpture | THIS Interiors",
+      "metaDescription": "A hand-finished abstract sculpture in ivory or bronze — a gallery note for a shelf or console. THIS Interiors, Dubai.",
+      "createdAt": "2025-02-07T00:00:00.000Z",
+      "updatedAt": "2025-03-15T00:00:00.000Z",
+      "relatedProductIds": [
+        19,
+        17,
+        2
+      ],
+      "frequentlyBoughtTogetherIds": [
+        19
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Horizon Silent Mantel Clock",
+      "slug": "horizon-silent-mantel-clock",
+      "sku": "CLK-HOR-MTL-001",
+      "shortDescription": "A wood-framed mantel clock with a silent sweep movement.",
+      "description": "Horizon brings a quiet, mid-century calm to a mantel or shelf, with a solid wood frame and a clean, legible face. The silent sweep movement means no ticking in a still room. Runs on a single AA battery (included). Free-standing — no wall fixing needed.",
+      "categoryId": 3,
+      "brand": "THIS Living",
+      "images": [
+        "https://placehold.co/600x400/6b4a2f/FFFFFF?text=Horizon%20Clock",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Horizon%20Face",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Horizon%20Mantel"
+      ],
+      "price": 295,
+      "comparePrice": 380,
+      "costPrice": 150,
+      "stock": 34,
+      "lowStockThreshold": 6,
+      "weight": 1.7,
+      "dimensions": {
+        "length": 26,
+        "width": 8,
+        "height": 18
+      },
+      "variants": [
+        {
+          "id": "v1",
+          "name": "Walnut",
+          "price": 295,
+          "stock": 18,
+          "sku": "CLK-HOR-MTL-WAL",
+          "attributes": {
+            "Finish": "Walnut"
+          },
+          "swatchHex": "#6b4a2f"
+        },
+        {
+          "id": "v2",
+          "name": "Black Oak",
+          "price": 295,
+          "stock": 16,
+          "sku": "CLK-HOR-MTL-OAK",
+          "attributes": {
+            "Finish": "Black Oak"
+          },
+          "swatchHex": "#2b2b2b"
+        }
+      ],
+      "tags": [
+        "clock",
+        "mantel clock",
+        "silent",
+        "walnut",
+        "living room",
+        "decor"
+      ],
+      "featured": false,
+      "trending": true,
+      "hot": false,
+      "isActive": true,
+      "rating": 4.5,
+      "totalReviews": 31,
+      "metaTitle": "Horizon Silent Mantel Clock | THIS Interiors",
+      "metaDescription": "A wood-framed mantel clock with a silent sweep movement, in walnut or black oak. THIS Interiors, Dubai.",
+      "createdAt": "2025-02-09T00:00:00.000Z",
+      "updatedAt": "2025-03-16T00:00:00.000Z",
+      "relatedProductIds": [
+        15,
+        19,
+        1
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Meridian Abstract Canvas, Set of 3",
+      "slug": "meridian-abstract-canvas-set-of-3",
+      "sku": "ART-MER-CNV-001",
+      "shortDescription": "A triptych of gallery-wrapped abstract canvases.",
+      "description": "Meridian is a three-panel abstract triptych, gallery-wrapped over solid timber stretcher bars so it hangs frameless and contemporary. The warm, layered palette anchors a sofa or bed and reads as one continuous composition across the three panels. Ready to hang with fixings included.",
+      "categoryId": 12,
+      "brand": "THIS Studio",
+      "images": [
+        "https://placehold.co/600x400/28406b/FFFFFF?text=Meridian%20Canvas",
+        "https://placehold.co/600x400/b07d56/FFFFFF?text=Meridian%20Panels",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Meridian%20Wall"
+      ],
+      "price": 480,
+      "comparePrice": 640,
+      "costPrice": 250,
+      "stock": 30,
+      "lowStockThreshold": 5,
+      "weight": 3.4,
+      "dimensions": {
+        "length": 40,
+        "width": 4,
+        "height": 60
+      },
+      "variants": [
+        {
+          "id": "v1",
+          "name": "Indigo & Gold",
+          "price": 480,
+          "stock": 16,
+          "sku": "ART-MER-CNV-IND",
+          "attributes": {
+            "Color": "Indigo & Gold"
+          },
+          "swatchHex": "#28406b"
+        },
+        {
+          "id": "v2",
+          "name": "Earth & Ochre",
+          "price": 480,
+          "stock": 14,
+          "sku": "ART-MER-CNV-ETH",
+          "attributes": {
+            "Color": "Earth & Ochre"
+          },
+          "swatchHex": "#b07d56"
         }
       ],
       "tags": [
         "wall art",
         "canvas",
         "abstract",
-        "decor",
+        "set of 3",
         "living room",
-        "modern art"
+        "wall decor"
       ],
       "featured": false,
       "trending": false,
       "hot": false,
       "isActive": true,
       "rating": 4.5,
-      "totalReviews": 73,
-      "metaTitle": "Abstract Wall Art Canvas Set of 3 - Modern Decor",
-      "metaDescription": "Buy set of 3 abstract canvas prints for living room. Gallery-quality, ready to hang.",
-      "createdAt": "2025-02-08T00:00:00.000Z",
-      "updatedAt": "2025-03-05T00:00:00.000Z"
+      "totalReviews": 34,
+      "metaTitle": "Meridian Abstract Canvas, Set of 3 | THIS Interiors",
+      "metaDescription": "A gallery-wrapped abstract triptych in indigo or earth tones — frameless, ready to hang. THIS Interiors, Dubai.",
+      "createdAt": "2025-02-11T00:00:00.000Z",
+      "updatedAt": "2025-03-17T00:00:00.000Z",
+      "relatedProductIds": [
+        13,
+        14,
+        4
+      ],
+      "frequentlyBoughtTogetherIds": [
+        13
+      ]
     },
     {
       "id": 19,
-      "name": "HydroFlask Insulated Water Bottle",
-      "slug": "hydroflask-insulated-water-bottle",
-      "sku": "SPT-HFL-WTR-001",
-      "shortDescription": "1L stainless steel vacuum insulated bottle - keeps cold 24hrs",
-      "description": "HydroFlask double-wall vacuum insulated water bottle keeps drinks ice cold for 24 hours or hot for 12 hours. Made from 18/8 food-grade stainless steel with BPA-free lid. Wide mouth opening fits ice cubes easily. Powder-coated finish for a secure grip. Leak-proof and sweat-free design.",
-      "categoryId": 4,
-      "brand": "HydroFlask",
+      "name": "Atlas Brass Bookends, Pair",
+      "slug": "atlas-brass-bookends-pair",
+      "sku": "OBJ-ATL-BKE-001",
+      "shortDescription": "A weighty pair of solid-metal bookends.",
+      "description": "A clean, architectural pair of solid-metal bookends with felt-lined bases that grip the shelf and protect it. Substantial enough to hold a row of hardbacks upright, sculptural enough to style with a few favourites and an objet. Sold as a pair.",
+      "categoryId": 6,
+      "brand": "THIS Atelier",
       "images": [
-        "https://placehold.co/600x400/ff9800/FFFFFF?text=Water+Bottle",
-        "https://placehold.co/600x400/f57c00/FFFFFF?text=Bottle+Open"
+        "https://placehold.co/600x400/c9a24b/FFFFFF?text=Atlas%20Bookends",
+        "https://placehold.co/600x400/6f4e37/FFFFFF?text=Atlas%20Pair",
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Atlas%20Shelf"
       ],
-      "price": 1299,
-      "comparePrice": 1899,
-      "costPrice": 550,
-      "stock": 150,
-      "lowStockThreshold": 25,
-      "weight": 0.4,
+      "price": 220,
+      "comparePrice": 290,
+      "costPrice": 110,
+      "stock": 38,
+      "lowStockThreshold": 6,
+      "weight": 2.6,
       "dimensions": {
-        "length": 28,
-        "width": 8,
-        "height": 8
-      },
-      "variants": [
-        {
-          "id": "v1",
-          "name": "Pacific Blue",
-          "price": 1299,
-          "stock": 50,
-          "sku": "SPT-HFL-WTR-BLU"
-        },
-        {
-          "id": "v2",
-          "name": "Charcoal Black",
-          "price": 1299,
-          "stock": 50,
-          "sku": "SPT-HFL-WTR-BLK"
-        },
-        {
-          "id": "v3",
-          "name": "Coral Pink",
-          "price": 1299,
-          "stock": 50,
-          "sku": "SPT-HFL-WTR-PNK"
-        }
-      ],
-      "tags": [
-        "water bottle",
-        "insulated",
-        "stainless steel",
-        "sports",
-        "gym",
-        "hydration"
-      ],
-      "featured": false,
-      "trending": true,
-      "hot": false,
-      "isActive": true,
-      "rating": 4.6,
-      "totalReviews": 328,
-      "metaTitle": "HydroFlask 1L Insulated Water Bottle - 24hr Cold",
-      "metaDescription": "Buy HydroFlask vacuum insulated water bottle. Keeps cold 24hrs, hot 12hrs. BPA-free.",
-      "createdAt": "2025-01-18T00:00:00.000Z",
-      "updatedAt": "2025-03-12T00:00:00.000Z"
-    },
-    {
-      "id": 20,
-      "name": "Creative Kids Building Blocks - 500 Pieces",
-      "slug": "creative-kids-building-blocks-500",
-      "sku": "TOY-CKB-500-001",
-      "shortDescription": "STEM learning building blocks set with storage box",
-      "description": "Spark creativity and learning with this 500-piece building blocks set. Compatible with all major brands. Includes bricks, wheels, doors, windows, trees, and minifigures. Comes in a sturdy storage box with sorting compartments. Made from non-toxic ABS plastic, safe for children 3+ years. Great for developing motor skills and imagination.",
-      "categoryId": 5,
-      "brand": "BrainBrix",
-      "images": [
-        "https://placehold.co/600x400/e91e63/FFFFFF?text=Building+Blocks",
-        "https://placehold.co/600x400/c2185b/FFFFFF?text=Blocks+Castle"
-      ],
-      "price": 1999,
-      "comparePrice": 2999,
-      "costPrice": 900,
-      "stock": 5,
-      "lowStockThreshold": 8,
-      "weight": 2.5,
-      "dimensions": {
-        "length": 40,
-        "width": 30,
-        "height": 15
+        "length": 12,
+        "width": 10,
+        "height": 16
       },
       "variants": [],
       "tags": [
-        "building blocks",
-        "kids",
-        "toys",
-        "STEM",
-        "educational",
-        "creative"
+        "bookends",
+        "brass",
+        "shelf decor",
+        "study",
+        "pair",
+        "decorative object"
       ],
-      "featured": true,
+      "featured": false,
       "trending": false,
-      "hot": true,
+      "hot": false,
+      "isActive": true,
+      "rating": 4.6,
+      "totalReviews": 22,
+      "metaTitle": "Atlas Brass Bookends, Pair | THIS Interiors",
+      "metaDescription": "A weighty, architectural pair of solid-metal bookends with felt-lined bases. Style your shelves with THIS Interiors, Dubai.",
+      "createdAt": "2025-02-13T00:00:00.000Z",
+      "updatedAt": "2025-03-18T00:00:00.000Z",
+      "relatedProductIds": [
+        15,
+        17,
+        11
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Émaux Stoneware Ginger Jar",
+      "slug": "emaux-stoneware-ginger-jar",
+      "sku": "VAS-EMX-GJR-001",
+      "shortDescription": "A lidded stoneware ginger jar with a crackle glaze.",
+      "description": "Émaux reinterprets the classic ginger jar in tactile stoneware, finished with a soft crackle glaze and a snug fitted lid. Display it solo as a sculptural accent, group it in odd numbers along a shelf, or let it hold dried stems. A timeless silhouette with a quiet, modern finish.",
+      "categoryId": 14,
+      "brand": "THIS Atelier",
+      "images": [
+        "https://placehold.co/600x400/8a8170/FFFFFF?text=Emaux%20Jar",
+        "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Emaux%20Lid",
+        "https://placehold.co/600x400/b5764f/FFFFFF?text=Emaux%20Styled"
+      ],
+      "price": 230,
+      "comparePrice": 300,
+      "costPrice": 105,
+      "stock": 36,
+      "lowStockThreshold": 6,
+      "weight": 2.2,
+      "dimensions": {
+        "length": 20,
+        "width": 20,
+        "height": 32
+      },
+      "variants": [],
+      "tags": [
+        "ginger jar",
+        "vase",
+        "ceramic",
+        "chinoiserie",
+        "lidded jar",
+        "decor"
+      ],
+      "featured": false,
+      "trending": false,
+      "hot": false,
       "isActive": true,
       "rating": 4.7,
-      "totalReviews": 156,
-      "metaTitle": "500-Piece Building Blocks Set - STEM Learning for Kids",
-      "metaDescription": "Buy 500-piece building blocks set with storage box. Safe, non-toxic, compatible with major brands.",
-      "createdAt": "2025-02-22T00:00:00.000Z",
-      "updatedAt": "2026-06-12T06:57:43.733Z"
+      "totalReviews": 28,
+      "metaTitle": "Émaux Stoneware Ginger Jar | THIS Interiors",
+      "metaDescription": "A lidded stoneware ginger jar with a soft crackle glaze — a timeless, sculptural accent. THIS Interiors, Dubai.",
+      "createdAt": "2025-02-15T00:00:00.000Z",
+      "updatedAt": "2025-03-19T00:00:00.000Z",
+      "relatedProductIds": [
+        2,
+        11,
+        15
+      ],
+      "frequentlyBoughtTogetherIds": [
+        2
+      ]
     }
   ],
   "cart": [],
@@ -1671,14 +1887,14 @@
       "userId": 1,
       "items": [
         {
-          "productId": 2,
+          "productId": 4,
           "variantId": "v1",
-          "name": "SoundWave Pro Wireless Earbuds - Midnight Black",
-          "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=SoundWave+Earbuds",
-          "sku": "AUD-SWP-TWS-BLK",
-          "price": 8999,
+          "name": "Métropole Round Wall Mirror - Brushed Brass · 70cm",
+          "image": "https://placehold.co/600x400/c9a24b/FFFFFF?text=Metropole%20Mirror",
+          "sku": "MIR-MET-BRS-70",
+          "price": 880,
           "quantity": 1,
-          "subtotal": 8999
+          "subtotal": 880
         }
       ],
       "billingAddress": {
@@ -1703,22 +1919,22 @@
         "postalCode": "400001",
         "country": "India"
       },
-      "subtotal": 8999,
+      "subtotal": 880,
       "discountAmount": 0,
       "couponCode": null,
       "shippingAmount": 0,
-      "taxAmount": 1440,
-      "total": 10439,
+      "taxAmount": 44,
+      "total": 924,
       "paymentStatus": "refunded",
       "paymentMethod": "upi",
       "fulfillmentStatus": "fulfilled",
       "shippingStatus": "shipped",
-      "trackingNumber": "SHIP123456789IN",
-      "trackingUrl": "https://shiprocket.co/tracking/SHIP123456789IN",
+      "trackingNumber": "AWB123456789AE",
+      "trackingUrl": "https://www.aramex.com/track/AWB123456789AE",
       "shiprocketOrderId": null,
       "notes": "",
       "createdAt": "2026-01-15T10:30:00.000Z",
-      "updatedAt": "2026-06-12T07:14:06.552Z",
+      "updatedAt": "2026-01-22T14:30:00.000Z",
       "statusHistory": [
         {
           "at": "2026-01-15T10:30:00.000Z",
@@ -1729,19 +1945,19 @@
           "at": "2026-01-15T10:31:00.000Z",
           "by": "System",
           "action": "Payment captured",
-          "note": "UPI via Razorpay"
+          "note": "Card via Stripe"
         },
         {
           "at": "2026-01-16T09:00:00.000Z",
           "by": "Admin User",
           "action": "Fulfilled & shipped",
-          "note": "Tracking SHIP123456789IN"
+          "note": "Tracking AWB123456789AE"
         },
         {
           "at": "2026-01-22T14:30:00.000Z",
           "by": "Admin User",
           "action": "Return refund processed (RET-20260120-0001)",
-          "note": "₹10,439 refunded"
+          "note": "AED 924 refunded"
         }
       ]
     },
@@ -1751,24 +1967,24 @@
       "userId": 1,
       "items": [
         {
-          "productId": 1,
-          "variantId": "v2",
-          "name": "ProBook Ultra Laptop 15\" - 16GB RAM / 512GB SSD",
-          "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=ProBook+Laptop",
-          "sku": "LAP-PBU-15-16-512",
-          "price": 74999,
+          "productId": 3,
+          "variantId": "v1",
+          "name": "Noor Brass Arc Floor Lamp - Antique Brass",
+          "image": "https://placehold.co/600x400/9c6644/FFFFFF?text=Noor%20Floor%20Lamp",
+          "sku": "LMP-NOR-FLR-BRS",
+          "price": 1290,
           "quantity": 1,
-          "subtotal": 74999
+          "subtotal": 1290
         },
         {
-          "productId": 6,
+          "productId": 7,
           "variantId": "v1",
-          "name": "ZenPro USB-C 7-in-1 Hub - Space Gray",
-          "image": "https://placehold.co/600x400/2196f3/FFFFFF?text=ZenPro+Hub",
-          "sku": "ELC-ZPH-7C1-GRY",
-          "price": 3499,
+          "name": "Maison Oud Scented Candle - Oud & Amber",
+          "image": "https://placehold.co/600x400/6f4e37/FFFFFF?text=Maison%20Candle",
+          "sku": "CND-MSN-OUD-AMB",
+          "price": 130,
           "quantity": 1,
-          "subtotal": 3499
+          "subtotal": 130
         }
       ],
       "billingAddress": {
@@ -1793,20 +2009,20 @@
         "postalCode": "400001",
         "country": "India"
       },
-      "subtotal": 78498,
-      "discountAmount": 5000,
-      "couponCode": "WELCOME500",
+      "subtotal": 1420,
+      "discountAmount": 100,
+      "couponCode": "STYLE100",
       "shippingAmount": 0,
-      "taxAmount": 11759,
-      "total": 85257,
+      "taxAmount": 66,
+      "total": 1386,
       "paymentStatus": "paid",
       "paymentMethod": "card",
       "fulfillmentStatus": "fulfilled",
       "shippingStatus": "shipped",
-      "trackingNumber": "SHIP987654321IN",
-      "trackingUrl": "https://shiprocket.co/tracking/SHIP987654321IN",
-      "shiprocketOrderId": "SR-78923",
-      "notes": "Please leave at reception",
+      "trackingNumber": "AWB987654321AE",
+      "trackingUrl": "https://www.aramex.com/track/AWB987654321AE",
+      "shiprocketOrderId": "AE-78923",
+      "notes": "Please leave with concierge",
       "createdAt": "2026-02-01T14:20:00.000Z",
       "updatedAt": "2026-02-03T09:00:00.000Z",
       "statusHistory": [
@@ -1819,13 +2035,13 @@
           "at": "2026-02-01T14:21:00.000Z",
           "by": "System",
           "action": "Payment captured",
-          "note": "Card via Razorpay"
+          "note": "Card via Stripe"
         },
         {
           "at": "2026-02-03T09:00:00.000Z",
           "by": "Admin User",
           "action": "Fulfilled & shipped",
-          "note": "Tracking SHIP987654321IN"
+          "note": "Tracking AWB987654321AE"
         }
       ]
     },
@@ -1835,14 +2051,14 @@
       "userId": 2,
       "items": [
         {
-          "productId": 3,
+          "productId": 7,
           "variantId": "v2",
-          "name": "FitPulse Smartwatch Series 5 - Silver / Metal Band",
-          "image": "https://placehold.co/600x400/0f3460/FFFFFF?text=FitPulse+Watch",
-          "sku": "ELC-FPS-SW5-SLV-M",
-          "price": 16999,
+          "name": "Maison Oud Scented Candle - Fig & Cedar",
+          "image": "https://placehold.co/600x400/6f4e37/FFFFFF?text=Maison%20Candle",
+          "sku": "CND-MSN-FIG-CDR",
+          "price": 130,
           "quantity": 1,
-          "subtotal": 16999
+          "subtotal": 130
         }
       ],
       "billingAddress": {
@@ -1865,12 +2081,12 @@
         "postalCode": "110001",
         "country": "India"
       },
-      "subtotal": 16999,
+      "subtotal": 130,
       "discountAmount": 0,
       "couponCode": null,
-      "shippingAmount": 99,
-      "taxAmount": 2720,
-      "total": 19818,
+      "shippingAmount": 25,
+      "taxAmount": 7,
+      "total": 162,
       "paymentStatus": "refunded",
       "paymentMethod": "card",
       "fulfillmentStatus": "unfulfilled",
@@ -1890,12 +2106,12 @@
           "at": "2026-03-10T08:46:00.000Z",
           "by": "System",
           "action": "Payment captured",
-          "note": "Card via Razorpay"
+          "note": "Card via Stripe"
         },
         {
           "at": "2026-06-13T06:13:05.821Z",
           "by": "Admin User",
-          "action": "Refund issued (₹19,818)",
+          "action": "Refund issued (AED 162)",
           "note": "Refunded from order"
         }
       ]
@@ -1908,12 +2124,12 @@
         {
           "productId": 5,
           "variantId": "v2",
-          "name": "Urban Classic Cotton T-Shirt - M / White",
-          "image": "https://placehold.co/600x400/764ba2/FFFFFF?text=Urban+T-Shirt",
-          "sku": "CLT-UCT-CRW-M-WHT",
-          "price": 899,
+          "name": "Dune Washed Linen Cushion Cover - Clay",
+          "image": "https://placehold.co/600x400/d9c5a8/FFFFFF?text=Dune%20Cushion",
+          "sku": "TEX-DUN-CSH-CLY",
+          "price": 95,
           "quantity": 3,
-          "subtotal": 2697
+          "subtotal": 285
         }
       ],
       "billingAddress": {
@@ -1936,12 +2152,12 @@
         "postalCode": "400001",
         "country": "India"
       },
-      "subtotal": 2697,
-      "discountAmount": 270,
-      "couponCode": "FLAT10",
-      "shippingAmount": 49,
-      "taxAmount": 398,
-      "total": 2874,
+      "subtotal": 285,
+      "discountAmount": 29,
+      "couponCode": "WELCOME10",
+      "shippingAmount": 0,
+      "taxAmount": 13,
+      "total": 269,
       "paymentStatus": "pending",
       "paymentMethod": "cod",
       "fulfillmentStatus": "fulfilled",
@@ -1966,16 +2182,19 @@
       ]
     },
     {
+      "id": 5,
+      "orderNumber": "ORD-MMYJ01ED-ZR26",
+      "userId": 3,
       "items": [
         {
-          "productId": 3,
+          "productId": 1,
           "variantId": "v1",
-          "name": "FitPulse Smartwatch Series 5 - Black / Rubber Band",
-          "image": "https://placehold.co/600x400/0f3460/FFFFFF?text=FitPulse+Watch",
-          "sku": "",
-          "price": 14999,
+          "name": "Lumière Fluted Glass Table Lamp - Brushed Brass",
+          "image": "https://placehold.co/600x400/b07d56/FFFFFF?text=Lumiere%20Table%20Lamp",
+          "sku": "LMP-LUM-TBL-BRS",
+          "price": 640,
           "quantity": 1,
-          "subtotal": 14999
+          "subtotal": 640
         }
       ],
       "shippingAddress": {
@@ -2000,23 +2219,20 @@
         "postalCode": "781316",
         "country": "India"
       },
-      "subtotal": 14999,
+      "subtotal": 640,
       "discountAmount": 0,
       "couponCode": null,
       "shippingAmount": 0,
-      "taxAmount": 2700,
-      "total": 17699,
+      "taxAmount": 32,
+      "total": 672,
       "paymentMethod": "cod",
       "paymentStatus": "pending",
       "fulfillmentStatus": "cancelled",
       "shippingStatus": "pending",
       "trackingNumber": null,
       "notes": "",
-      "userId": 3,
-      "orderNumber": "ORD-MMYJ01ED-ZR26",
       "createdAt": "2026-03-20T06:36:26.005Z",
       "updatedAt": "2026-06-12T01:46:10.397Z",
-      "id": 5,
       "cancelledAt": "2026-06-12T01:46:10.397Z",
       "statusHistory": [
         {
@@ -2035,16 +2251,19 @@
       "cancelReason": "Cancelled by customer"
     },
     {
+      "id": 6,
+      "orderNumber": "ORD-MQA9I6E7-0IR2",
+      "userId": 3,
       "items": [
         {
-          "productId": 3,
-          "variantId": "v1",
-          "name": "FitPulse Smartwatch Series 5 - Black / Rubber Band",
-          "image": "https://placehold.co/600x400/0f3460/FFFFFF?text=FitPulse+Watch",
-          "sku": "",
-          "price": 14999,
+          "productId": 13,
+          "variantId": "v2",
+          "name": "Vista Framed Botanical Prints, Set of 3 - Matte Black",
+          "image": "https://placehold.co/600x400/6b7d5a/FFFFFF?text=Vista%20Prints",
+          "sku": "ART-VIS-BOT-BLK",
+          "price": 540,
           "quantity": 1,
-          "subtotal": 14999
+          "subtotal": 540
         }
       ],
       "shippingAddress": {
@@ -2069,25 +2288,22 @@
         "postalCode": "781316",
         "country": "India"
       },
-      "subtotal": 14999,
+      "subtotal": 540,
       "discountAmount": 0,
       "couponCode": null,
       "shippingAmount": 0,
-      "taxAmount": 2700,
-      "total": 17699,
+      "taxAmount": 27,
+      "total": 567,
       "paymentMethod": "cod",
       "paymentStatus": "paid",
       "fulfillmentStatus": "fulfilled",
       "shippingStatus": "shipped",
-      "trackingNumber": "TEST63452634532563242346",
-      "trackingUrl": "https://www.delhivery.com/track/package/TEST63452634532563242346",
+      "trackingNumber": "AWBTEST6345AE",
+      "trackingUrl": "https://www.aramex.com/track/AWBTEST6345AE",
       "notes": "Delivered",
-      "userId": 3,
-      "orderNumber": "ORD-MQA9I6E7-0IR2",
       "shiprocketOrderId": null,
       "createdAt": "2026-06-12T01:42:57.247Z",
       "updatedAt": "2026-06-12T01:49:56.924Z",
-      "id": 6,
       "statusHistory": [
         {
           "at": "2026-06-12T01:42:57.247Z",
@@ -2104,21 +2320,24 @@
           "at": "2026-06-12T01:49:56.924Z",
           "by": "Admin User",
           "action": "Fulfilled & shipped",
-          "note": "Tracking TEST63452634532563242346"
+          "note": "Tracking AWBTEST6345AE"
         }
       ]
     },
     {
+      "id": 7,
+      "orderNumber": "ORD-MQB0JHUB-9KL6",
+      "userId": 3,
       "items": [
         {
-          "productId": 2,
+          "productId": 8,
           "variantId": "v1",
-          "name": "SoundWave Pro Wireless Earbuds - Midnight Black",
-          "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=SoundWave+Earbuds",
-          "sku": "",
-          "price": 8999,
+          "name": "Sahara Handwoven Wool Rug - 160 × 230 cm",
+          "image": "https://placehold.co/600x400/8a8170/FFFFFF?text=Sahara%20Rug",
+          "sku": "RUG-SAH-WOL-M",
+          "price": 1850,
           "quantity": 1,
-          "subtotal": 8999
+          "subtotal": 1850
         }
       ],
       "shippingAddress": {
@@ -2143,24 +2362,21 @@
         "postalCode": "781316",
         "country": "India"
       },
-      "subtotal": 8999,
-      "discountAmount": 500,
-      "couponCode": "WELCOME500",
+      "subtotal": 1850,
+      "discountAmount": 100,
+      "couponCode": "STYLE100",
       "shippingAmount": 0,
-      "taxAmount": 1530,
-      "total": 10029,
+      "taxAmount": 88,
+      "total": 1838,
       "paymentMethod": "cod",
       "paymentStatus": "paid",
       "fulfillmentStatus": "fulfilled",
       "shippingStatus": "delivered",
-      "trackingNumber": "12331231212",
-      "notes": "Test Notes",
-      "userId": 3,
-      "orderNumber": "ORD-MQB0JHUB-9KL6",
+      "trackingNumber": "AWB12331231AE",
+      "notes": "Leave at door",
       "shiprocketOrderId": null,
       "createdAt": "2026-06-12T14:19:48.371Z",
       "updatedAt": "2026-06-12T14:49:17.688Z",
-      "id": 7,
       "statusHistory": [
         {
           "at": "2026-06-12T14:19:48.371Z",
@@ -2174,15 +2390,10 @@
           "action": "Fulfilled & shipped"
         },
         {
-          "at": "2026-06-12T14:48:06.179Z",
-          "by": "Admin User",
-          "action": "Tracking updated"
-        },
-        {
           "at": "2026-06-12T14:48:34.835Z",
           "by": "Admin User",
           "action": "Tracking updated",
-          "note": "Tracking 12331231212"
+          "note": "Tracking AWB12331231AE"
         },
         {
           "at": "2026-06-12T14:49:04.101Z",
@@ -2198,16 +2409,19 @@
       "deliveredAt": "2026-06-12T14:49:04.053Z"
     },
     {
+      "id": 8,
+      "orderNumber": "ORD-MQC1HWSZ-CAN8",
+      "userId": 3,
       "items": [
         {
-          "productId": 9,
-          "variantId": "v1",
-          "name": "AirStride Running Shoes - UK 7 - Black",
-          "image": "https://placehold.co/600x400/607d8b/FFFFFF?text=Running+Shoes",
-          "sku": "",
-          "price": 3999,
+          "productId": 8,
+          "variantId": "v2",
+          "name": "Sahara Handwoven Wool Rug - 200 × 300 cm",
+          "image": "https://placehold.co/600x400/8a8170/FFFFFF?text=Sahara%20Rug",
+          "sku": "RUG-SAH-WOL-L",
+          "price": 2750,
           "quantity": 1,
-          "subtotal": 3999
+          "subtotal": 2750
         }
       ],
       "shippingAddress": {
@@ -2232,20 +2446,18 @@
         "postalCode": "781316",
         "country": "India"
       },
-      "subtotal": 3999,
+      "subtotal": 2750,
       "discountAmount": 0,
       "couponCode": null,
-      "shippingAmount": 199,
-      "taxAmount": 720,
-      "total": 4918,
+      "shippingAmount": 0,
+      "taxAmount": 138,
+      "total": 2888,
       "paymentMethod": "cod",
       "paymentStatus": "refunded",
       "fulfillmentStatus": "fulfilled",
       "shippingStatus": "delivered",
-      "trackingNumber": "532352353252",
-      "notes": "Order Shipped",
-      "userId": 3,
-      "orderNumber": "ORD-MQC1HWSZ-CAN8",
+      "trackingNumber": "AWB53235335AE",
+      "notes": "Order shipped",
       "shiprocketOrderId": null,
       "createdAt": "2026-06-13T07:34:20.243Z",
       "updatedAt": "2026-06-13T12:57:28.282Z",
@@ -2259,13 +2471,7 @@
           "at": "2026-06-13T07:36:12.080Z",
           "by": "Admin User",
           "action": "Fulfilled & shipped",
-          "note": "Tracking 532352353252 · tracking link added"
-        },
-        {
-          "at": "2026-06-13T07:38:00.486Z",
-          "by": "Admin User",
-          "action": "Tracking updated",
-          "note": "Tracking 532352353252 · tracking link added"
+          "note": "Tracking AWB53235335AE · tracking link added"
         },
         {
           "at": "2026-06-13T12:49:23.385Z",
@@ -2281,38 +2487,52 @@
           "at": "2026-06-13T12:55:11.832Z",
           "by": "Admin User",
           "action": "Refund initiated",
-          "note": "₹4,918 via store credit · ref ORDER ID - ORD-MQC1HWSZ-CAN8 — settlement pending"
+          "note": "AED 2,888 via store credit · ref ORDER ID - ORD-MQC1HWSZ-CAN8 — settlement pending"
         },
         {
           "at": "2026-06-13T12:57:28.351Z",
           "by": "Admin User",
           "action": "Refund completed",
-          "note": "₹4,918 via store credit settled to customer"
+          "note": "AED 2,888 via store credit settled to customer"
         }
       ],
-      "id": 8,
-      "trackingUrl": "https://www.indiapost.com/tracking",
+      "trackingUrl": "https://www.aramex.com/track/AWB53235335AE",
       "deliveredAt": "2026-06-13T12:49:23.351Z",
       "refundStatus": "completed",
       "refundMethod": "store_credit",
       "pendingRefund": null,
-      "refundedAmount": 4918,
+      "refundedAmount": 2888,
       "refundCompletedAt": "2026-06-13T12:57:28.282Z"
     },
     {
+      "id": 9,
+      "orderNumber": "ORD-MQCGV6OM-Z965",
+      "userId": 3,
       "items": [
         {
-          "productId": 1,
-          "variantId": "v1",
-          "name": "ProBook Ultra Laptop 15\" - 8GB RAM / 256GB SSD",
-          "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=ProBook+Laptop",
-          "sku": "",
-          "price": 64999,
+          "productId": 13,
+          "variantId": "v3",
+          "name": "Vista Framed Botanical Prints, Set of 3 - Brushed Brass",
+          "image": "https://placehold.co/600x400/6b7d5a/FFFFFF?text=Vista%20Prints",
+          "sku": "ART-VIS-BOT-BRS",
+          "price": 590,
           "quantity": 1,
-          "subtotal": 64999
+          "subtotal": 590
+        },
+        {
+          "productId": 4,
+          "variantId": "v1",
+          "name": "Métropole Round Wall Mirror - Brushed Brass · 70cm",
+          "image": "https://placehold.co/600x400/c9a24b/FFFFFF?text=Metropole%20Mirror",
+          "sku": "MIR-MET-BRS-70",
+          "price": 880,
+          "quantity": 1,
+          "subtotal": 880
         }
       ],
       "shippingAddress": {
+        "id": 1,
+        "label": "Home",
         "firstName": "Bappi",
         "lastName": "Das",
         "phone": "+919707112233",
@@ -2321,9 +2541,12 @@
         "city": "Howly",
         "state": "Assam",
         "postalCode": "781316",
-        "country": "India"
+        "country": "India",
+        "isDefault": true
       },
       "billingAddress": {
+        "id": 1,
+        "label": "Home",
         "firstName": "Bappi",
         "lastName": "Das",
         "phone": "+919707112233",
@@ -2332,24 +2555,23 @@
         "city": "Howly",
         "state": "Assam",
         "postalCode": "781316",
-        "country": "India"
+        "country": "India",
+        "isDefault": true
       },
-      "subtotal": 64999,
+      "subtotal": 1470,
       "discountAmount": 0,
       "couponCode": null,
       "shippingAmount": 0,
-      "taxAmount": 11700,
-      "total": 76699,
+      "taxAmount": 74,
+      "total": 1544,
       "storeCreditUsed": 1000,
-      "amountPayable": 75699,
+      "amountPayable": 544,
       "paymentMethod": "upi",
       "paymentStatus": "paid",
       "fulfillmentStatus": "unfulfilled",
       "shippingStatus": "pending",
       "trackingNumber": null,
       "notes": "",
-      "userId": 3,
-      "orderNumber": "ORD-MQCGV6OM-Z965",
       "shiprocketOrderId": null,
       "createdAt": "2026-06-13T14:44:33.814Z",
       "updatedAt": "2026-06-13T14:44:33.814Z",
@@ -2359,30 +2581,32 @@
           "by": "Customer",
           "action": "Order placed"
         }
-      ],
-      "id": 9
+      ]
     },
     {
+      "id": 10,
+      "orderNumber": "ORD-MQDUWC74-RUVY",
+      "userId": 3,
       "items": [
         {
           "productId": 1,
           "variantId": "v1",
-          "name": "ProBook Ultra Laptop 15\" - 8GB RAM / 256GB SSD",
-          "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=ProBook+Laptop",
-          "sku": "",
-          "price": 64999,
+          "name": "Lumière Fluted Glass Table Lamp - Brushed Brass",
+          "image": "https://placehold.co/600x400/b07d56/FFFFFF?text=Lumiere%20Table%20Lamp",
+          "sku": "LMP-LUM-TBL-BRS",
+          "price": 640,
           "quantity": 1,
-          "subtotal": 64999
+          "subtotal": 640
         },
         {
-          "productId": 3,
+          "productId": 8,
           "variantId": "v1",
-          "name": "FitPulse Smartwatch Series 5 - Black / Rubber Band",
-          "image": "https://placehold.co/600x400/0f3460/FFFFFF?text=FitPulse+Watch",
-          "sku": "",
-          "price": 14999,
+          "name": "Sahara Handwoven Wool Rug - 160 × 230 cm",
+          "image": "https://placehold.co/600x400/8a8170/FFFFFF?text=Sahara%20Rug",
+          "sku": "RUG-SAH-WOL-M",
+          "price": 1850,
           "quantity": 1,
-          "subtotal": 14999
+          "subtotal": 1850
         }
       ],
       "shippingAddress": {
@@ -2413,22 +2637,20 @@
         "country": "India",
         "isDefault": true
       },
-      "subtotal": 79998,
+      "subtotal": 2490,
       "discountAmount": 0,
       "couponCode": null,
       "shippingAmount": 0,
-      "taxAmount": 14400,
-      "total": 94398,
+      "taxAmount": 125,
+      "total": 2615,
       "storeCreditUsed": 0,
-      "amountPayable": 94398,
+      "amountPayable": 2615,
       "paymentMethod": "upi",
       "paymentStatus": "paid",
       "fulfillmentStatus": "unfulfilled",
       "shippingStatus": "pending",
       "trackingNumber": null,
       "notes": "",
-      "userId": 3,
-      "orderNumber": "ORD-MQDUWC74-RUVY",
       "shiprocketOrderId": null,
       "createdAt": "2026-06-14T14:05:08.416Z",
       "updatedAt": "2026-06-14T14:05:08.416Z",
@@ -2438,20 +2660,32 @@
           "by": "Customer",
           "action": "Order placed"
         }
-      ],
-      "id": 10
+      ]
     },
     {
+      "id": 11,
+      "orderNumber": "ORD-MQDVIQCV-30A9",
+      "userId": 3,
       "items": [
         {
-          "productId": 2,
-          "variantId": "v1",
-          "name": "SoundWave Pro Wireless Earbuds - Midnight Black",
-          "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=SoundWave+Earbuds",
-          "sku": "",
-          "price": 8999,
+          "productId": 4,
+          "variantId": "v2",
+          "name": "Métropole Round Wall Mirror - Brushed Brass · 90cm",
+          "image": "https://placehold.co/600x400/c9a24b/FFFFFF?text=Metropole%20Mirror",
+          "sku": "MIR-MET-BRS-90",
+          "price": 1180,
           "quantity": 1,
-          "subtotal": 8999
+          "subtotal": 1180
+        },
+        {
+          "productId": 7,
+          "variantId": "v1",
+          "name": "Maison Oud Scented Candle - Oud & Amber",
+          "image": "https://placehold.co/600x400/6f4e37/FFFFFF?text=Maison%20Candle",
+          "sku": "CND-MSN-OUD-AMB",
+          "price": 130,
+          "quantity": 1,
+          "subtotal": 130
         }
       ],
       "shippingAddress": {
@@ -2482,22 +2716,20 @@
         "country": "India",
         "isDefault": true
       },
-      "subtotal": 8999,
+      "subtotal": 1310,
       "discountAmount": 0,
       "couponCode": null,
       "shippingAmount": 0,
-      "taxAmount": 1620,
-      "total": 10619,
+      "taxAmount": 66,
+      "total": 1376,
       "storeCreditUsed": 1000,
-      "amountPayable": 9619,
+      "amountPayable": 376,
       "paymentMethod": "upi",
       "paymentStatus": "paid",
       "fulfillmentStatus": "unfulfilled",
       "shippingStatus": "pending",
       "trackingNumber": null,
       "notes": "",
-      "userId": 3,
-      "orderNumber": "ORD-MQDVIQCV-30A9",
       "shiprocketOrderId": null,
       "createdAt": "2026-06-14T14:22:33.199Z",
       "updatedAt": "2026-06-14T14:22:33.200Z",
@@ -2507,8 +2739,7 @@
           "by": "Customer",
           "action": "Order placed"
         }
-      ],
-      "id": 11
+      ]
     }
   ],
   "returns": [
@@ -2520,23 +2751,23 @@
       "userId": 1,
       "items": [
         {
-          "productId": 2,
+          "productId": 4,
           "variantId": "v1",
-          "name": "SoundWave Pro Wireless Earbuds - Midnight Black",
-          "sku": "AUD-SWP-TWS-BLK",
-          "price": 8999,
+          "name": "Métropole Round Wall Mirror - Brushed Brass · 70cm",
+          "sku": "MIR-MET-BRS-70",
+          "price": 880,
           "quantity": 1,
-          "subtotal": 8999
+          "subtotal": 880
         }
       ],
       "reason": "defective",
-      "reasonDetails": "Left earbud has no sound",
+      "reasonDetails": "Mirror arrived with a chip on the rim.",
       "status": "approved",
-      "refundAmount": 8999,
+      "refundAmount": 924,
       "refundStatus": "processed",
       "refundMethod": "original_payment",
       "images": [],
-      "notes": "Refund processed to original UPI account",
+      "notes": "Refund processed to original card",
       "createdAt": "2026-01-20T10:00:00.000Z",
       "updatedAt": "2026-01-22T14:30:00.000Z",
       "statusHistory": [
@@ -2559,15 +2790,15 @@
         {
           "at": "2026-01-22T14:30:00.000Z",
           "by": "Admin User",
-          "action": "Refund processed (₹10,439)",
-          "note": "Refund processed to original UPI account"
+          "action": "Refund processed (AED 924)",
+          "note": "Refund processed to original card"
         }
       ],
       "deductionAmount": 0,
       "restocked": true,
-      "returnTrackingNumber": "RETN-SR-1029384",
-      "returnTrackingUrl": "https://shiprocket.co/tracking/RETN-SR-1029384",
-      "returnCarrier": "Shiprocket",
+      "returnTrackingNumber": "RETN-AE-1029384",
+      "returnTrackingUrl": "https://www.aramex.com/track/RETN-AE-1029384",
+      "returnCarrier": "Aramex",
       "pickupScheduledAt": "2026-01-21T11:30:00.000Z"
     },
     {
@@ -2578,19 +2809,19 @@
       "userId": 3,
       "items": [
         {
-          "productId": 3,
-          "variantId": "v1",
-          "name": "FitPulse Smartwatch Series 5 - Black / Rubber Band",
-          "sku": "ELC-FPS-SW5-BLK-R",
-          "price": 14999,
+          "productId": 13,
+          "variantId": "v2",
+          "name": "Vista Framed Botanical Prints, Set of 3 - Matte Black",
+          "sku": "ART-VIS-BOT-BLK",
+          "price": 540,
           "quantity": 1,
-          "subtotal": 14999
+          "subtotal": 540
         }
       ],
       "reason": "not_as_described",
-      "reasonDetails": "Strap quality is not as shown in the product photos.",
+      "reasonDetails": "The frame finish is darker than it appears in the product photos.",
       "status": "requested",
-      "refundAmount": 14999,
+      "refundAmount": 567,
       "refundStatus": "pending",
       "refundMethod": "original_payment",
       "deductionAmount": 0,
@@ -2619,26 +2850,26 @@
       "orderId": 1,
       "orderNumber": "ORD-20250310-0001",
       "userId": 1,
-      "amount": 10439,
-      "currency": "INR",
+      "amount": 924,
+      "currency": "AED",
       "paymentMethod": "upi",
-      "gateway": "razorpay",
-      "transactionId": "pay_RZP123456789",
-      "gatewayOrderId": "order_RZP987654321",
+      "gateway": "stripe",
+      "transactionId": "pi_AE123456789",
+      "gatewayOrderId": "cs_AE987654321",
       "status": "refunded",
       "gatewayResponse": {
         "code": "SUCCESS",
         "bank": null,
-        "wallet": "PhonePe"
+        "wallet": "Apple Pay"
       },
       "createdAt": "2026-01-15T10:31:00.000Z",
-      "updatedAt": "2026-06-12T07:12:56.342Z",
-      "refundAmount": 10439,
+      "updatedAt": "2026-01-22T14:30:00.000Z",
+      "refundAmount": 924,
       "refundReason": "Return RET-20260120-0001",
       "refunds": [
         {
           "id": "ref_seed0001",
-          "amount": 10439,
+          "amount": 924,
           "reason": "Return RET-20260120-0001",
           "at": "2026-01-22T14:30:00.000Z",
           "by": "Admin User"
@@ -2650,16 +2881,16 @@
       "orderId": 2,
       "orderNumber": "ORD-20250318-0002",
       "userId": 1,
-      "amount": 85257,
-      "currency": "INR",
+      "amount": 1386,
+      "currency": "AED",
       "paymentMethod": "card",
-      "gateway": "razorpay",
-      "transactionId": "pay_RZP234567890",
-      "gatewayOrderId": "order_RZP876543210",
+      "gateway": "stripe",
+      "transactionId": "pi_AE234567890",
+      "gatewayOrderId": "cs_AE876543210",
       "status": "captured",
       "gatewayResponse": {
         "code": "SUCCESS",
-        "bank": "HDFC",
+        "bank": "Emirates NBD",
         "last4": "4242"
       },
       "createdAt": "2026-02-01T14:21:00.000Z",
@@ -2670,26 +2901,26 @@
       "orderId": 3,
       "orderNumber": "ORD-20260310-0003",
       "userId": 2,
-      "amount": 19818,
-      "currency": "INR",
+      "amount": 162,
+      "currency": "AED",
       "paymentMethod": "card",
-      "gateway": "razorpay",
-      "transactionId": "pay_RZP345678901",
-      "gatewayOrderId": "order_RZP765432109",
+      "gateway": "stripe",
+      "transactionId": "pi_AE345678901",
+      "gatewayOrderId": "cs_AE765432109",
       "status": "refunded",
       "gatewayResponse": {
         "code": "SUCCESS",
-        "bank": "ICICI",
+        "bank": "ADCB",
         "last4": "1234"
       },
       "createdAt": "2026-03-10T08:46:00.000Z",
       "updatedAt": "2026-06-13T06:13:05.674Z",
-      "refundAmount": 19818,
+      "refundAmount": 162,
       "refundReason": "Refunded from order",
       "refunds": [
         {
           "id": "ref_mqbylfkanpi6",
-          "amount": 19818,
+          "amount": 162,
           "reason": "Refunded from order",
           "at": "2026-06-13T06:13:05.674Z",
           "by": "Admin User"
@@ -2701,8 +2932,8 @@
       "orderId": 6,
       "orderNumber": "ORD-MQA9I6E7-0IR2",
       "userId": 3,
-      "amount": 17699,
-      "currency": "INR",
+      "amount": 567,
+      "currency": "AED",
       "paymentMethod": "cod",
       "gateway": "cod",
       "transactionId": "cod_MQA9I6E7",
@@ -2720,42 +2951,42 @@
       "orderId": 7,
       "orderNumber": "ORD-MQB0JHUB-9KL6",
       "userId": 3,
-      "amount": 10029,
-      "currency": "INR",
+      "amount": 1838,
+      "currency": "AED",
       "paymentMethod": "cod",
       "gateway": "cod",
-      "transactionId": null,
+      "transactionId": "cod_MQB0JHUB",
       "gatewayOrderId": null,
-      "status": "pending",
+      "status": "captured",
       "gatewayResponse": {},
       "refunds": [],
       "refundAmount": 0,
       "refundReason": "",
-      "createdAt": "2026-06-12T14:19:48.371Z",
-      "updatedAt": "2026-06-12T14:19:48.371Z"
+      "createdAt": "2026-06-12T14:49:17.688Z",
+      "updatedAt": "2026-06-12T14:49:17.688Z"
     },
     {
+      "id": 6,
       "orderId": 8,
       "orderNumber": "ORD-MQC1HWSZ-CAN8",
       "userId": 3,
-      "amount": 4918,
-      "currency": "INR",
+      "amount": 2888,
+      "currency": "AED",
       "paymentMethod": "cod",
       "gateway": "cod",
-      "transactionId": null,
+      "transactionId": "cod_MQC1HWSZ",
       "gatewayOrderId": null,
       "status": "refunded",
       "gatewayResponse": {},
       "createdAt": "2026-06-13T07:34:20.277Z",
       "updatedAt": "2026-06-13T12:57:28.314Z",
-      "id": 6,
-      "refundAmount": 4918,
-      "refundReason": "AirStride Running Shoes - UK 7 - Black is returned",
+      "refundAmount": 2888,
+      "refundReason": "Sahara Handwoven Wool Rug - 200 × 300 cm is returned",
       "refunds": [
         {
           "id": "ref_mqcd1gqipep7",
-          "amount": 4918,
-          "reason": "AirStride Running Shoes - UK 7 - Black is returned",
+          "amount": 2888,
+          "reason": "Sahara Handwoven Wool Rug - 200 × 300 cm is returned",
           "at": "2026-06-13T12:57:28.314Z",
           "by": "Admin User"
         }
@@ -2763,11 +2994,12 @@
       "pendingRefund": null
     },
     {
+      "id": 7,
       "orderId": 9,
       "orderNumber": "ORD-MQCGV6OM-Z965",
       "userId": 3,
-      "amount": 75699,
-      "currency": "INR",
+      "amount": 544,
+      "currency": "AED",
       "paymentMethod": "upi",
       "gateway": "razorpay",
       "transactionId": "pay_MOCKMQCGV6Q2",
@@ -2776,15 +3008,15 @@
       "storeCreditApplied": 1000,
       "gatewayResponse": {},
       "createdAt": "2026-06-13T14:44:33.866Z",
-      "updatedAt": "2026-06-13T14:44:33.866Z",
-      "id": 7
+      "updatedAt": "2026-06-13T14:44:33.866Z"
     },
     {
+      "id": 8,
       "orderId": 10,
       "orderNumber": "ORD-MQDUWC74-RUVY",
       "userId": 3,
-      "amount": 94398,
-      "currency": "INR",
+      "amount": 2615,
+      "currency": "AED",
       "paymentMethod": "upi",
       "gateway": "razorpay",
       "transactionId": "pay_MOCKMQDUWC82",
@@ -2793,15 +3025,15 @@
       "storeCreditApplied": 0,
       "gatewayResponse": {},
       "createdAt": "2026-06-14T14:05:08.450Z",
-      "updatedAt": "2026-06-14T14:05:08.450Z",
-      "id": 8
+      "updatedAt": "2026-06-14T14:05:08.450Z"
     },
     {
+      "id": 9,
       "orderId": 11,
       "orderNumber": "ORD-MQDVIQCV-30A9",
       "userId": 3,
-      "amount": 9619,
-      "currency": "INR",
+      "amount": 376,
+      "currency": "AED",
       "paymentMethod": "upi",
       "gateway": "razorpay",
       "transactionId": "pay_MOCKMQDVIQEE",
@@ -2810,8 +3042,7 @@
       "storeCreditApplied": 1000,
       "gatewayResponse": {},
       "createdAt": "2026-06-14T14:22:33.254Z",
-      "updatedAt": "2026-06-14T14:22:33.254Z",
-      "id": 9
+      "updatedAt": "2026-06-14T14:22:33.254Z"
     }
   ],
   "refunds": [
@@ -2824,7 +3055,7 @@
       "returnId": 1,
       "returnNumber": "RET-20260120-0001",
       "paymentId": 1,
-      "amount": 10439,
+      "amount": 924,
       "method": "original_payment",
       "reason": "Return RET-20260120-0001",
       "status": "completed",
@@ -2844,7 +3075,7 @@
       "returnId": null,
       "returnNumber": null,
       "paymentId": 3,
-      "amount": 19818,
+      "amount": 162,
       "method": "original_payment",
       "reason": "Refunded from order",
       "status": "completed",
@@ -2856,6 +3087,7 @@
       "updatedAt": "2026-06-13T06:13:05.674Z"
     },
     {
+      "id": 3,
       "refundNumber": "REF-20260613-JQ3L",
       "type": "order_refund",
       "orderId": 8,
@@ -2863,9 +3095,9 @@
       "returnId": null,
       "returnNumber": null,
       "paymentId": null,
-      "amount": 4918,
+      "amount": 2888,
       "method": "store_credit",
-      "reason": "AirStride Running Shoes - UK 7 - Black is returned",
+      "reason": "Sahara Handwoven Wool Rug - 200 × 300 cm is returned",
       "reference": "ORDER ID - ORD-MQC1HWSZ-CAN8",
       "status": "completed",
       "couponRestored": false,
@@ -2873,56 +3105,55 @@
       "settledAt": "2026-06-13T12:57:28.419Z",
       "by": "Admin User",
       "createdAt": "2026-06-13T12:55:11.910Z",
-      "updatedAt": "2026-06-13T12:57:28.419Z",
-      "id": 3
+      "updatedAt": "2026-06-13T12:57:28.419Z"
     }
   ],
   "shipping_methods": [
     {
       "id": 1,
       "name": "Standard Delivery",
-      "carrier": "Shiprocket",
-      "description": "Delivered in 5-7 business days",
+      "carrier": "Aramex",
+      "description": "Hand-packed and delivered across the UAE within 2–4 working days. Complimentary on orders over AED 200.",
       "rateType": "flat",
-      "flatRate": 99,
-      "freeAbove": 999,
-      "estimatedDays": "5-7",
+      "flatRate": 25,
+      "freeAbove": 200,
+      "estimatedDays": "2-4",
       "isActive": true,
       "createdAt": "2025-01-01T00:00:00.000Z"
     },
     {
       "id": 2,
       "name": "Express Delivery",
-      "carrier": "Shiprocket",
-      "description": "Delivered in 2-3 business days",
+      "carrier": "Aramex",
+      "description": "Next-day delivery across Dubai & Abu Dhabi on orders placed before 2pm.",
       "rateType": "flat",
-      "flatRate": 199,
-      "freeAbove": 4999,
-      "estimatedDays": "2-3",
+      "flatRate": 45,
+      "freeAbove": 750,
+      "estimatedDays": "1-2",
       "isActive": true,
       "createdAt": "2025-01-01T00:00:00.000Z"
     },
     {
       "id": 3,
-      "name": "Same Day Delivery",
-      "carrier": "Dunzo",
-      "description": "Delivered today (select cities)",
+      "name": "White-Glove Delivery",
+      "carrier": "THIS Studio",
+      "description": "Scheduled delivery, unpacking and placement for mirrors, lamps and larger pieces.",
       "rateType": "flat",
-      "flatRate": 499,
+      "flatRate": 120,
       "freeAbove": null,
-      "estimatedDays": "0",
+      "estimatedDays": "3-5",
       "isActive": true,
       "createdAt": "2025-01-01T00:00:00.000Z"
     },
     {
       "id": 4,
-      "name": "Free Shipping",
-      "carrier": "Shiprocket",
-      "description": "Free standard shipping on all orders",
+      "name": "Complimentary Shipping",
+      "carrier": "Aramex",
+      "description": "Free standard shipping on every order.",
       "rateType": "free",
       "flatRate": 0,
       "freeAbove": 0,
-      "estimatedDays": "5-7",
+      "estimatedDays": "2-4",
       "isActive": false,
       "createdAt": "2025-01-01T00:00:00.000Z"
     }
@@ -2930,83 +3161,83 @@
   "coupons": [
     {
       "id": 1,
-      "code": "WELCOME500",
-      "description": "Welcome discount for new customers",
-      "type": "fixed",
-      "value": 500,
-      "minOrderAmount": 2000,
-      "maxDiscount": 500,
+      "code": "WELCOME10",
+      "description": "10% off your first order at THIS Interiors",
+      "type": "percentage",
+      "value": 10,
+      "minOrderAmount": 250,
+      "maxDiscount": 150,
       "usageLimit": 1000,
-      "usedCount": 48,
+      "usedCount": 62,
       "perUserLimit": 1,
       "isActive": true,
       "expiresAt": "2026-12-31T23:59:59.000Z",
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2026-06-12T14:19:48.456Z"
+      "createdAt": "2025-09-01T00:00:00.000Z",
+      "updatedAt": "2026-06-14T00:00:00.000Z"
     },
     {
       "id": 2,
-      "code": "FLAT10",
-      "description": "Flat 10% off on all orders",
-      "type": "percentage",
-      "value": 10,
-      "minOrderAmount": 500,
-      "maxDiscount": 1000,
+      "code": "STYLE100",
+      "description": "AED 100 off orders over AED 750",
+      "type": "fixed",
+      "value": 100,
+      "minOrderAmount": 750,
+      "maxDiscount": 100,
       "usageLimit": null,
-      "usedCount": 213,
+      "usedCount": 134,
       "perUserLimit": null,
       "isActive": true,
-      "expiresAt": "2026-06-30T23:59:59.000Z",
-      "createdAt": "2025-02-01T00:00:00.000Z",
-      "updatedAt": "2026-03-15T00:00:00.000Z"
+      "expiresAt": "2026-12-31T23:59:59.000Z",
+      "createdAt": "2025-10-01T00:00:00.000Z",
+      "updatedAt": "2026-05-20T00:00:00.000Z"
     },
     {
       "id": 3,
-      "code": "SUMMER25",
-      "description": "Summer sale - 25% off",
+      "code": "LUXE15",
+      "description": "15% off when you spend AED 1,000 or more",
       "type": "percentage",
-      "value": 25,
-      "minOrderAmount": 1500,
-      "maxDiscount": 2500,
+      "value": 15,
+      "minOrderAmount": 1000,
+      "maxDiscount": 500,
       "usageLimit": 500,
-      "usedCount": 500,
+      "usedCount": 88,
       "perUserLimit": 2,
-      "isActive": false,
-      "expiresAt": "2025-08-31T23:59:59.000Z",
-      "createdAt": "2025-06-01T00:00:00.000Z",
-      "updatedAt": "2025-09-01T00:00:00.000Z"
+      "isActive": true,
+      "expiresAt": "2026-10-31T23:59:59.000Z",
+      "createdAt": "2026-01-15T00:00:00.000Z",
+      "updatedAt": "2026-06-01T00:00:00.000Z"
     },
     {
       "id": 4,
-      "code": "NEWUSER20",
-      "description": "20% off for new users on first order",
-      "type": "percentage",
-      "value": 20,
-      "minOrderAmount": 1000,
-      "maxDiscount": 2000,
+      "code": "NEWHOME50",
+      "description": "AED 50 off as you settle into a new home",
+      "type": "fixed",
+      "value": 50,
+      "minOrderAmount": 300,
+      "maxDiscount": 50,
       "usageLimit": null,
-      "usedCount": 89,
+      "usedCount": 51,
       "perUserLimit": 1,
       "isActive": true,
-      "expiresAt": "2026-12-31T23:59:59.000Z",
-      "createdAt": "2025-03-01T00:00:00.000Z",
-      "updatedAt": "2026-03-15T00:00:00.000Z"
+      "expiresAt": "2027-03-31T23:59:59.000Z",
+      "createdAt": "2026-02-01T00:00:00.000Z",
+      "updatedAt": "2026-05-10T00:00:00.000Z"
     },
     {
       "id": 5,
-      "code": "ELECTRONICS15",
-      "description": "15% off on all electronics",
+      "code": "GRANDOPENING25",
+      "description": "Grand opening — 25% off (now closed)",
       "type": "percentage",
-      "value": 15,
-      "minOrderAmount": 3000,
-      "maxDiscount": 5000,
-      "usageLimit": 200,
-      "usedCount": 34,
-      "perUserLimit": 2,
-      "isActive": true,
-      "expiresAt": "2026-09-30T23:59:59.000Z",
-      "createdAt": "2025-03-10T00:00:00.000Z",
-      "updatedAt": "2026-03-18T00:00:00.000Z"
+      "value": 25,
+      "minOrderAmount": 800,
+      "maxDiscount": 750,
+      "usageLimit": 300,
+      "usedCount": 300,
+      "perUserLimit": 1,
+      "isActive": false,
+      "expiresAt": "2025-12-31T23:59:59.000Z",
+      "createdAt": "2025-06-01T00:00:00.000Z",
+      "updatedAt": "2026-01-02T00:00:00.000Z"
     }
   ],
   "reviews": [
@@ -3014,238 +3245,277 @@
       "id": 1,
       "productId": 2,
       "userId": 1,
-      "userName": "John D.",
+      "userName": "Sarah K.",
       "rating": 5,
-      "title": "Absolutely love these earbuds!",
-      "body": "The sound quality is incredible for the price. ANC works great in noisy environments like cafes and trains. Battery easily lasts 2 days with my usage. The fit is secure and comfortable. Highly recommended!",
-      "status": "rejected",
+      "title": "Beautiful weight and finish",
+      "body": "The glaze is even lovelier in person and the ribbing catches the light beautifully. It feels substantial and well made — exactly the quiet statement piece I was after for the console. Branches and dried stems look wonderful in it.",
+      "status": "approved",
       "isVerifiedPurchase": true,
-      "helpfulCount": 24,
-      "createdAt": "2026-01-25T09:00:00.000Z",
-      "updatedAt": "2026-04-17T14:32:19.189Z"
+      "helpfulCount": 14,
+      "photos": [
+        "https://placehold.co/400x300/b5764f/FFFFFF?text=On%20the%20console",
+        "https://placehold.co/400x300/d9c5a8/FFFFFF?text=With%20stems"
+      ],
+      "createdAt": "2026-02-18T09:00:00.000Z",
+      "updatedAt": "2026-02-18T09:00:00.000Z"
     },
     {
       "id": 2,
       "productId": 1,
       "userId": 1,
       "userName": "John D.",
-      "rating": 4,
-      "title": "Great laptop, minor nitpicks",
-      "body": "Build quality is excellent - feels premium and solid. Performance is snappy for work tasks, programming, and light video editing. Battery lasts about 8 hours on mixed use. Only wish the webcam was better for video calls. Overall very satisfied with the purchase.",
+      "rating": 5,
+      "title": "Gorgeous, warm glow",
+      "body": "Casts the softest light and the dimmer is perfect for evenings. The fluted glass looks far more expensive than it was. Packaging was excellent too — arrived without a scratch.",
       "status": "approved",
       "isVerifiedPurchase": true,
-      "helpfulCount": 18,
-      "createdAt": "2026-02-15T11:00:00.000Z",
-      "updatedAt": "2026-02-16T08:00:00.000Z"
+      "helpfulCount": 11,
+      "createdAt": "2026-02-22T11:00:00.000Z",
+      "updatedAt": "2026-02-23T08:00:00.000Z"
     },
     {
       "id": 3,
-      "productId": 4,
+      "productId": 8,
       "userId": 2,
       "userName": "Jane S.",
       "rating": 5,
-      "title": "Best mechanical keyboard under 7k",
-      "body": "Typing feel is satisfying and the RGB is gorgeous. Build feels very solid with the aluminum frame. No lag or missed keystrokes even during intense gaming. Highly recommend the brown switches for a balance between gaming and typing.",
-      "status": "rejected",
-      "isVerifiedPurchase": false,
-      "helpfulCount": 0,
-      "createdAt": "2026-03-12T15:00:00.000Z",
-      "updatedAt": "2026-06-12T03:45:30.100Z"
-    },
-    {
-      "productId": 1,
-      "userId": null,
-      "userName": "Aarav Sharma",
-      "rating": 2,
-      "title": "Price is too high",
-      "body": "Price is high compared to other stores",
-      "status": "approved",
-      "isVerifiedPurchase": true,
-      "helpfulCount": 0,
-      "source": "admin",
-      "createdAt": "2026-06-14T03:47:30.056Z",
-      "updatedAt": "2026-06-14T03:48:35.812Z",
-      "id": 4
-    },
-    {
-      "id": 5,
+      "title": "Soft underfoot and stunning",
+      "body": "The wool is dense and soft, and the tonal pattern hides everyday life with two kids. It completely grounded our living room. Worth every dirham.",
       "status": "approved",
       "isVerifiedPurchase": true,
       "helpfulCount": 9,
-      "productId": 1,
+      "createdAt": "2026-03-14T15:00:00.000Z",
+      "updatedAt": "2026-03-14T15:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "productId": 4,
+      "userId": null,
+      "userName": "Aisha R.",
+      "rating": 4,
+      "title": "Makes the hallway feel bigger",
+      "body": "Lovely slim frame and the brass is a warm, brushed tone rather than shiny. Bounces so much light into our entryway. Fixings were easy. Half a star off only because I wish the 90cm came in a few more finishes.",
+      "status": "approved",
+      "isVerifiedPurchase": true,
+      "helpfulCount": 3,
+      "source": "admin",
+      "createdAt": "2026-04-02T10:15:00.000Z",
+      "updatedAt": "2026-04-02T10:20:00.000Z"
+    },
+    {
+      "id": 5,
+      "productId": 7,
       "userId": 2,
       "userName": "Priya M.",
       "rating": 5,
-      "title": "Fantastic for work and study",
-      "body": "Switched from an old laptop and the difference is night and day. The screen is crisp, it stays cool, and battery comfortably lasts a full work day. Setup was painless.",
-      "photos": [
-        "https://placehold.co/300x300/667eea/FFFFFF?text=Setup",
-        "https://placehold.co/300x300/4c5ed0/FFFFFF?text=Display"
-      ],
-      "createdAt": "2026-04-02T10:15:00.000Z",
-      "updatedAt": "2026-04-02T10:15:00.000Z"
-    },
-    {
-      "id": 6,
+      "title": "The scent fills the room",
+      "body": "Oud & Amber is rich without being overpowering, and the burn has been clean and even. The glass is gorgeous enough to reuse afterwards. Already on my second.",
       "status": "approved",
       "isVerifiedPurchase": true,
-      "helpfulCount": 4,
-      "productId": 1,
-      "userId": 3,
-      "userName": "Rahul K.",
-      "rating": 4,
-      "title": "Great value, solid build",
-      "body": "Handles multiple browser tabs and light photo editing without breaking a sweat. Keyboard is comfortable. Knocked one star because the speakers are just average.",
-      "createdAt": "2026-04-20T16:40:00.000Z",
-      "updatedAt": "2026-04-20T16:40:00.000Z"
-    },
-    {
-      "id": 7,
-      "status": "approved",
-      "isVerifiedPurchase": true,
-      "helpfulCount": 6,
-      "productId": 5,
-      "userId": 1,
-      "userName": "John D.",
-      "rating": 5,
-      "title": "Soft, true to size",
-      "body": "Lovely cotton, holds shape after washing and the fit is exactly as described. Bought two more.",
+      "helpfulCount": 7,
       "photos": [
-        "https://placehold.co/300x300/1a1a2e/FFFFFF?text=Fit"
+        "https://placehold.co/400x300/6f4e37/FFFFFF?text=Lit%20at%20home"
       ],
       "createdAt": "2026-05-05T09:00:00.000Z",
       "updatedAt": "2026-05-05T09:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "productId": 13,
+      "userId": 3,
+      "userName": "Rahul K.",
+      "rating": 4,
+      "title": "Lovely set, great quality",
+      "body": "Prints are crisp and the frames feel solid. They made an easy gallery wall above the sofa. Waiting on my second set for the hallway.",
+      "status": "pending",
+      "isVerifiedPurchase": true,
+      "helpfulCount": 0,
+      "createdAt": "2026-06-10T16:40:00.000Z",
+      "updatedAt": "2026-06-10T16:40:00.000Z"
+    },
+    {
+      "id": 7,
+      "productId": 2,
+      "userId": 3,
+      "userName": "Bappi D.",
+      "rating": 5,
+      "title": "Bought a second one",
+      "body": "So good I came back for the charcoal as well. Pairs perfectly with the ginger jar. Quick delivery across the UAE.",
+      "status": "pending",
+      "isVerifiedPurchase": true,
+      "helpfulCount": 0,
+      "createdAt": "2026-06-13T12:00:00.000Z",
+      "updatedAt": "2026-06-13T12:00:00.000Z"
     }
   ],
   "wishlist": [
     {
-      "productId": 1,
-      "slug": "probook-ultra-laptop-15",
-      "name": "ProBook Ultra Laptop 15\"",
-      "image": "https://placehold.co/600x400/1a1a2e/FFFFFF?text=ProBook+Laptop",
-      "brand": "ProBook",
-      "price": 74999,
-      "comparePrice": 89999,
-      "rating": 4.6,
-      "totalReviews": 128,
-      "shortDescription": "Powerful 15-inch laptop with Intel Core i7 processor and 16GB RAM",
+      "productId": 2,
+      "slug": "aurelia-ribbed-ceramic-vase",
+      "name": "Aurelia Ribbed Ceramic Vase",
+      "image": "https://placehold.co/600x400/b5764f/FFFFFF?text=Aurelia%20Vase",
+      "brand": "THIS Atelier",
+      "price": 185,
+      "comparePrice": 240,
+      "rating": 4.8,
+      "totalReviews": 96,
+      "shortDescription": "Hand-thrown ribbed ceramic vase with a soft matte glaze.",
       "variants": [
         {
           "id": "v1",
-          "name": "8GB RAM / 256GB SSD",
-          "price": 64999,
-          "stock": 20,
-          "sku": "LAP-PBU-15-8-256",
+          "name": "Ivory · Medium",
+          "price": 185,
+          "stock": 18,
+          "sku": "VAS-AUR-IVY-M",
           "attributes": {
-            "Configuration": "8GB · 256GB SSD"
-          }
+            "Color": "Ivory",
+            "Size": "Medium"
+          },
+          "swatchHex": "#efe7da"
         },
         {
           "id": "v2",
-          "name": "16GB RAM / 512GB SSD",
-          "price": 74999,
-          "stock": 15,
-          "sku": "LAP-PBU-15-16-512",
+          "name": "Ivory · Large",
+          "price": 235,
+          "stock": 12,
+          "sku": "VAS-AUR-IVY-L",
           "attributes": {
-            "Configuration": "16GB · 512GB SSD"
-          }
+            "Color": "Ivory",
+            "Size": "Large"
+          },
+          "swatchHex": "#efe7da"
         },
         {
           "id": "v3",
-          "name": "32GB RAM / 1TB SSD",
-          "price": 94999,
-          "stock": 10,
-          "sku": "LAP-PBU-15-32-1TB",
+          "name": "Clay · Medium",
+          "price": 185,
+          "stock": 16,
+          "sku": "VAS-AUR-CLY-M",
           "attributes": {
-            "Configuration": "32GB · 1TB SSD"
-          }
+            "Color": "Clay",
+            "Size": "Medium"
+          },
+          "swatchHex": "#b5764f"
+        },
+        {
+          "id": "v4",
+          "name": "Charcoal · Medium",
+          "price": 185,
+          "stock": 14,
+          "sku": "VAS-AUR-CHR-M",
+          "attributes": {
+            "Color": "Charcoal",
+            "Size": "Medium"
+          },
+          "swatchHex": "#3a3a3a"
         }
       ],
-      "stock": 45,
+      "stock": 60,
       "trending": true,
-      "hot": false,
+      "hot": true,
       "addedAt": "2026-06-14T13:57:44.901Z",
       "userId": 3,
       "id": 1
     },
     {
-      "productId": 3,
-      "slug": "fitpulse-smartwatch-series-5",
-      "name": "FitPulse Smartwatch Series 5",
-      "image": "https://placehold.co/600x400/0f3460/FFFFFF?text=FitPulse+Watch",
-      "brand": "FitPulse",
-      "price": 14999,
-      "comparePrice": 19999,
-      "rating": 4.5,
-      "totalReviews": 215,
-      "shortDescription": "Advanced health tracking smartwatch with GPS and AMOLED display",
+      "productId": 1,
+      "slug": "lumiere-fluted-glass-table-lamp",
+      "name": "Lumière Fluted Glass Table Lamp",
+      "image": "https://placehold.co/600x400/b07d56/FFFFFF?text=Lumiere%20Table%20Lamp",
+      "brand": "Lumière by THIS",
+      "price": 640,
+      "comparePrice": 820,
+      "rating": 4.7,
+      "totalReviews": 64,
+      "shortDescription": "Fluted glass table lamp with a warm linen shade for soft, ambient light.",
       "variants": [
         {
           "id": "v1",
-          "name": "Black / Rubber Band",
-          "price": 14999,
-          "stock": 30,
-          "sku": "ELC-FPS-SW5-BLK-R"
+          "name": "Brushed Brass",
+          "price": 640,
+          "stock": 16,
+          "sku": "LMP-LUM-TBL-BRS",
+          "attributes": {
+            "Finish": "Brushed Brass"
+          },
+          "swatchHex": "#c9a24b"
         },
         {
           "id": "v2",
-          "name": "Silver / Metal Band",
-          "price": 16999,
-          "stock": 25,
-          "sku": "ELC-FPS-SW5-SLV-M"
+          "name": "Matte Black",
+          "price": 640,
+          "stock": 14,
+          "sku": "LMP-LUM-TBL-BLK",
+          "attributes": {
+            "Finish": "Matte Black"
+          },
+          "swatchHex": "#2b2b2b"
         },
         {
           "id": "v3",
-          "name": "Gold / Leather Band",
-          "price": 18999,
-          "stock": 20,
-          "sku": "ELC-FPS-SW5-GLD-L"
+          "name": "Polished Nickel",
+          "price": 680,
+          "stock": 8,
+          "sku": "LMP-LUM-TBL-NKL",
+          "attributes": {
+            "Finish": "Polished Nickel"
+          },
+          "swatchHex": "#b8bcc0"
         }
       ],
-      "stock": 75,
-      "trending": false,
-      "hot": true,
+      "stock": 38,
+      "trending": true,
+      "hot": false,
       "addedAt": "2026-06-14T13:57:57.354Z",
       "userId": 3,
       "id": 2
     },
     {
-      "productId": 7,
-      "slug": "banarasi-silk-saree",
-      "name": "Banarasi Silk Saree",
-      "image": "https://placehold.co/600x400/c2185b/FFFFFF?text=Banarasi+Saree",
-      "brand": "WeaveKraft",
-      "price": 5999,
-      "comparePrice": 8999,
+      "productId": 8,
+      "slug": "sahara-handwoven-wool-rug",
+      "name": "Sahara Handwoven Wool Rug",
+      "image": "https://placehold.co/600x400/8a8170/FFFFFF?text=Sahara%20Rug",
+      "brand": "THIS Atelier",
+      "price": 1850,
+      "comparePrice": 2400,
       "rating": 4.8,
-      "totalReviews": 215,
-      "shortDescription": "Handwoven Banarasi silk saree with rich zari work",
+      "totalReviews": 52,
+      "shortDescription": "Handwoven wool rug with a tonal, low-pile geometric weave.",
       "variants": [
         {
           "id": "v1",
-          "name": "Maroon & Gold",
-          "price": 5999,
-          "stock": 10,
-          "sku": "SAR-BNR-SLK-MRN"
+          "name": "160 × 230 cm",
+          "price": 1850,
+          "stock": 8,
+          "sku": "RUG-SAH-WOL-M",
+          "attributes": {
+            "Size": "160 × 230 cm"
+          }
         },
         {
           "id": "v2",
-          "name": "Royal Blue & Gold",
-          "price": 5999,
-          "stock": 10,
-          "sku": "SAR-BNR-SLK-BLU"
+          "name": "200 × 300 cm",
+          "price": 2750,
+          "stock": 6,
+          "sku": "RUG-SAH-WOL-L",
+          "attributes": {
+            "Size": "200 × 300 cm"
+          }
         },
         {
           "id": "v3",
-          "name": "Green & Gold",
-          "price": 6499,
-          "stock": 10,
-          "sku": "SAR-BNR-SLK-GRN"
+          "name": "Runner 80 × 300 cm",
+          "price": 1200,
+          "stock": 4,
+          "sku": "RUG-SAH-WOL-R",
+          "attributes": {
+            "Size": "Runner 80 × 300 cm"
+          }
         }
       ],
-      "stock": 30,
+      "stock": 18,
       "trending": true,
-      "hot": false,
+      "hot": true,
       "addedAt": "2026-06-14T13:57:59.358Z",
       "userId": 3,
       "id": 3
@@ -3261,11 +3531,11 @@
       "orderNumber": "ORD-20250310-0001",
       "category": "shipping",
       "subject": "Order delivery update",
-      "message": "Hi, I wanted to check on the delivery status of my order. The tracking shows it's been shipped but I haven't received an estimated delivery date.",
+      "message": "Hi, I wanted to check on the delivery status of my order. The tracking shows it has shipped but I haven't seen an estimated delivery date.",
       "status": "resolved",
       "createdAt": "2026-01-16T11:00:00.000Z",
       "updatedAt": "2026-01-16T14:30:00.000Z",
-      "notes": "Provided tracking details to customer"
+      "notes": "Shared Aramex tracking details with the customer"
     },
     {
       "id": 2,
@@ -3291,52 +3561,52 @@
       "orderNumber": null,
       "category": "product",
       "subject": "Product availability inquiry",
-      "message": "Do you have the FitPulse Smartwatch in size 44mm? The website shows it's available but I wanted to confirm before ordering.",
+      "message": "Do you have the Sahara Handwoven Wool Rug available in the runner size? The site shows it but I wanted to confirm before ordering.",
       "status": "contacted",
       "createdAt": "2026-03-18T10:30:00.000Z",
       "updatedAt": "2026-04-17T14:22:33.071Z",
-      "notes": "fdsadfsafwe"
+      "notes": "Confirmed runner is in stock; awaiting reply"
     },
     {
+      "id": 4,
       "type": "contact",
       "name": "Bappi Das",
       "email": "mail4bappidas@gmail.com",
       "phone": "+919707112233",
       "orderNumber": "ORD-MQC1HWSZ-CAN8",
       "category": "returns",
-      "subject": "Want to return this AirStride Running Shoes - UK 7 - Black",
-      "message": "AirStride Running Shoes - UK 7 - Black is does not fit properly",
+      "subject": "Want to return the Sahara Handwoven Wool Rug - 200 × 300 cm",
+      "message": "The rug is lovely but too large for the space — I'd like to return it.",
       "status": "resolved",
       "createdAt": "2026-06-13T12:52:25.021Z",
       "updatedAt": "2026-06-13T15:55:02.925Z",
-      "notes": "Need to Cancel this order. ",
-      "id": 4
+      "notes": "Refunded to store credit; return collected."
     }
   ],
   "settings": {
     "store": {
-      "name": "My E-Commerce Store",
-      "tagline": "Quality products, great prices",
-      "email": "hello@mystore.com",
-      "phone": "+91 9999999999",
-      "address": "123 Business Park, Mumbai, Maharashtra 400001",
-      "currency": "INR",
-      "currencySymbol": "₹",
-      "timezone": "Asia/Kolkata",
+      "name": "THIS Interiors",
+      "tagline": "Crafting homes with a soul",
+      "email": "hello@thisinteriors.com",
+      "phone": "+971 4 553 8800",
+      "address": "Building 6, Dubai Design District (d3), Dubai, United Arab Emirates",
+      "currency": "AED",
+      "currencySymbol": "AED",
+      "timezone": "Asia/Dubai",
       "logo": null,
       "favicon": null,
-      "taxRate": 18,
+      "taxRate": 5,
       "taxIncluded": false
     },
     "shipping": {
       "shiprocketEnabled": false,
       "shiprocketEmail": "",
       "shiprocketPassword": "",
-      "defaultWeight": 0.5,
+      "defaultWeight": 1.5,
       "defaultDimensions": {
-        "length": 15,
-        "width": 12,
-        "height": 8
+        "length": 30,
+        "width": 24,
+        "height": 12
       }
     },
     "payment": {
@@ -3347,28 +3617,28 @@
       "codEnabled": true,
       "codFee": 0,
       "codMinOrder": 0,
-      "codMaxOrder": 50000
+      "codMaxOrder": 5000
     },
     "notifications": {
       "orderConfirmationEmail": true,
       "shippingUpdateEmail": true,
       "adminNewOrderEmail": true,
-      "adminEmail": "admin@mystore.com",
+      "adminEmail": "studio@thisinteriors.com",
       "lowStockAlert": true,
-      "lowStockEmail": "admin@mystore.com"
+      "lowStockEmail": "studio@thisinteriors.com"
     },
     "seo": {
-      "metaTitle": "My E-Commerce Store - Quality Products Online",
-      "metaDescription": "Shop the best products online with fast delivery, secure payments and easy returns.",
+      "metaTitle": "THIS Interiors — Luxury Home Décor in Dubai",
+      "metaDescription": "Curated vases, lighting, mirrors, wall art and textiles from THIS Interiors, Dubai's design-led home boutique. Shop considered pieces in AED with UAE-wide delivery.",
       "googleAnalyticsId": "",
       "facebookPixelId": ""
     },
     "social": {
-      "facebook": "",
-      "instagram": "",
+      "facebook": "https://facebook.com/thisinteriors",
+      "instagram": "https://instagram.com/thisinteriors",
       "twitter": "",
       "youtube": "",
-      "whatsapp": ""
+      "whatsapp": "https://wa.me/971555538800"
     }
   },
   "walletTransactions": [
@@ -3376,17 +3646,18 @@
       "id": 1,
       "userId": 3,
       "type": "credit",
-      "amount": 4918,
+      "amount": 2888,
       "reason": "Refund for order ORD-MQC1HWSZ-CAN8",
       "orderId": 8,
       "orderNumber": "ORD-MQC1HWSZ-CAN8",
       "refundId": 3,
       "refundNumber": "REF-20260613-JQ3L",
       "balanceBefore": 0,
-      "balanceAfter": 4918,
+      "balanceAfter": 2888,
       "createdAt": "2026-06-13T12:57:28.419Z"
     },
     {
+      "id": 2,
       "userId": 3,
       "type": "debit",
       "amount": 1000,
@@ -3395,12 +3666,12 @@
       "orderNumber": "ORD-MQCGV6OM-Z965",
       "refundId": null,
       "refundNumber": null,
-      "balanceBefore": 4918,
-      "balanceAfter": 3918,
-      "createdAt": "2026-06-13T14:44:33.927Z",
-      "id": 2
+      "balanceBefore": 2888,
+      "balanceAfter": 1888,
+      "createdAt": "2026-06-13T14:44:33.927Z"
     },
     {
+      "id": 3,
       "userId": 3,
       "type": "debit",
       "amount": 1000,
@@ -3409,18 +3680,17 @@
       "orderNumber": "ORD-MQDVIQCV-30A9",
       "refundId": null,
       "refundNumber": null,
-      "balanceBefore": 3918,
-      "balanceAfter": 2918,
-      "createdAt": "2026-06-14T14:22:33.343Z",
-      "id": 3
+      "balanceBefore": 1888,
+      "balanceAfter": 888,
+      "createdAt": "2026-06-14T14:22:33.343Z"
     }
   ],
   "dealsConfig": {
     "enabled": true,
     "hero": {
-      "tag": "Limited Time",
-      "title": "Special Offers & Deals",
-      "subtitle": "Discover unbeatable prices on top products. New deals drop daily — don't miss out!"
+      "tag": "Seasonal Offers",
+      "title": "Styled for Less",
+      "subtitle": "Curated décor at considered prices — new pieces added often. Complimentary UAE delivery over AED 200."
     },
     "timer": {
       "enabled": true,
@@ -3432,15 +3702,18 @@
       2
     ],
     "dealOfTheDayIds": [
-      1,
-      3,
-      4
+      13,
+      8,
+      2
     ],
     "featuredProductIds": [
-      10,
-      12,
-      16
+      2,
+      7,
+      13,
+      8,
+      4,
+      1
     ],
-    "updatedAt": "2026-06-14T07:28:09.336Z"
+    "updatedAt": "2026-06-15T07:28:09.336Z"
   }
 }

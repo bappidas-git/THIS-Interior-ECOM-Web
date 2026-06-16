@@ -1,33 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useTheme } from "../../context/ThemeContext";
+import { motion, useReducedMotion } from "framer-motion";
 import apiService from "../../services/api";
-import { formatCurrency, formatDate, normalizeOrderAddress } from "../../utils/helpers";
+import {
+  formatCurrency,
+  formatDate,
+  normalizeOrderAddress,
+  onImageError,
+  PLACEHOLDER_IMG,
+} from "../../utils/helpers";
 import styles from "./OrderConfirmation.module.css";
+
+// Calm editorial easing, shared by the gated Framer entrances below.
+const EASE = [0.22, 1, 0.36, 1];
 
 const OrderConfirmation = () => {
   const { orderNumber } = useParams();
   const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
+  // Gate the staged Framer entrances for reduced-motion users (the token
+  // transitions already zero out via storefront-tokens.css, and the success
+  // medallion's draw/ring is gated in CSS behind prefers-reduced-motion).
+  const prefersReducedMotion = useReducedMotion();
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [showCheck, setShowCheck] = useState(false);
 
   useEffect(() => {
     fetchOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderNumber]);
 
+  // Scope the print stylesheet to this page: the body flag (read by the
+  // @media print rules in the module) lets "Download invoice" print a clean
+  // invoice with the site chrome hidden, without ever touching admin or other
+  // pages — they never mount this component, so they never set the flag.
   useEffect(() => {
-    if (order) {
-      const timer = setTimeout(() => setShowCheck(true), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [order]);
+    document.body.classList.add("ocInvoicePrint");
+    return () => document.body.classList.remove("ocInvoicePrint");
+  }, []);
 
   const fetchOrder = async () => {
     setLoading(true);
@@ -68,19 +80,27 @@ const OrderConfirmation = () => {
     return formatDeliveryDate(delivery);
   };
 
-  const handleDownloadInvoice = () => {
-    // No-op placeholder for invoice download
-    alert("Invoice download will be available soon.");
-  };
+  // Print-to-PDF the invoice (see the @media print block + the body flag above).
+  const handleDownloadInvoice = () => window.print();
+
+  // Calm, reduced-motion-safe entrance preset.
+  const reveal = (delay = 0) =>
+    prefersReducedMotion
+      ? { initial: false, animate: { opacity: 1, y: 0 } }
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.45, delay, ease: EASE },
+        };
 
   // Loading state
   if (loading) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.container}>
           <div className={styles.loadingState}>
-            <div className={styles.spinner} />
-            <p>Loading order details...</p>
+            <span className="sf-spinner" aria-hidden="true" />
+            <p>Preparing your confirmation…</p>
           </div>
         </div>
       </div>
@@ -91,22 +111,22 @@ const OrderConfirmation = () => {
   // the order doesn't exist.
   if (fetchError) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.container}>
-          <div className={styles.notFound}>
-            <div className={styles.notFoundIcon}>
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <motion.div className={styles.statePanel} {...reveal()}>
+            <span className={`${styles.stateIcon} ${styles.stateIconDanger}`}>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
-            </div>
-            <h2>Couldn't Load Your Order</h2>
-            <p>
+            </span>
+            <h2 className={styles.stateTitle}>We couldn't load your order</h2>
+            <p className={styles.stateText}>
               Something went wrong while fetching order {orderNumber}. Please
               check your connection and try again.
             </p>
-            <div className={styles.notFoundActions}>
+            <div className={styles.stateActions}>
               <button className={styles.btnPrimary} onClick={fetchOrder}>
                 Try Again
               </button>
@@ -114,7 +134,7 @@ const OrderConfirmation = () => {
                 View Order History
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     );
@@ -123,29 +143,29 @@ const OrderConfirmation = () => {
   // Order not found
   if (!order) {
     return (
-      <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+      <div className={styles.page}>
         <div className={styles.container}>
-          <div className={styles.notFound}>
-            <div className={styles.notFoundIcon}>
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+          <motion.div className={styles.statePanel} {...reveal()}>
+            <span className={styles.stateIcon}>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-            </div>
-            <h2>Order Not Found</h2>
-            <p>
-              We couldn't find the order you're looking for. It may have been placed in a different session.
+            </span>
+            <h2 className={styles.stateTitle}>Order not found</h2>
+            <p className={styles.stateText}>
+              We couldn't find the order you're looking for. It may have been
+              placed in a different session.
             </p>
-            <div className={styles.notFoundActions}>
+            <div className={styles.stateActions}>
               <button className={styles.btnPrimary} onClick={() => navigate("/")}>
-                Go to Home
+                Continue Shopping
               </button>
               <button className={styles.btnSecondary} onClick={() => navigate("/orders")}>
                 View Order History
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     );
@@ -157,117 +177,109 @@ const OrderConfirmation = () => {
   const taxAmount = order.taxAmount ?? order.tax ?? 0;
   const shippingAmount = order.shippingAmount ?? order.shipping ?? 0;
   const discountAmount = order.discountAmount ?? 0;
+  const storeCreditUsed = order.storeCreditUsed ?? 0;
   const isPaymentPending = order.paymentStatus === "pending";
   const shippingAddr = normalizeOrderAddress(order.shippingAddress);
   const isDelivered = order.shippingStatus === "delivered";
 
   // Badge text mirrors the order's real paymentStatus — never a hardcoded
-  // "successful".
+  // "successful". COD pending → "Pay on Delivery".
   const paymentStatusInfo = (() => {
     switch (order.paymentStatus) {
       case "paid":
-        return { label: "Payment Successful", modifier: "" };
+        return { label: "Payment Successful", tone: styles.statusPaid };
       case "failed":
-        return { label: "Payment Failed", modifier: styles.paymentStatusFailed };
+        return { label: "Payment Failed", tone: styles.statusFailed };
       case "refunded":
-        return { label: "Payment Refunded", modifier: styles.paymentStatusFailed };
+        return { label: "Payment Refunded", tone: styles.statusFailed };
       case "partially_refunded":
-        return { label: "Payment Partially Refunded", modifier: styles.paymentStatusPending };
+        return { label: "Payment Partially Refunded", tone: styles.statusPending };
       default:
         return {
           label:
             order.paymentMethod === "cod"
               ? "Payment Pending — Pay on Delivery"
               : "Payment Pending",
-          modifier: styles.paymentStatusPending,
+          tone: styles.statusPending,
         };
     }
   })();
 
   return (
-    <div className={`${styles.page} ${isDarkMode ? styles.dark : ""}`}>
+    <div className={styles.page}>
       <div className={styles.container}>
-        {/* Success Animation */}
-        <motion.div
-          className={styles.successSection}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20, duration: 0.6 }}
-        >
-          <div className={`${styles.checkCircle} ${showCheck ? styles.checkCircleActive : ""}`}>
+        {/* Success moment — restrained brass medallion + serif thank-you */}
+        <motion.section className={styles.success} aria-labelledby="oc-title" {...reveal(0)}>
+          <span className={styles.medallion} aria-hidden="true">
             <svg
-              className={styles.checkSvg}
-              width="56"
-              height="56"
+              className={styles.medallionCheck}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2.5"
+              strokeWidth="2.25"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
               <polyline points="20 6 9 17 4 12" />
             </svg>
-          </div>
-          <h1 className={styles.successTitle}>Order Confirmed!</h1>
-          <p className={styles.successSubtext}>
+          </span>
+          <p className={styles.eyebrow}>Order Confirmed</p>
+          <h1 id="oc-title" className={styles.title}>
+            Thank you for your order
+          </h1>
+          <p className={styles.subtitle}>
             {isPaymentPending
-              ? "Your order has been placed. Pay when it arrives at your door."
-              : "Your payment was successful and your order is being processed."}
+              ? "Your order is placed. You'll pay on delivery — we'll have it on its way to you shortly."
+              : "Your payment was received and your pieces are being prepared with care."}
           </p>
-        </motion.div>
+        </motion.section>
 
-        {/* Order Number (Prominent + Copyable) */}
-        <motion.div
-          className={styles.orderNumberBanner}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <span className={styles.orderNumberLabel}>Order Number</span>
-          <div className={styles.orderNumberRow}>
-            <span className={styles.orderNumberValue}>
-              {order.orderNumber || orderNumber}
-            </span>
-            <button className={styles.btnCopyBanner} onClick={handleCopyOrderNumber}>
-              {copied ? (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        {/* Receipt bar — order number (quiet copy) + placed date */}
+        <motion.div className={styles.receiptBar} {...reveal(0.05)}>
+          <div className={styles.receiptOrder}>
+            <span className={styles.receiptLabel}>Order Number</span>
+            <div className={styles.receiptNumberRow}>
+              <span className={styles.receiptNumber}>
+                {order.orderNumber || orderNumber}
+              </span>
+              <button
+                className={`${styles.btnCopy} ${copied ? styles.copied : ""}`}
+                onClick={handleCopyOrderNumber}
+                aria-label={copied ? "Order number copied" : "Copy order number"}
+                title="Copy order number"
+              >
+                {copied ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                     <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
                   </svg>
-                  Copy
-                </>
-              )}
-            </button>
+                )}
+              </button>
+            </div>
           </div>
-          <div className={styles.orderMeta}>
-            <span>Placed on {formatDate(order.createdAt)}</span>
+          <div className={styles.receiptPlaced}>
+            <span className={styles.receiptLabel}>Placed On</span>
+            <span className={styles.receiptValue}>{formatDate(order.createdAt)}</span>
           </div>
         </motion.div>
 
-        {/* Estimated Delivery */}
+        {/* Delivery banner — quiet hairline */}
         <motion.div
-          className={styles.deliveryBanner}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          className={`${styles.deliveryBanner} ${isDelivered ? styles.deliveryDone : ""}`}
+          {...reveal(0.1)}
         >
-          <div className={styles.deliveryIcon}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <span className={styles.deliveryIcon} aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
               <rect x="1" y="3" width="15" height="13" rx="2" ry="2" />
               <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
               <circle cx="5.5" cy="18.5" r="2.5" />
               <circle cx="18.5" cy="18.5" r="2.5" />
             </svg>
-          </div>
+          </span>
           <div className={styles.deliveryText}>
             <span className={styles.deliveryLabel}>
               {isDelivered ? "Delivered" : "Estimated Delivery"}
@@ -280,203 +292,148 @@ const OrderConfirmation = () => {
           </div>
         </motion.div>
 
-        <div className={styles.contentGrid}>
-          {/* Left Column */}
-          <div className={styles.mainColumn}>
-            {/* Order Items */}
-            <motion.div
-              className={styles.card}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-            >
-              <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <path d="M16 10a4 4 0 01-8 0" />
-                  </svg>
-                  Order Summary
-                </h3>
-                <span className={styles.itemCount}>
-                  {orderItems.length} item{orderItems.length !== 1 ? "s" : ""}
+        {/* Invoice / summary — hairline-ruled items + totals */}
+        <motion.section className={styles.invoice} aria-label="Order summary" {...reveal(0.15)}>
+          <div className={styles.invoiceHead}>
+            <h2 className={styles.invoiceTitle}>Order Summary</h2>
+            <span className={styles.invoiceCount}>
+              {orderItems.length} item{orderItems.length !== 1 ? "s" : ""}
+            </span>
+          </div>
+
+          <ul className={styles.itemList}>
+            {orderItems.map((item, index) => (
+              <li key={index} className={styles.item}>
+                <span className={styles.itemThumb}>
+                  <img
+                    src={item.image || PLACEHOLDER_IMG}
+                    alt={item.name || item.productName || "Product"}
+                    onError={onImageError}
+                  />
                 </span>
-              </div>
-              <div className={styles.cardBody}>
-                <div className={styles.itemsList}>
-                  {orderItems.map((item, index) => (
-                    <div key={index} className={styles.orderItem}>
-                      <div className={styles.itemImage}>
-                        <img
-                          src={item.image || "https://placehold.co/72x72?text=Item"}
-                          alt={item.name || "Product"}
-                        />
-                      </div>
-                      <div className={styles.itemInfo}>
-                        <span className={styles.itemName}>{item.name || item.productName}</span>
-                        {item.variantName && (
-                          <span className={styles.itemVariant}>{item.variantName}</span>
-                        )}
-                        <span className={styles.itemQty}>Qty: {item.quantity}</span>
-                      </div>
-                      <div className={styles.itemPrice}>
-                        {formatCurrency(item.price * item.quantity, item.currency)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Totals */}
-                <div className={styles.totalsSection}>
-                  <div className={styles.totalsRow}>
-                    <span>Subtotal</span>
-                    <span>{formatCurrency(order.subtotal)}</span>
-                  </div>
-                  {discountAmount > 0 && (
-                    <div className={styles.totalsRow}>
-                      <span>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</span>
-                      <span>-{formatCurrency(discountAmount)}</span>
-                    </div>
+                <div className={styles.itemInfo}>
+                  <span className={styles.itemName}>{item.name || item.productName}</span>
+                  {item.variantName && (
+                    <span className={styles.itemVariant}>{item.variantName}</span>
                   )}
-                  <div className={styles.totalsRow}>
-                    <span>Shipping</span>
-                    <span>{shippingAmount > 0 ? formatCurrency(shippingAmount) : "FREE"}</span>
-                  </div>
-                  <div className={styles.totalsRow}>
-                    <span>Tax</span>
-                    <span>{formatCurrency(taxAmount)}</span>
-                  </div>
-                  <div className={`${styles.totalsRow} ${styles.totalsRowFinal}`}>
-                    <span>Total</span>
-                    <span>{formatCurrency(order.total)}</span>
-                  </div>
-                  {(order.storeCreditUsed ?? 0) > 0 && (
-                    <>
-                      <div className={styles.totalsRow}>
-                        <span>Store Credit</span>
-                        <span>-{formatCurrency(order.storeCreditUsed)}</span>
-                      </div>
-                      <div className={`${styles.totalsRow} ${styles.totalsRowFinal}`}>
-                        <span>Amount Paid</span>
-                        <span>{formatCurrency(order.amountPayable ?? Math.max(0, order.total - order.storeCreditUsed))}</span>
-                      </div>
-                    </>
-                  )}
+                  <span className={styles.itemQty}>Qty {item.quantity}</span>
                 </div>
-              </div>
-            </motion.div>
+                <span className={styles.itemPrice}>
+                  {formatCurrency(item.price * item.quantity, item.currency)}
+                </span>
+              </li>
+            ))}
+          </ul>
 
-            {/* Shipping Address */}
-            <motion.div
-              className={styles.card}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  Shipping Address
-                </h3>
+          <dl className={styles.totals}>
+            <div className={styles.totalRow}>
+              <dt>Subtotal</dt>
+              <dd>{formatCurrency(order.subtotal)}</dd>
+            </div>
+            {discountAmount > 0 && (
+              <div className={`${styles.totalRow} ${styles.totalDiscount}`}>
+                <dt>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</dt>
+                <dd>-{formatCurrency(discountAmount)}</dd>
               </div>
-              <div className={styles.cardBody}>
-                {shippingAddr ? (
-                  <div className={styles.addressBlock}>
-                    {shippingAddr.name && (
-                      <p className={styles.addressName}>{shippingAddr.name}</p>
+            )}
+            <div className={`${styles.totalRow} ${shippingAmount > 0 ? "" : styles.totalDiscount}`}>
+              <dt>Shipping</dt>
+              <dd>{shippingAmount > 0 ? formatCurrency(shippingAmount) : "Free"}</dd>
+            </div>
+            <div className={styles.totalRow}>
+              <dt>Tax</dt>
+              <dd>{formatCurrency(taxAmount)}</dd>
+            </div>
+            <div className={`${styles.totalRow} ${styles.totalGrand}`}>
+              <dt>Total</dt>
+              <dd>{formatCurrency(order.total)}</dd>
+            </div>
+            {storeCreditUsed > 0 && (
+              <>
+                <div className={`${styles.totalRow} ${styles.totalDiscount}`}>
+                  <dt>Store Credit</dt>
+                  <dd>-{formatCurrency(storeCreditUsed)}</dd>
+                </div>
+                <div className={`${styles.totalRow} ${styles.totalGrand}`}>
+                  <dt>Amount Paid</dt>
+                  <dd>
+                    {formatCurrency(
+                      order.amountPayable ?? Math.max(0, order.total - storeCreditUsed)
                     )}
-                    {shippingAddr.line1 && <p>{shippingAddr.line1}</p>}
-                    {shippingAddr.line2 && <p>{shippingAddr.line2}</p>}
-                    {shippingAddr.cityLine && <p>{shippingAddr.cityLine}</p>}
-                    {shippingAddr.country && <p>{shippingAddr.country}</p>}
-                    {shippingAddr.phone && (
-                      <p className={styles.addressPhone}>Phone: {shippingAddr.phone}</p>
-                    )}
-                  </div>
-                ) : (
-                  <p className={styles.textMuted}>Shipping address not available</p>
+                  </dd>
+                </div>
+              </>
+            )}
+          </dl>
+        </motion.section>
+
+        {/* Shipping address + payment */}
+        <div className={styles.detailGrid}>
+          <motion.section className={styles.detailCard} aria-label="Shipping address" {...reveal(0.2)}>
+            <h3 className={styles.detailTitle}>Shipping Address</h3>
+            {shippingAddr ? (
+              <address className={styles.address}>
+                {shippingAddr.name && (
+                  <span className={styles.addressName}>{shippingAddr.name}</span>
                 )}
-              </div>
-            </motion.div>
-          </div>
+                {shippingAddr.line1 && <span>{shippingAddr.line1}</span>}
+                {shippingAddr.line2 && <span>{shippingAddr.line2}</span>}
+                {shippingAddr.cityLine && <span>{shippingAddr.cityLine}</span>}
+                {shippingAddr.country && <span>{shippingAddr.country}</span>}
+                {shippingAddr.phone && (
+                  <span className={styles.addressPhone}>Phone: {shippingAddr.phone}</span>
+                )}
+              </address>
+            ) : (
+              <p className={styles.textMuted}>Shipping address not available</p>
+            )}
+          </motion.section>
 
-          {/* Right Column */}
-          <div className={styles.sideColumn}>
-            {/* Payment Method */}
-            <motion.div
-              className={styles.card}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 }}
-            >
-              <div className={styles.cardHeader}>
-                <h3 className={styles.cardTitle}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                    <line x1="1" y1="10" x2="23" y2="10" />
-                  </svg>
-                  Payment Method
-                </h3>
-              </div>
-              <div className={styles.cardBody}>
-                <div className={styles.paymentBadge}>
-                  {order.paymentMethod ? order.paymentMethod.replace(/_/g, " ").toUpperCase() : "N/A"}
-                </div>
-                <div className={`${styles.paymentStatus} ${paymentStatusInfo.modifier}`}>
-                  <span className={styles.paymentStatusDot} />
-                  {paymentStatusInfo.label}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Action Buttons */}
-            <motion.div
-              className={styles.actionsCard}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <button
-                className={styles.btnTrack}
-                onClick={() => navigate("/orders")}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="1" y="3" width="15" height="13" rx="2" ry="2" />
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                  <circle cx="5.5" cy="18.5" r="2.5" />
-                  <circle cx="18.5" cy="18.5" r="2.5" />
+          <motion.section className={styles.detailCard} aria-label="Payment" {...reveal(0.25)}>
+            <h3 className={styles.detailTitle}>Payment</h3>
+            <div className={styles.paymentMethod}>
+              <span className={styles.paymentIcon} aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2.5" y="5" width="19" height="14" rx="2" />
+                  <line x1="2.5" y1="9.5" x2="21.5" y2="9.5" />
+                  <line x1="6" y1="14.5" x2="10" y2="14.5" />
                 </svg>
-                Track Order
-              </button>
-              <button
-                className={styles.btnContinue}
-                onClick={() => navigate("/")}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 01-8 0" />
-                </svg>
-                Continue Shopping
-              </button>
-              <button
-                className={styles.btnInvoice}
-                onClick={handleDownloadInvoice}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                Download Invoice
-              </button>
-            </motion.div>
-          </div>
+              </span>
+              <span className={styles.paymentName}>
+                {order.paymentMethod
+                  ? order.paymentMethod.replace(/_/g, " ").toUpperCase()
+                  : "N/A"}
+              </span>
+            </div>
+            <span className={`${styles.statusPill} ${paymentStatusInfo.tone}`}>
+              {paymentStatusInfo.label}
+            </span>
+          </motion.section>
         </div>
+
+        {/* Actions */}
+        <motion.div className={styles.actions} {...reveal(0.3)}>
+          <button className={styles.btnPrimary} onClick={() => navigate("/orders")}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="1" y="3" width="15" height="13" rx="2" ry="2" />
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+            Track Order
+          </button>
+          <button className={styles.btnSecondary} onClick={() => navigate("/")}>
+            Continue Shopping
+          </button>
+          <button className={styles.btnGhost} onClick={handleDownloadInvoice}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Invoice
+          </button>
+        </motion.div>
       </div>
     </div>
   );
